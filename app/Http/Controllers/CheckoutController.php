@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\EmailLog; // Naya import
+use App\Support\CartSummary;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use App\Mail\OrderConfirmation;
+
+class CheckoutController extends Controller
+{
+    public function index()
+    {
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            if (request()->expectsJson()) {
+                return response()->json(['message' => 'Your cart is empty.'], 422);
+            }
+
+            return redirect()->route('shop')->with('error', 'Your cart is empty.');
+        }
+        $summary = CartSummary::for($cart);
+        $viewData = compact('cart', 'summary');
+
+        if (request()->boolean('partial') && request()->expectsJson()) {
+            return response()->json([
+                'html' => view('frontend.shop._checkout_content', $viewData)->render(),
+            ]);
+        }
+
+        return view('frontend.shop.checkout', $viewData);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'customer_name' => 'required|string|max:100',
+            'email' => 'required|email',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string',
+            'city' => 'required|string|max:50',
+            'payment_method' => 'required|in:cod,bank_transfer',
+            'notes' => 'nullable|string',
+        ]);
+
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Your cart is empty.'], 422);
+            }
+
+            return back()->with('error', 'Cart is empty.');
+        }
+
+        $productIds = array_keys($cart);
+        $products = Product::whereIn('id', $productIds)->where('is_active', true)->get()->keyBy('id');
+
+        $freshCart = [];
+        foreach ($cart as $id => $item) {
+            if (!isset($products[$id])) {
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'One product is no longer available. Please update your cart.'], 422);
+                }
+
+                return back()->with('error', 'One product is no longer available.');
+            }
+            $freshCart[$id] = [
+                'price' => (float) $products[$id]->price,
+                'quantity' => (int) $item['quantity'],
+            ];
+        }
+        $summary = CartSummary::for($freshCart);
+
+        DB::beginTransaction();
+        try {
+            $order = Order::create([
+                'order_number' => 'GC-' . strtoupper(Str::random(8)),
+                'customer_id'    => auth('customer')->id(),
+                'customer_name' => $data['customer_name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'address' => $data['address'],
+                'city' => $data['city'],
+                'payment_method' => $data['payment_method'],
+                'notes' => $data['notes'] ?? null,
+                'customer_note' => $data['notes'] ?? null,
+                'total' => $summary['total'],
+                'subtotal_paisa' => (int) round($summary['subtotal'] * 100),
+                'shipping_paisa' => (int) round($summary['shipping'] * 100),
+                'status' => 'pending',
+            ]);
+
+            foreach ($cart as $id => $item) {
+                $unitPrice = (float) $products[$id]->price;
+                $lineTotal = $unitPrice * $item['quantity'];
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $id,
+                    'product_name' => $products[$id]->name,
+                    'price' => $unitPrice,
+                    'unit_price_paisa' => (int) round($unitPrice * 100),
+                    'line_total_paisa' => (int) round($lineTotal * 100),
+                    'quantity' => $item['quantity'],
+                ]);
+            }
+
+            DB::commit();
+            session()->forget('cart');
+
+            // ==========================================
+            // EMAIL SENDING LOGIC (FIXED)
+            // ==========================================
+            try {
+                // Email queue mein daalein
+                Mail::to($order->email)->send(new OrderConfirmation($order));
+                
+                // Log save karein ke email queue mein daal di gayi hai
+                EmailLog::create([
+                    'recipient_email' => $order->email,
+                    'subject' => 'Order Confirmed - #' . $order->order_number,
+                    'status' => 'sent', // Yahan 'sent' ka matlab hai ke system ne isay queue mein daal diya hai
+                ]);
+
+            } catch (\Throwable $mailException) {
+                // Agar Mailtrap/SMTP ka connection hi na bane toh yahan error aayega
+                // Customer ka order cancel NAHI hoga, bas log save ho jayega
+                EmailLog::create([
+                    'recipient_email' => $order->email,
+                    'subject' => 'Order Confirmed - #' . $order->order_number,
+                    'status' => 'failed',
+                    'error_message' => $mailException->getMessage(),
+                ]);
+            }
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'redirect' => route('order.success', $order->order_number),
+                    'message' => 'Order placed successfully.',
+                ]);
+            }
+
+            return redirect()->route('order.success', $order->order_number);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($request->expectsJson()) {
+                report($e);
+
+                return response()->json(['message' => 'We could not place your order. Please try again.'], 500);
+            }
+
+            return back()->with('error', 'Order failed: ' . $e->getMessage());
+        }
+    }
+
+    public function success($orderNumber)
+    {
+        $order = Order::with('items')->where('order_number', $orderNumber)->firstOrFail();
+        return view('frontend.shop.success', compact('order'));
+    }
+}

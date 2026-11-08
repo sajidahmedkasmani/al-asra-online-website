@@ -1,0 +1,29 @@
+1. Reordering in FAQS & sliders   done
+2. remove duplicate things in cms and settings etc
+3. redesign view order page and add/edit product
+4. work on category and collection
+5. give filters of active/inactive in products
+6. have to integrate Postex API
+7. work on coupons and sale
+
+8. give option of signin with google to customer
+9. homepage mobile 
+10. pages (faqs, return, policy, shipping, etc)  done..
+11. Blogs
+12. email cron job on live server
+13. fix the search and work on wishlist
+
+
+LATER:- 4, 5, 6, 7, 8, 11   
+MAND:- 10, 12
+
+DONE:- 1, 3, 4, 5, 9, 10, 13
+REMAIN:- 2, 6, 7, 8, 12
+MAND:- 2, 12
+
+bhai 2,3 cheezein hai bas wo poori karni hai ta'ake hamari website complete hojaye
+is waqt hamare paas sirf products manage karne ka option hai but koi category ya collection ka option nhi tou collections ka jisme like hum clothing ek bags ek bana denge aur pQhir uske andar category hongi tou category ka bhi banado
+
+third thing ye ke "give filters of active/inactive in products" + fourth thing "fix the search of home-pg on frontend and work on wishlist.
+
+don't ask kardo saare kaam.
