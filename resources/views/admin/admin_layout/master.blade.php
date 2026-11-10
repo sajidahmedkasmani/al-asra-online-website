@@ -121,7 +121,7 @@
                     <aside class="hidden xl:flex w-[230px] shrink-0 bg-white flex-col px-5 py-6">
                         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 mb-8 px-1">
                             <span class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-bloom-400"></span>
-                            <span class="font-semibold tracking-wide">G. ADMIN</span>
+                            <span class="font-semibold tracking-wide">ADMIN + CMS</span>
                         </a>
 
                         @can('products.create')

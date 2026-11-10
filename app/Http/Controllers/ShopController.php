@@ -16,13 +16,18 @@ class ShopController extends Controller
 {
     public function home()
     {
-        $sliders = \App\Models\HomeSlider::active()->get();
-        $products = Product::where('is_active', true)->with('productCategory')->latest()->take(8)->get();
-        $faqs = \App\Models\Faq::active()->get();
-        $collections = CatalogCollection::with(['categories' => fn ($query) => $query->where('is_active', true)])
-            ->where('is_active', true)->orderBy('name')->get();
+        $products = Product::where('is_active', true)
+            ->with('productCategory')
+            ->latest()
+            ->take(8)
+            ->get();
+        $categories = ProductCategory::where('is_active', true)
+            ->whereHas('collection', fn ($query) => $query->where('is_active', true))
+            ->withCount(['products' => fn ($query) => $query->where('is_active', true)])
+            ->orderBy('name')
+            ->get();
 
-        return view('frontend.home', compact('products', 'sliders', 'faqs', 'collections'));
+        return view('storefront.home', compact('products', 'categories'));
     }
 
     public function about()
