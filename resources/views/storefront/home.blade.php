@@ -28,16 +28,38 @@ $categoryItems = $categories->take(4);
 <a class="cat" href="/shop"><img src="/images/products/portable-blender.png" alt="Kitchen"><div><h3>Kitchen</h3><p>Explore products</p></div></a><a class="cat" href="/shop"><img src="/images/products/ice-cream-tumbler.png" alt="Drinkware"><div><h3>Drinkware</h3><p>Explore products</p></div></a>
 @endforelse
 </div></section>
-<section class="sec"><div class="center"><span class="kick">Our selection</span><h2>Fresh from our shelves</h2></div><div class="chips mid" id="home-cats"><button class="on" data-cat="all">All</button>@foreach($categories as $c)<button data-cat="{{ $c->slug }}">{{ $c->name }}</button>@endforeach</div><div class="pgrid" id="home-products">
-@forelse($products as $p)
-@php
-$cartItem = ['id' => $p->id, 'name' => $p->name, 'price' => (float) $p->display_price, 'image' => $imgFor($p)];
-@endphp
-<article class="pcard" data-category="{{ $p->productCategory?->slug }}"><a class="pic" href="/product/{{ $p->slug }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></a><small>{{ $p->productCategory?->name ?? 'Al-Asra' }}</small><h3><a href="/product/{{ $p->slug }}">{{ $p->name }}</a></h3><div class="prow"><b>PKR {{ number_format((float)$p->display_price) }}</b><button class="addbag" type="button" onclick='AlAsraCart.add(@json($cartItem))'>Add to bag</button></div></article>
-@empty
-<div class="empty">Our collection is being refreshed. Please check back soon.</div>
-@endforelse
-</div></section>
+
+
+<section class="sec">
+    <div class="center"><span class="kick">Our selection</span><h2>Fresh from our shelves</h2></div>
+    
+    <div class="chips mid" id="home-cats"><button class="on" data-cat="all">All</button>
+    
+        @foreach($categories as $c)<button data-cat="{{ $c->slug }}">{{ $c->name }}</button>@endforeach
+    </div>
+    
+    <div class="pgrid" id="home-products">
+        @forelse($products as $p)
+            @php
+                $cartItem = ['id' => $p->id, 'name' => $p->name, 'price' => (float) $p->display_price, 'image' => $imgFor($p)];
+            @endphp
+
+            <article class="pcard" data-category="{{ $p->productCategory?->slug }}">
+                <a class="pic" href="/product/{{ $p->slug }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></a>
+                <small>{{ $p->productCategory?->name ?? 'Al-Asra' }}</small>
+                <h3><a href="/product/{{ $p->slug }}">{{ $p->name }}</a></h3>
+                <div class="prow">
+                    <b>PKR {{ number_format((float)$p->display_price) }}</b>
+                    <button class="addbag" type="button" onclick='AlAsraCart.add(@json($cartItem))'>Add to bag</button>
+                </div>
+            </article>
+        @empty
+        <div class="empty">Our collection is being refreshed. Please check back soon.</div>
+        @endforelse
+    </div>
+</section>
+
+
 <section class="obnd"><div class="obt"><span class="kick w">Why Al-Asra</span><h2>Original products you can trust.</h2><p>Every item is checked before it ships from Karachi to your door.</p><a class="btn white" href="/shop">Browse the shop</a></div><div class="obv">@foreach($heroItems->take(2) as $p)<div class="ob"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></div>@endforeach</div></section>
 <section class="story"><div class="story-head"><span class="kick">Discover</span><h2>Explore Al-Asra</h2><p>Discover useful products, everyday essentials and carefully selected finds — all in one place.</p></div><div class="story-cards">
 @foreach([['01 / Featured Finds','Useful products, picked for everyday life.','Explore some of the products currently catching attention at Al-Asra — practical, useful and easy to love.','Explore Collection'],['02 / Everyday Essentials','Small upgrades that make everyday life easier.','From kitchen essentials to drinkware and useful everyday finds, discover products selected with practicality in mind.','Shop Essentials'],['03 / Customer Favourites','Some of the products worth discovering.','Take a closer look at popular Al-Asra picks and discover something useful for yourself.','Shop Favourites']] as $i=>$card)
