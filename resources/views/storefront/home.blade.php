@@ -43,6 +43,8 @@
  .ah-dynamic .ah-cta-ico{width:20px;height:20px}
 }
 @media(prefers-reduced-motion:reduce){.ah-dynamic .ah-item{transition:none}}
+
+/* 'Unbounded',sans-serif */
 </style>
 @endpush
 @section('content')
@@ -59,22 +61,22 @@ $trustDefaults = [
     ['Always here', 'Mon–Sat, 11:00am–8:30pm'],
 ];
 $trustItems = collect(range(1, 4))->map(fn ($index) => [
-    'title' => setting("good_to_know_{$index}_title", $trustDefaults[$index - 1][0]),
-    'description' => setting("good_to_know_{$index}_desc", $trustDefaults[$index - 1][1]),
+   'title' => setting("store_home_trust_{$index}_title", $trustDefaults[$index - 1][0]),
+   'description' => setting("store_home_trust_{$index}_description", $trustDefaults[$index - 1][1]),
 ]);
 $marqueeItems = $categories->pluck('name')
     ->merge($products->pluck('name'))
     ->filter()
     ->unique()
     ->values();
-$marqueeText = $marqueeItems->isNotEmpty()
+$marqueeText = setting('store_home_marquee_text') ?: ($marqueeItems->isNotEmpty()
     ? $marqueeItems->implode(' ✦ ') . ' ✦ '
-    : 'AL ASRA ✦ EVERYDAY ESSENTIALS ✦ ';
+   : 'AL ASRA ✦ EVERYDAY ESSENTIALS ✦ ');
 @endphp
 @if($heroItems->isNotEmpty())
 <section class="ah ah-dynamic" id="home-hero" aria-label="Featured sliders" aria-roledescription="carousel">
  <div class="ah-stage" style="{{ $activeHero->background_style }};--ah-maroon:{{ $activeHero->text_color ?: '#5F1E29' }}">
-  <div class="ah-glow" style="background:radial-gradient(ellipse 50% 60% at 50% 60%,#fff,transparent 72%)"></div><div class="ah-grain"></div><div class="ah-brand"><i></i>AL ASRA</div>
+ <div class="ah-glow" style="background:radial-gradient(ellipse 50% 60% at 50% 60%,#fff,transparent 72%)"></div><div class="ah-grain"></div><div class="ah-brand"><i></i>{{ setting('store_brand_name', 'Al-Asra Store') }}</div>
   <div class="ah-carousel">
    @foreach($heroItems as $index => $slide)
     <figure class="ah-item {{ $index === 0 ? 'is-active' : '' }} {{ $slide->content_type === 'image_only' ? 'image-only' : '' }}"
@@ -112,7 +114,7 @@ $marqueeText = $marqueeItems->isNotEmpty()
 @endforeach
 </section>
 @if($categoryItems->isNotEmpty())
-<section class="sec"><div class="center"><span class="kick">Shop by category</span><h2>Find what you need</h2></div><div class="cats">
+<section class="sec"><div class="center"><span class="kick">{{ setting('store_home_categories_eyebrow', 'Shop by category') }}</span><h2>{{ setting('store_home_categories_title', 'Find what you need') }}</h2></div><div class="cats">
 @foreach($categoryItems as $category)
 @php $categoryImage = $category->products->first()?->display_image ?? '/logo.png'; @endphp
 <a class="cat" href="/shop?category={{ $category->slug }}"><img src="{{ $categoryImage }}" alt="{{ $category->name }}" loading="lazy"><div><h3>{{ $category->name }}</h3><p>{{ $category->products_count }} products</p></div></a>
@@ -123,8 +125,8 @@ $marqueeText = $marqueeItems->isNotEmpty()
 
 <section class="sec">
     <div class="center">
-        <span class="kick">Our selection</span>
-        <h2>Fresh from our shelves</h2>
+        <span class="kick">{{ setting('store_home_products_eyebrow', 'Our selection') }}</span>
+        <h2>{{ setting('store_home_products_title', 'Fresh from our shelves') }}</h2>
     </div>
     <div class="chips mid" id="home-cats">
         <button class="on" data-cat="all">All</button>
@@ -145,9 +147,9 @@ $marqueeText = $marqueeItems->isNotEmpty()
 </section>
 
 
-<section class="obnd"><div class="obt"><span class="kick w">Why Al-Asra</span><h2>Original products you can trust.</h2><p>Every item is checked before it ships from Karachi to your door.</p><a class="btn white" href="/shop">Browse the shop</a></div><div class="obv">@foreach($visualProducts->take(2) as $p)<div class="ob"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}" loading="lazy"></div>@endforeach</div></section>
+<section class="obnd"><div class="obt"><span class="kick w">{{ setting('store_home_why_eyebrow', 'Why Al-Asra') }}</span><h2>{{ setting('store_home_why_title', 'Original products you can trust.') }}</h2><p>{{ setting('store_home_why_description', 'Every item is checked before it ships from Karachi to your door.') }}</p><a class="btn white" href="{{ setting('store_home_why_button_url', '/shop') }}">{{ setting('store_home_why_button_text', 'Browse the shop') }}</a></div><div class="obv">@foreach($visualProducts->take(2) as $p)<div class="ob"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}" loading="lazy"></div>@endforeach</div></section>
 @if($categoryItems->isNotEmpty())
-<section class="story"><div class="story-head"><span class="kick">Discover</span><h2>Explore our categories</h2><p>Browse active categories and find products selected for everyday use.</p></div><div class="story-cards">
+<section class="story"><div class="story-head"><span class="kick">{{ setting('store_home_story_eyebrow', 'Discover') }}</span><h2>{{ setting('store_home_story_title', 'Explore our categories') }}</h2><p>{{ setting('store_home_story_description', 'Browse active categories and find products selected for everyday use.') }}</p></div><div class="story-cards">
 @foreach($categoryItems->take(3) as $i => $category)
 @php $categoryProduct = $category->products->first(); @endphp
 <div class="ex-wrap"><article class="ex ex{{ $i }}"><div class="ex-txt"><small>{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }} / {{ $category->name }}</small><h3>{{ $category->name }}</h3><p>{{ $category->products_count }} active {{ \Illuminate\Support\Str::plural('product', $category->products_count) }} to explore.</p><a class="btn" href="/shop?category={{ $category->slug }}">Shop {{ $category->name }}</a></div><div class="ex-art">@if($categoryProduct)<a href="{{ $categoryProduct->product_url }}"><img class="category-image" src="{{ $categoryProduct->display_image ?? '/logo.png' }}" alt="{{ $categoryProduct->name }}" loading="lazy"></a>@endif</div></article></div>

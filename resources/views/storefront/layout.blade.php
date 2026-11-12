@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <script>document.documentElement.classList.add('lock')</script>
-<title>@yield('title','Al-Asra Store | Organic & Original, Delivered in Pakistan')</title>
+<title>@yield('title', setting('store_brand_name', 'Al-Asra Store').' | Organic & Original, Delivered in Pakistan')</title>
 <meta name="description" content="Premium organic, imported and natural care products. Delivered across Pakistan.">
 <link rel="icon" href="/logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=DM+Sans:wght@400;500;700&family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,19 +18,38 @@
 <div class="loader active" id="page-loader" role="status" aria-live="polite" aria-label="Loading page">
 <div class="lmid"><div class="lwrap"><svg class="lcart" style="left:0" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 1.9-1.4L21 8H6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.5" fill="currentColor"/><circle cx="18" cy="20" r="1.5" fill="currentColor"/></svg><div class="lbar"><i style="transform:scaleX(0)"></i></div></div><div class="lnum">0%</div></div>
 </div>
-<div class="announce">Free delivery on orders over PKR 10,000 · Cash on delivery across Pakistan</div>
+@if((string) setting('store_announcement_enabled', '1') === '1')
+<div class="announce">{{ setting('store_announcement_text', 'Free delivery on orders over PKR 10,000 · Cash on delivery across Pakistan') }}</div>
+@endif
 <header class="nav">
 <button class="burger" type="button" aria-label="Open menu" onclick="document.querySelector('.nav nav').classList.toggle('on')">☰</button>
-<a href="/" class="brand"><img src="/logo.png" alt="Al-Asra Store"></a>
+<a href="/" class="brand"><img src="/logo.png" alt="{{ setting('store_brand_name', 'Al-Asra Store') }}"></a>
 <nav><a href="/shop">Shop</a><a href="/about">About</a><a href="/track">Track order</a><a href="/faq">FAQ</a><a href="/contact">Contact</a></nav>
 <form class="search" action="/shop"><input name="q" placeholder="Search products" aria-label="Search products"></form>
 <button class="cartbtn" type="button" onclick="AlAsraCart.open()">Bag <span id="bag-count">0</span></button>
 </header>
 <main>@yield('content')</main>
-<footer class="foot"><div class="fgrid"><div><img class="foot-logo" src="/logo.png" alt="Al-Asra"><p>Organic, original and imported products. Delivered across Pakistan.</p></div><div><h4>Shop</h4><a href="/shop">All products</a><a href="/shop?category=organic">Organic</a><a href="/shop?category=natural-care">Natural care</a></div><div><h4>Help</h4><a href="/track">Track order</a><a href="/about">About us</a><a href="/contact">Contact</a></div><div><h4>Reach us</h4><p>Karachi, Pakistan<br>+92 315 9259927<br>support@alasra.online<br>Mon–Sat, 11:00am–8:30pm</p><a href="https://instagram.com/alasra.onlinestore">Instagram @alasra.onlinestore</a></div></div><div class="fbase">© {{ date('Y') }} Al-Asra Store. All rights reserved. <span>Cash on delivery · Bank transfer</span></div></footer>
+<footer class="foot">
+<div class="fgrid">
+<div><img class="foot-logo" src="/logo.png" alt="{{ setting('store_brand_name', 'Al-Asra Store') }}"><p>{{ setting('store_footer_about', 'Organic, original and imported products. Delivered across Pakistan.') }}</p></div>
+<div><h4>{{ setting('store_footer_shop_title', 'Shop') }}</h4>
+<a href="{{ setting('store_footer_shop_link_1_url', '/shop') }}">{{ setting('store_footer_shop_link_1_text', 'All products') }}</a>
+<a href="{{ setting('store_footer_shop_link_2_url', '/shop?category=organic') }}">{{ setting('store_footer_shop_link_2_text', 'Organic') }}</a>
+<a href="{{ setting('store_footer_shop_link_3_url', '/shop?category=natural-care') }}">{{ setting('store_footer_shop_link_3_text', 'Natural care') }}</a></div>
+<div><h4>{{ setting('store_footer_help_title', 'Help') }}</h4>
+<a href="{{ setting('store_footer_help_link_1_url', '/track') }}">{{ setting('store_footer_help_link_1_text', 'Track order') }}</a>
+<a href="{{ setting('store_footer_help_link_2_url', '/about') }}">{{ setting('store_footer_help_link_2_text', 'About us') }}</a>
+<a href="{{ setting('store_footer_help_link_3_url', '/contact') }}">{{ setting('store_footer_help_link_3_text', 'Contact') }}</a></div>
+<div><h4>{{ setting('store_footer_contact_title', 'Reach us') }}</h4>
+<p>{{ setting('store_footer_address', 'Karachi, Pakistan') }}<br>{{ setting('store_footer_phone', '+92 315 9259927') }}<br>{{ setting('store_footer_email', 'support@alasra.online') }}<br>{{ setting('store_footer_hours', 'Mon–Sat, 11:00am–8:30pm') }}</p>
+<a href="{{ setting('store_footer_instagram_url', 'https://instagram.com/alasra.onlinestore') }}">{{ setting('store_footer_instagram_label', 'Instagram @alasra.onlinestore') }}</a></div>
+</div>
+<div class="fbase">© {{ date('Y') }} {{ setting('store_footer_copyright', 'Al-Asra Store. All rights reserved.') }} <span>Cash on delivery · Bank transfer</span></div>
+</footer>
 <div class="scrim" id="cart-scrim" onclick="AlAsraCart.close()"></div><aside class="drawer" id="cart-drawer" aria-hidden="true"><div class="drawer-top"><h3>Your bag (<span id="drawer-count">0</span>)</h3><button onclick="AlAsraCart.close()" aria-label="Close cart">✕</button></div><p id="ship-msg">Add PKR 10,000 more for free delivery</p><div class="drawer-lines" id="drawer-lines"></div><div class="sum"><span>Subtotal</span><b id="drawer-total">PKR 0</b></div><a class="btn" href="/checkout">Checkout</a><a class="btn ghost" href="/cart">View bag</a></aside>
 <script>
-window.AlAsraCart=(()=>{const key='alasra-cart';const read=()=>{try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return[]}};const money=n=>'PKR '+Math.round(n).toLocaleString('en-PK');const save=a=>{localStorage.setItem(key,JSON.stringify(a));render()};const render=()=>{let a=read(),count=a.reduce((s,x)=>s+x.qty,0),total=a.reduce((s,x)=>s+x.price*x.qty,0);document.querySelectorAll('#bag-count,#drawer-count').forEach(x=>x.textContent=count);document.getElementById('drawer-total').textContent=money(total);document.getElementById('ship-msg').textContent=total>=10000?'You get free delivery':'Add '+money(10000-total)+' more for free delivery';document.getElementById('drawer-lines').innerHTML=a.length?a.map(x=>`<div class="drawer-line"><img src="${x.image}" alt=""><div><b>${x.name}</b><small>${money(x.price)}</small><div><button onclick="AlAsraCart.qty('${x.id}',-1)">−</button> ${x.qty} <button onclick="AlAsraCart.qty('${x.id}',1)">+</button></div></div><button onclick="AlAsraCart.remove('${x.id}')">✕</button></div>`).join(''):'<p class="empty">Your bag is empty. Add something from the shop.</p>'};return{read,render,add(p){let a=read(),x=a.find(i=>String(i.id)===String(p.id));if(x)x.qty++;else a.push({...p,qty:1});save(a);this.open()},qty(id,d){save(read().map(x=>String(x.id)===String(id)?{...x,qty:x.qty+d}:x).filter(x=>x.qty>0))},remove(id){save(read().filter(x=>String(x.id)!==String(id)))},open(){document.getElementById('cart-drawer').classList.add('open');document.getElementById('cart-scrim').classList.add('open')},close(){document.getElementById('cart-drawer').classList.remove('open');document.getElementById('cart-scrim').classList.remove('open')}}})();document.addEventListener('DOMContentLoaded',AlAsraCart.render);
+const freeShippingThreshold={{ (int) setting('free_shipping_threshold', 10000) }};
+window.AlAsraCart=(()=>{const key='alasra-cart';const read=()=>{try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return[]}};const money=n=>'PKR '+Math.round(n).toLocaleString('en-PK');const save=a=>{localStorage.setItem(key,JSON.stringify(a));render()};const render=()=>{let a=read(),count=a.reduce((s,x)=>s+x.qty,0),total=a.reduce((s,x)=>s+x.price*x.qty,0);document.querySelectorAll('#bag-count,#drawer-count').forEach(x=>x.textContent=count);document.getElementById('drawer-total').textContent=money(total);document.getElementById('ship-msg').textContent=total>=freeShippingThreshold?'You get free delivery':'Add '+money(freeShippingThreshold-total)+' more for free delivery';document.getElementById('drawer-lines').innerHTML=a.length?a.map(x=>`<div class="drawer-line"><img src="${x.image}" alt=""><div><b>${x.name}</b><small>${money(x.price)}</small><div><button onclick="AlAsraCart.qty('${x.id}',-1)">−</button> ${x.qty} <button onclick="AlAsraCart.qty('${x.id}',1)">+</button></div></div><button onclick="AlAsraCart.remove('${x.id}')">✕</button></div>`).join(''):'<p class="empty">Your bag is empty. Add something from the shop.</p>'};return{read,render,add(p){let a=read(),x=a.find(i=>String(i.id)===String(p.id));if(x)x.qty++;else a.push({...p,qty:1});save(a);this.open()},qty(id,d){save(read().map(x=>String(x.id)===String(id)?{...x,qty:x.qty+d}:x).filter(x=>x.qty>0))},remove(id){save(read().filter(x=>String(x.id)!==String(id)))},open(){document.getElementById('cart-drawer').classList.add('open');document.getElementById('cart-scrim').classList.add('open')},close(){document.getElementById('cart-drawer').classList.remove('open');document.getElementById('cart-scrim').classList.remove('open')}}})();document.addEventListener('DOMContentLoaded',AlAsraCart.render);
 </script>
 <script>
 (() => {
