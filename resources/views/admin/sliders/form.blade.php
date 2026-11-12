@@ -151,7 +151,7 @@
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <h3 class="font-bold mb-4">Settings</h3>
                 {{-- Order is set by dragging on the sliders list; new sliders go to the end automatically --}}
-                <input type="hidden" name="sort_order" value="{{ old('sort_order', $slider->exists ? $slider->sort_order : ((\App\Models\Slider::max('sort_order') ?? 0) + 1)) }}">
+                <input type="hidden" name="sort_order" value="{{ old('sort_order', $slider->exists ? $slider->sort_order : ((\App\Models\HomeSlider::max('sort_order') ?? 0) + 1)) }}">
 
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div>

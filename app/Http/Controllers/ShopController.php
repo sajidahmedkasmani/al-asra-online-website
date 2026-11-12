@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Models\CatalogCollection;
+use App\Models\HomeSlider;
 use App\Models\Product;
 use App\Models\ProductCategory;
 
@@ -16,6 +17,7 @@ class ShopController extends Controller
 {
     public function home()
     {
+        $sliders = HomeSlider::active()->get();
         $products = Product::where('is_active', true)
             ->with('productCategory')
             ->latest()
@@ -27,7 +29,7 @@ class ShopController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('storefront.home', compact('products', 'categories'));
+        return view('storefront.home', compact('sliders', 'products', 'categories'));
     }
 
     public function about()

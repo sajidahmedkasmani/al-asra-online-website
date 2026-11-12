@@ -85,12 +85,12 @@ class SliderController extends Controller
         ])['ids'];
 
         DB::transaction(function () use ($ids) {
-            $slots = Slider::whereIn('id', $ids)->pluck('sort_order')->sort()->values();
+            $slots = HomeSlider::whereIn('id', $ids)->pluck('sort_order')->sort()->values();
             if ($slots->unique()->count() !== count($ids)) {
-                $slots = collect(range(1, count($ids)));   // fallback if numbers were duplicated or all 0
+                $slots = collect(range(1, count($ids)));
             }
             foreach ($ids as $i => $id) {
-                Slider::where('id', $id)->update(['sort_order' => $slots[$i]]);
+                HomeSlider::where('id', $id)->update(['sort_order' => $slots[$i]]);
             }
         });
 
