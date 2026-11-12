@@ -17,7 +17,10 @@ class ShopController extends Controller
 {
     public function home()
     {
-        $sliders = HomeSlider::active()->get();
+        $sliders = HomeSlider::active()
+            ->whereNotNull('image')
+            ->where('image', '!=', '')
+            ->get();
         $products = Product::where('is_active', true)
             ->with('productCategory')
             ->latest()
