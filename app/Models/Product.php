@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -54,5 +55,18 @@ class Product extends Model
             return (float) $this->price;
         }
         return $this->price_paisa / 100;
+    }
+
+    public function getProductUrlAttribute(): string
+    {
+        $categorySlug = $this->productCategory?->slug;
+        if (!$categorySlug) {
+            $categorySlug = Str::slug((string) $this->category) ?: 'uncategorized';
+        }
+
+        return route('product.details', [
+            'categorySlug' => $categorySlug,
+            'slug' => $this->slug,
+        ]);
     }
 }

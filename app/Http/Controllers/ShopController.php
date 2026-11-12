@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use App\Models\CatalogCollection;
 use App\Models\HomeSlider;
 use App\Models\Product;
@@ -28,6 +29,8 @@ class ShopController extends Controller
             ->get();
         $categories = ProductCategory::where('is_active', true)
             ->whereHas('collection', fn ($query) => $query->where('is_active', true))
+            ->whereHas('products', fn ($query) => $query->where('is_active', true))
+            ->with(['products' => fn ($query) => $query->where('is_active', true)->with('productCategory')->latest()->limit(1)])
             ->withCount(['products' => fn ($query) => $query->where('is_active', true)])
             ->orderBy('name')
             ->get();
@@ -79,11 +82,33 @@ class ShopController extends Controller
         return view('frontend.shop.shop', compact('products', 'collections', 'categories'));
     }
 
-    public function product_details($slug)
+    public function product_details(string $categorySlug, string $slug)
     {
-        $product = Product::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        $related = Product::where('is_active', true)->where('id', '!=', $product->id)->take(4)->get();
+        $product = Product::where('slug', $slug)
+            ->where('is_active', true)
+            ->with('productCategory')
+            ->firstOrFail();
+        $actualCategorySlug = $product->productCategory?->slug
+            ?? Str::slug((string) $product->category);
+        abort_unless($actualCategorySlug === $categorySlug, 404);
+
+        $related = Product::where('is_active', true)
+            ->where('id', '!=', $product->id)
+            ->with('productCategory')
+            ->take(4)
+            ->get();
+
         return view('frontend.shop.product_details', compact('product', 'related'));
+    }
+
+    public function legacy_product_redirect(string $slug)
+    {
+        $product = Product::where('slug', $slug)
+            ->where('is_active', true)
+            ->with('productCategory')
+            ->firstOrFail();
+
+        return redirect()->to($product->product_url, 301);
     }
 
     // Contact

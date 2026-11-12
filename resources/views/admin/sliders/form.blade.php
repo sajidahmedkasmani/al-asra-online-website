@@ -142,7 +142,7 @@
                     </div>
                     <div>
                         <label class="text-sm font-medium">Secondary URL</label>
-                        <input type="text" name="secondary_button_url" value="{{ old('secondary_button_url', $slider->secondary_button_url) }}" placeholder="/product/xyz" class="w-full border rounded-lg px-3 py-2 mt-1">
+                        <input type="text" name="secondary_button_url" value="{{ old('secondary_button_url', $slider->secondary_button_url) }}" placeholder="/category-slug/product-slug" class="w-full border rounded-lg px-3 py-2 mt-1">
                     </div>
                 </div>
             </div>

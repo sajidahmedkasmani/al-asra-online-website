@@ -31,7 +31,7 @@ use App\Http\Controllers\CustomerProfileController;
         Route::get('/about-us', 'about')->name('aboutus');
 
         Route::get('/shop', 'shop')->name('shop');
-        Route::get('/product/{slug}', 'product_details')->name('product.details');
+        Route::get('/product/{slug}', 'legacy_product_redirect')->name('product.legacy');
 
         Route::get('/blogs', 'blogs')->name('blogs');
         Route::get('/blogs/{slug}', 'blog_content')->name('blog.content');
@@ -226,3 +226,10 @@ use App\Http\Controllers\CustomerProfileController;
 
 
 require __DIR__.'/auth.php';
+
+Route::get('/{categorySlug}/{slug}', [ShopController::class, 'product_details'])
+    ->where([
+        'categorySlug' => '[a-z0-9][a-z0-9-]*',
+        'slug' => '[a-z0-9][a-z0-9-]*',
+    ])
+    ->name('product.details');

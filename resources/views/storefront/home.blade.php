@@ -26,6 +26,7 @@
 .ah-dynamic .ah-cta{bottom:clamp(34px,8vh,80px);right:5%;max-width:32%;text-align:right}
 .ah-dynamic .ah-cta-label{display:inline-block}
 .ah-dynamic .ah-cta-ico{flex:none}
+.ex-art .category-image{width:min(72%,260px);height:240px;object-fit:contain}
 @media(max-width:700px){
  .ah-dynamic .ah-stage{height:clamp(560px,76svh,700px);min-height:560px}
  .ah-dynamic .ah-item.is-active{width:66vw;height:61%;bottom:13%}
@@ -51,6 +52,24 @@ $imgFor = function($p) { $slug = $p->slug ?? ''; $map = ['portable-juice-blender
 $heroItems = $sliders;
 $activeHero = $heroItems->first();
 $categoryItems = $categories->take(4);
+$trustDefaults = [
+    ['Free delivery', 'On orders over PKR 10,000'],
+    ['Cash on delivery', 'Or bank transfer'],
+    ['Track your order', 'Real-time updates'],
+    ['Always here', 'Mon–Sat, 11:00am–8:30pm'],
+];
+$trustItems = collect(range(1, 4))->map(fn ($index) => [
+    'title' => setting("good_to_know_{$index}_title", $trustDefaults[$index - 1][0]),
+    'description' => setting("good_to_know_{$index}_desc", $trustDefaults[$index - 1][1]),
+]);
+$marqueeItems = $categories->pluck('name')
+    ->merge($products->pluck('name'))
+    ->filter()
+    ->unique()
+    ->values();
+$marqueeText = $marqueeItems->isNotEmpty()
+    ? $marqueeItems->implode(' ✦ ') . ' ✦ '
+    : 'AL ASRA ✦ EVERYDAY ESSENTIALS ✦ ';
 @endphp
 @if($heroItems->isNotEmpty())
 <section class="ah ah-dynamic" id="home-hero" aria-label="Featured sliders" aria-roledescription="carousel">
@@ -87,14 +106,19 @@ $categoryItems = $categories->take(4);
 @else
 <section class="hero-fallback"><div><h1>AL ASRA</h1><p>Discover useful products, everyday essentials and carefully selected finds.</p><a class="btn" href="/shop">SHOP NOW</a></div></section>
 @endif
-<section class="trust"><div><b>Free delivery</b><span>On orders over PKR 10,000</span></div><div><b>Cash on delivery</b><span>Or bank transfer</span></div><div><b>Track your order</b><span>Real-time updates</span></div><div><b>Always here</b><span>Mon–Sat, 11:00am–8:30pm</span></div></section>
+<section class="trust">
+@foreach($trustItems as $item)
+<div><b>{{ $item['title'] }}</b><span>{{ $item['description'] }}</span></div>
+@endforeach
+</section>
+@if($categoryItems->isNotEmpty())
 <section class="sec"><div class="center"><span class="kick">Shop by category</span><h2>Find what you need</h2></div><div class="cats">
-@forelse($categoryItems as $category)
-<a class="cat" href="/shop?category={{ $category->slug }}"><img src="{{ $category->slug==='drinkware'?'/images/products/ice-cream-tumbler.png':'/images/products/portable-blender.png' }}" alt="{{ $category->name }}"><div><h3>{{ $category->name }}</h3><p>{{ $category->products_count ?? 'Explore' }} products</p></div></a>
-@empty
-<a class="cat" href="/shop"><img src="/images/products/portable-blender.png" alt="Kitchen"><div><h3>Kitchen</h3><p>Explore products</p></div></a><a class="cat" href="/shop"><img src="/images/products/ice-cream-tumbler.png" alt="Drinkware"><div><h3>Drinkware</h3><p>Explore products</p></div></a>
-@endforelse
+@foreach($categoryItems as $category)
+@php $categoryImage = $category->products->first()?->display_image ?? '/logo.png'; @endphp
+<a class="cat" href="/shop?category={{ $category->slug }}"><img src="{{ $categoryImage }}" alt="{{ $category->name }}" loading="lazy"><div><h3>{{ $category->name }}</h3><p>{{ $category->products_count }} products</p></div></a>
+@endforeach
 </div></section>
+@endif
 
 
 <section class="sec">
@@ -113,7 +137,7 @@ $categoryItems = $categories->take(4);
             @php
                 $cartItem = ['id' => $p->id, 'name' => $p->name, 'price' => (float) $p->display_price, 'image' => $imgFor($p)];
             @endphp
-            <article class="pcard" data-category="{{ $p->productCategory?->slug }}"><a class="pic" href="/product/{{ $p->slug }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></a><small>{{ $p->productCategory?->name ?? 'Al-Asra' }}</small><h3><a href="/product/{{ $p->slug }}">{{ $p->name }}</a></h3><div class="prow"><b>PKR {{ number_format((float)$p->display_price) }}</b><button class="addbag" type="button" onclick='AlAsraCart.add(@json($cartItem))'>Add to bag</button></div></article>
+            <article class="pcard" data-category="{{ $p->productCategory?->slug }}"><a class="pic" href="{{ $p->product_url }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></a><small>{{ $p->productCategory?->name ?? 'Al-Asra' }}</small><h3><a href="{{ $p->product_url }}">{{ $p->name }}</a></h3><div class="prow"><b>PKR {{ number_format((float)$p->display_price) }}</b><button class="addbag" type="button" onclick='AlAsraCart.add(@json($cartItem))'>Add to bag</button></div></article>
         @empty
             <div class="empty">Our collection is being refreshed. Please check back soon.</div>
         @endforelse
@@ -121,14 +145,17 @@ $categoryItems = $categories->take(4);
 </section>
 
 
-<section class="obnd"><div class="obt"><span class="kick w">Why Al-Asra</span><h2>Original products you can trust.</h2><p>Every item is checked before it ships from Karachi to your door.</p><a class="btn white" href="/shop">Browse the shop</a></div><div class="obv">@foreach($visualProducts->take(2) as $p)<div class="ob"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></div>@endforeach</div></section>
-<section class="story"><div class="story-head"><span class="kick">Discover</span><h2>Explore Al-Asra</h2><p>Discover useful products, everyday essentials and carefully selected finds — all in one place.</p></div><div class="story-cards">
-@foreach([['01 / Featured Finds','Useful products, picked for everyday life.','Explore some of the products currently catching attention at Al-Asra — practical, useful and easy to love.','Explore Collection'],['02 / Everyday Essentials','Small upgrades that make everyday life easier.','From kitchen essentials to drinkware and useful everyday finds, discover products selected with practicality in mind.','Shop Essentials'],['03 / Customer Favourites','Some of the products worth discovering.','Take a closer look at popular Al-Asra picks and discover something useful for yourself.','Shop Favourites']] as $i=>$card)
-<div class="ex-wrap"><article class="ex ex{{ $i }}"><div class="ex-txt"><small>{{ $card[0] }}</small><h3>{{ $card[1] }}</h3><p>{{ $card[2] }}</p><a class="btn" href="/shop">{{ $card[3] }}</a></div><div class="ex-art">@foreach($visualProducts->take(3) as $p)<a href="/product/{{ $p->slug }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></a>@endforeach</div></article></div>
+<section class="obnd"><div class="obt"><span class="kick w">Why Al-Asra</span><h2>Original products you can trust.</h2><p>Every item is checked before it ships from Karachi to your door.</p><a class="btn white" href="/shop">Browse the shop</a></div><div class="obv">@foreach($visualProducts->take(2) as $p)<div class="ob"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}" loading="lazy"></div>@endforeach</div></section>
+@if($categoryItems->isNotEmpty())
+<section class="story"><div class="story-head"><span class="kick">Discover</span><h2>Explore our categories</h2><p>Browse active categories and find products selected for everyday use.</p></div><div class="story-cards">
+@foreach($categoryItems->take(3) as $i => $category)
+@php $categoryProduct = $category->products->first(); @endphp
+<div class="ex-wrap"><article class="ex ex{{ $i }}"><div class="ex-txt"><small>{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }} / {{ $category->name }}</small><h3>{{ $category->name }}</h3><p>{{ $category->products_count }} active {{ \Illuminate\Support\Str::plural('product', $category->products_count) }} to explore.</p><a class="btn" href="/shop?category={{ $category->slug }}">Shop {{ $category->name }}</a></div><div class="ex-art">@if($categoryProduct)<a href="{{ $categoryProduct->product_url }}"><img class="category-image" src="{{ $categoryProduct->display_image ?? '/logo.png' }}" alt="{{ $categoryProduct->name }}" loading="lazy"></a>@endif</div></article></div>
 @endforeach
 </div></section>
-<div class="marquee"><div>{{ str_repeat('ORIGINAL ✦ DAILY ESSENTIALS ✦ FAST DELIVERY ✦ CASH ON DELIVERY ✦ DELIVERED ACROSS PAKISTAN ✦ ',5) }}</div></div>
-<section class="pmq"><div>@foreach($products->concat($products)->take(12) as $p)<a href="/product/{{ $p->slug }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></a>@endforeach</div></section>
+@endif
+<div class="marquee"><div>{{ str_repeat($marqueeText, 5) }}</div></div>
+<section class="pmq"><div>@foreach($products->concat($products)->take(12) as $p)<a href="{{ $p->product_url }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}" loading="lazy"></a>@endforeach</div></section>
 @push('scripts')<script>
 const heroSlides=[...document.querySelectorAll('.ah-item')];
 const heroCarousel=document.querySelector('.ah-carousel');
