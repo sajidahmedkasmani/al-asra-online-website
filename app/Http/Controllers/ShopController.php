@@ -143,11 +143,11 @@ class ShopController extends Controller
             Log::info('Contact form', $data);
 
             try {
-                $recipient = setting('contact_email', 'support@gdotcollection.com');
+                $recipient = setting('contact_email', 'support@alasra.online');
                 Mail::raw($body, function ($m) use ($data, $recipient) {
                     $m->to($recipient)
                     ->replyTo($data['email'], $data['name'])
-                    ->subject('[G. Collection] ' . $data['subject'] . ' — ' . $data['name']);
+                    ->subject('[Al-Asra Store] ' . $data['subject'] . ' — ' . $data['name']);
                 });
             } catch (\Throwable $e) {
                 Log::warning('Contact mail failed: ' . $e->getMessage());

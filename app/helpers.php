@@ -58,7 +58,7 @@ if (!function_exists('whatsapp_link')) {
      */
     function whatsapp_link(?string $number = null, string $text = ''): string
     {
-        $num = $number ?: setting('whatsapp_number', '923347779231');
+        $num = $number ?: setting('whatsapp_number', '923159259927');
         $clean = clean_phone($num);
         $url = "https://wa.me/{$clean}";
         if ($text) {

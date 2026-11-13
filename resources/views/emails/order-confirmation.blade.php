@@ -22,7 +22,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>G. Collection</h1>
+            <h1>Al-Asra Store</h1>
         </div>
         <div class="content">
             <h2>Thank you for your order, {{ $order->customer_name }}!</h2>
@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} G. Collection. All rights reserved.<br>
+            &copy; {{ date('Y') }} Al-Asra Store. All rights reserved.<br>
             Karachi, Pakistan
         </div>
     </div>

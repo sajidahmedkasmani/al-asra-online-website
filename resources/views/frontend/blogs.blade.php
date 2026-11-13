@@ -1,5 +1,5 @@
 @extends('frontend.layout.master')
-@section('title', 'The Journal — G. Collection')
+@section('title', 'The Journal | Al-Asra Store')
 
 @section('content')
 @php
@@ -13,7 +13,7 @@
     <p class="text-[11px] uppercase tracking-[0.2em] text-muted mb-6">The Journal</p>
     <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <h1 class="font-serif text-5xl md:text-8xl leading-[0.98]">Stories,<br><span class="italic text-plum">styling &amp; care.</span></h1>
-        <p class="text-sm text-muted max-w-xs leading-relaxed">Guides, care tips and style notes from the G. Collection team in Karachi.</p>
+        <p class="text-sm text-muted max-w-xs leading-relaxed">Product guides, useful tips, and news from the Al-Asra team in Karachi.</p>
     </div>
 </section>
 

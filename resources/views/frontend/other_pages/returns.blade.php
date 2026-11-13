@@ -23,9 +23,9 @@
         <h2 class="font-serif text-2xl mb-3">Start a return or exchange</h2>
         <p class="text-[15px] leading-relaxed text-ink/80 mb-4">Please contact us to start a return or exchange, and keep your order number handy.</p>
         <ul class="text-[15px] text-ink/80 space-y-1.5">
-            <li>WhatsApp: <a href="https://wa.me/923347779231" class="text-plum underline underline-offset-4 hover:text-rose">+92 334 7779231</a></li>
-            <li>Phone: <a href="tel:+923347779231" class="text-plum underline underline-offset-4 hover:text-rose">+92 334 7779231</a></li>
-            <li>Email: <a href="mailto:support@gdotcollection.com" class="text-plum underline underline-offset-4 hover:text-rose">support@gdotcollection.com</a></li>
+            <li>WhatsApp: <a href="https://wa.me/923159259927" class="text-plum underline underline-offset-4 hover:text-rose">+92 315 9259927</a></li>
+            <li>Phone: <a href="tel:+923159259927" class="text-plum underline underline-offset-4 hover:text-rose">+92 315 9259927</a></li>
+            <li>Email: <a href="mailto:support@alasra.online" class="text-plum underline underline-offset-4 hover:text-rose">support@alasra.online</a></li>
         </ul>
     </section>
 

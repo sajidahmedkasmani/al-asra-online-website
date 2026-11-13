@@ -1,5 +1,5 @@
 @extends('frontend.layout.master')
-@section('title', 'FAQs — G. Collection')
+@section('title', 'FAQs | Al-Asra Store')
 
 
 @section('content')
@@ -9,7 +9,7 @@
         $cat   = request('category');
         $q     = trim((string) request('q'));
         $sort  = request('sort', 'newest');
-        $cats  = ['' => 'All', 'stitched' => 'Stitched', 'unstitched' => 'Unstitched', 'accessories' => 'Accessories'];
+        $cats  = ['' => 'All', 'everyday-essentials' => 'Everyday essentials', 'natural-care' => 'Natural care', 'imported-finds' => 'Imported finds'];
         $total = method_exists($products, 'total') ? $products->total() : $products->count();
         $heading = $cat ? ($cats[$cat] ?? ucfirst($cat)) : 'Frequently Asked Questions';
         $chipUrl = fn($c) => route('shop', array_filter(['category' => $c, 'q' => $q, 'sort' => request('sort')]));
@@ -40,7 +40,7 @@
                     @if($cat)<input type="hidden" name="category" value="{{ $cat }}">@endif
                     @if(request('sort'))<input type="hidden" name="sort" value="{{ request('sort') }}">@endif
                     <svg class="w-4 h-4 text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
-                    <input type="search" name="q" value="{{ $q }}" placeholder="Search kurtas, lace, lawn..." class="flex-1 bg-transparent text-sm py-2 focus:outline-none placeholder:text-black/30 min-w-0">
+                    <input type="search" name="q" value="{{ $q }}" placeholder="Search products..." class="flex-1 bg-transparent text-sm py-2 focus:outline-none placeholder:text-black/30 min-w-0">
                     <button class="bg-plum text-white text-xs rounded-full px-5 py-2.5 hover:bg-ink transition">Search</button>
                 </form>
             </div>
@@ -77,9 +77,9 @@
                 </ul>
                 <div class="mt-8 text-xs text-muted space-y-1">
                     <p class="text-ink font-medium">Still wondering?</p>
-                    <p>{{ setting('faq_timing', 'Mon–Sat, 11:00 AM – 9:00 PM') }}</p>
-                    <a href="{{ whatsapp_link() }}" target="_blank" rel="noopener" class="text-plum underline block font-medium">WhatsApp {{ setting('contact_phone', '+92 334 7779231') }}</a>
-                    <a href="mailto:{{ setting('contact_email', 'support@gdotcollection.com') }}" class="hover:text-rose block">{{ setting('contact_email', 'support@gdotcollection.com') }}</a>
+                    <p>{{ setting('faq_timing', 'Mon–Sat, 11:00 AM – 8:30 PM') }}</p>
+                    <a href="{{ whatsapp_link() }}" target="_blank" rel="noopener" class="text-plum underline block font-medium">WhatsApp {{ setting('contact_phone', '+92 315 9259927') }}</a>
+                    <a href="mailto:{{ setting('contact_email', 'support@alasra.online') }}" class="hover:text-rose block">{{ setting('contact_email', 'support@alasra.online') }}</a>
                 </div>
             </div>
     

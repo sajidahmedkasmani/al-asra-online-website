@@ -2,7 +2,7 @@
 
 @section('title', 'Terms & conditions')
 @section('heading', 'Terms & conditions')
-@section('lead', 'The simple ground rules for shopping with G. Collection.')
+@section('lead', 'The simple ground rules for shopping with Al-Asra Store.')
 @section('bg-text', 'Terms')
 
 @php

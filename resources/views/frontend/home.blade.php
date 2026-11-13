@@ -17,6 +17,8 @@
     };
 
     $cat = fn($p) => $p->productCategory?->name ?? ($p->category ?? '');
+    $catSlug = fn($p) => $p->productCategory?->slug ?? \Illuminate\Support\Str::slug((string) ($p->category ?? ''));
+    $homeCategories = $categories->mapWithKeys(fn($category) => [$category->slug => $category->name]);
 @endphp
 
 
@@ -119,16 +121,15 @@
         </section>
     @else
         <section class="max-w-7xl mx-auto px-6 pt-16 pb-10">
-            <p class="text-xs uppercase tracking-widest text-muted mb-6">Stitched · Unstitched · Karachi</p>
+            <p class="text-xs uppercase tracking-widest text-muted mb-6">Original · Everyday · Karachi</p>
             <h1 class="text-5xl md:text-7xl leading-[1.05] font-normal mb-8 max-w-5xl"
                 style="font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;">
-                Wear the Story,<br>
-                <span class="italic opacity-70">Live the Craft.</span>
+                Thoughtfully chosen,<br>
+                <span class="italic opacity-70">for everyday life.</span>
             </h1>
             <p class="text-sm md:text-base text-muted max-w-xl leading-relaxed mb-10">
-                Discover our latest collection of hand-crafted ensembles — thoughtfully designed
-                for the modern wardrobe. From everyday essentials to statement pieces,
-                each garment tells a story of heritage and craftsmanship.
+                Discover original, imported, and useful products selected with care.
+                From everyday essentials to natural care, find what you need in one place.
             </p>
             <div class="flex flex-wrap gap-3">
                 <a href="{{ url('/shop') }}"
@@ -292,12 +293,12 @@
         <section class="bg-blush">
             <div class="max-w-7xl mx-auto px-6 py-24">
                 <div class="flex justify-between text-[11px] uppercase tracking-[0.2em] text-plum/70 mb-10">
-                    <span>{{ setting('edit_badge_1', 'The Edit') }}</span><span>{{ setting('edit_badge_2', 'Embroidery · Lace · Lawn') }}</span><span>{{ setting('edit_badge_3', 'Karachi') }}</span>
+                    <span>{{ setting('edit_badge_1', 'The Edit') }}</span><span>{{ setting('edit_badge_2', 'Original · Natural care · Everyday') }}</span><span>{{ setting('edit_badge_3', 'Karachi') }}</span>
                 </div>
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h2 class="font-serif text-6xl md:text-8xl leading-[0.98] text-ink mb-6">{!! setting('edit_title', 'Made<br><span class="italic">by hand,</span><br>worn by<br>you.') !!}</h2>
-                        <p class="text-sm text-ink/70 max-w-xs mb-6 leading-relaxed">{{ setting('edit_desc', 'Soft lace sleeves, fringed hems, scalloped cutwork borders. The details that make a hand-finished kurta.') }}</p>
+                        <h2 class="font-serif text-6xl md:text-8xl leading-[0.98] text-ink mb-6">{!! setting('edit_title', 'Thoughtful<br><span class="italic">finds,</span><br>chosen for<br>you.') !!}</h2>
+                        <p class="text-sm text-ink/70 max-w-xs mb-6 leading-relaxed">{{ setting('edit_desc', 'A considered selection of original, imported, and useful products for everyday life.') }}</p>
                         <a href="{{ setting('edit_btn_url', route('shop')) }}" class="inline-block bg-ink text-white text-xs rounded-full px-6 py-3 hover:bg-plum transition">{{ setting('edit_btn_text', 'Shop the edit') }}</a>
                     </div>
                     @if($p1)
@@ -328,10 +329,10 @@
     <!-- ============ FIND YOUR PIECE (Mobile Optimized) ============ -->
     <section class="bg-ink text-cream" x-data="{ f:'all', hover:0 }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-24">
-            <h2 class="font-serif text-4xl sm:text-5xl md:text-7xl mb-6 md:mb-8">{{ setting('find_piece_title', 'Find your piece.') }}</h2>
+            <h2 class="font-serif text-4xl sm:text-5xl md:text-7xl mb-6 md:mb-8">{{ setting('find_piece_title', 'Find what you need.') }}</h2>
             
             <div class="flex flex-wrap gap-2 mb-8 md:mb-10">
-                @foreach(['all'=>'All','stitched'=>'Stitched','unstitched'=>'Unstitched','accessories'=>'Accessories'] as $k=>$label)
+                @foreach(['all' => 'All'] + $homeCategories->all() as $k=>$label)
                     <button @click="f='{{ $k }}'" :class="f==='{{ $k }}' ? 'bg-rose text-white' : 'border border-cream/30 text-cream/80'" class="text-xs rounded-full px-4 py-1.5 transition">{{ $label }}</button>
                 @endforeach
             </div>
@@ -339,11 +340,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
                 <ul class="w-full">
                     @foreach($list->take(9) as $idx => $p)
-                        <li x-show="f==='all' || f==='{{ $cat($p) }}'" @mouseenter="hover={{ $idx }}"
+                        <li x-show="f==='all' || f==='{{ $catSlug($p) }}'" @mouseenter="hover={{ $idx }}"
                             class="flex items-center justify-between gap-4 border-b border-cream/15 py-3.5 md:py-4">
                             <a href="{{ route('product.details', $p->slug) }}" class="min-w-0 flex-1">
                                 <p class="font-serif text-base sm:text-xl truncate hover:text-rose transition">{{ $p->name }}</p>
-                                <p class="text-[10px] sm:text-[11px] text-cream/50 uppercase tracking-widest mt-0.5 sm:mt-1">{{ $cat($p) ?: 'Collection' }} · Rs. {{ number_format($p->display_price) }}</p>
+                                <p class="text-[10px] sm:text-[11px] text-cream/50 uppercase tracking-widest mt-0.5 sm:mt-1">{{ $cat($p) ?: 'Al-Asra' }} · Rs. {{ number_format($p->display_price) }}</p>
                             </a>
                             <a href="{{ route('product.details', $p->slug) }}" class="shrink-0 bg-white text-ink text-[11px] rounded-full px-3 py-1 hover:bg-rose hover:text-white transition">+ Add</a>
                         </li>
@@ -364,8 +365,8 @@
         <div class="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12">
             <div>
                 <p class="text-[11px] uppercase tracking-[0.2em] text-rose mb-4">{{ setting('good_to_know_badge', 'Good to know') }}</p>
-                <h2 class="font-serif text-5xl md:text-6xl mb-6">{!! setting('good_to_know_title', 'Shopping with<br>G. Collection') !!}</h2>
-                <p class="text-sm text-ink/60 max-w-sm leading-relaxed">{{ setting('good_to_know_desc', "A full collection of stitched and unstitched ladies' clothing, based in Karachi, Pakistan. Our team is available Mon–Sat 11:00 AM – 9:00 PM.") }}</p>
+                <h2 class="font-serif text-5xl md:text-6xl mb-6">{!! setting('good_to_know_title', 'Shopping with<br>Al-Asra Store') !!}</h2>
+                <p class="text-sm text-ink/60 max-w-sm leading-relaxed">{{ setting('good_to_know_desc', 'Original, imported, and everyday products selected with care in Karachi and delivered across Pakistan.') }}</p>
             </div>
             <div class="grid grid-cols-2 gap-x-8 gap-y-10 content-start">
                 @foreach([
@@ -413,9 +414,9 @@
                 </ul>
                 <div class="mt-8 text-xs text-muted space-y-1">
                     <p class="text-ink font-medium">Still wondering?</p>
-                    <p>{{ setting('faq_timing', 'Mon–Sat, 11:00 AM – 9:00 PM') }}</p>
-                    <a href="{{ whatsapp_link() }}" target="_blank" rel="noopener" class="text-plum underline block font-medium">WhatsApp {{ setting('contact_phone', '+92 334 7779231') }}</a>
-                    <a href="mailto:{{ setting('contact_email', 'support@gdotcollection.com') }}" class="hover:text-rose block">{{ setting('contact_email', 'support@gdotcollection.com') }}</a>
+                    <p>{{ setting('faq_timing', 'Mon–Sat, 11:00 AM – 8:30 PM') }}</p>
+                    <a href="{{ whatsapp_link() }}" target="_blank" rel="noopener" class="text-plum underline block font-medium">WhatsApp {{ setting('contact_phone', '+92 315 9259927') }}</a>
+                    <a href="mailto:{{ setting('contact_email', 'support@alasra.online') }}" class="hover:text-rose block">{{ setting('contact_email', 'support@alasra.online') }}</a>
                 </div>
             </div>
     
@@ -443,7 +444,7 @@
         <div class="max-w-7xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center">
             <div>
                 <h2 class="font-serif text-5xl md:text-7xl leading-[1.02] mb-6">{!! setting('newsletter_title', "Be first<br>to see<br><span class=\"italic text-plum\">what's new.</span>") !!}</h2>
-                <p class="text-sm text-ink/70 max-w-sm mb-8">{{ setting('newsletter_desc', 'New arrivals and news from G. Collection, in your inbox. Just your email, nothing else.') }}</p>
+                <p class="text-sm text-ink/70 max-w-sm mb-8">{{ setting('newsletter_desc', 'New arrivals and useful updates from Al-Asra Store, in your inbox. Just your email, nothing else.') }}</p>
                 <form action="{{ route('newsletter.subscribe') }}" method="POST" data-newsletter-form>
                     @csrf
                     <label class="text-[11px] uppercase tracking-[0.2em] text-ink/60">Email</label>

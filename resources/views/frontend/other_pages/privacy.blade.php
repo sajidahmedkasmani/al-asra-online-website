@@ -35,6 +35,6 @@
 
     <section class="py-7 border-t border-black/10">
         <h2 class="font-serif text-2xl mb-3">Questions about your data</h2>
-        <p class="text-[15px] leading-relaxed text-ink/80">Write to <a href="mailto:support@gdotcollection.com" class="text-plum underline underline-offset-4 hover:text-rose">support@gdotcollection.com</a> and we'll be glad to help.</p>
+        <p class="text-[15px] leading-relaxed text-ink/80">Write to <a href="mailto:support@alasra.online" class="text-plum underline underline-offset-4 hover:text-rose">support@alasra.online</a> and we'll be glad to help.</p>
     </section>
 @endsection

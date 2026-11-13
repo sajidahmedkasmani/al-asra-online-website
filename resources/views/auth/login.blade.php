@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>Log in – {{ config('app.name', 'G. Collection') }} Admin</title>
+        <title>Log in – Al-Asra Store Admin</title>
 
         <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
@@ -192,7 +192,7 @@
             <section class="stage-panel" aria-hidden="true">
                 <div class="aurora"><span></span><span></span><span></span></div>
 
-                <div class="brand"><i></i>{{ config('app.name', 'G. Collection') }}</div>
+                <div class="brand"><i></i>Al-Asra Store</div>
 
                 <div class="stage-wrap">
                     <div class="stage" id="stage">

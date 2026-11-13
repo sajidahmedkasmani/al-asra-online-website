@@ -49,7 +49,7 @@
                 <p>Please transfer <strong>PKR {{ number_format($orderTotal) }}</strong> to:</p>
                 <ul>
                     <li><strong>Bank:</strong> {{ $s['bank_name'] ?? 'Meezan Bank' }}</li>
-                    <li><strong>Account title:</strong> {{ $s['bank_account_title'] ?? 'G. Collection' }}</li>
+                    <li><strong>Account title:</strong> {{ $s['bank_account_title'] ?? 'Al-Asra Store' }}</li>
                     <li><strong>Account number:</strong> {{ $s['bank_account_no'] ?? '1234567890' }}</li>
                     <li><strong>IBAN:</strong> {{ $s['bank_iban'] ?? 'PK00MEZN0000000012345678' }}</li>
                 </ul>

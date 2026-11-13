@@ -1,12 +1,12 @@
 @extends('frontend.layout.master')
-@section('title', 'Contact Us — G. Collection')
+@section('title', 'Contact Us | Al-Asra Store')
 
 @section('content')
 @php
-    $wa = clean_phone(setting('whatsapp_number', '923347779231'));
-    $phone = setting('contact_phone', '+92 334 7779231');
-    $email = setting('contact_email', 'support@gdotcollection.com');
-    $hours = setting('contact_hours', 'Mon–Sat, 11:00 AM – 9:00 PM');
+    $wa = clean_phone(setting('whatsapp_number', '923159259927'));
+    $phone = setting('contact_phone', '+92 315 9259927');
+    $email = setting('contact_email', 'support@alasra.online');
+    $hours = setting('contact_hours', 'Mon–Sat, 11:00 AM – 8:30 PM');
     $address = setting('contact_address', 'Karachi, Pakistan');
     $subjects = ['Order help', 'Returns & exchange', 'Product question', 'Bulk / wholesale', 'Something else'];
 @endphp
@@ -92,7 +92,7 @@
             name: @js(old('name', auth()->user()->name ?? '')),
             message: @js(old('message', '')),
             get waLink(){
-                const t = `Hi G. Collection! ${this.name ? 'I\'m ' + this.name + '. ' : ''}(${this.subject}) ${this.message}`.trim();
+                const t = `Hi Al-Asra! ${this.name ? 'I\'m ' + this.name + '. ' : ''}(${this.subject}) ${this.message}`.trim();
                 return 'https://wa.me/{{ $wa }}?text=' + encodeURIComponent(t);
             }
         }">

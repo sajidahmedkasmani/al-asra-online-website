@@ -1,5 +1,5 @@
 @extends('frontend.layout.master')
-@section('title', $post->title . ' — G. Collection')
+@section('title', $post->title . ' | Al-Asra Store')
 
 @section('content')
 @php

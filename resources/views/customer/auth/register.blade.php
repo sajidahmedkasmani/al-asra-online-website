@@ -15,9 +15,9 @@
         <aside class="hidden lg:flex relative bg-plum text-cream p-12 flex-col justify-between overflow-hidden">
             <div class="absolute -right-16 -bottom-10 w-72 h-96 arch bg-rose/25"></div>
             <div class="absolute right-24 -bottom-10 w-44 h-60 arch bg-cream/10"></div>
-            <p class="relative font-serif text-2xl">G. Collection</p>
+            <p class="relative font-serif text-2xl">Al-Asra</p>
             <div class="relative">
-                <h2 class="font-serif text-5xl leading-[1.05]">Your wardrobe,<br>your story.</h2>
+                <h2 class="font-serif text-5xl leading-[1.05]">Everyday finds,<br>made simple.</h2>
                 <p class="mt-4 text-cream/70 max-w-xs">Create an account to track orders and check out faster.</p>
             </div>
         </aside>

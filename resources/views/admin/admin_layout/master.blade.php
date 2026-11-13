@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="theme-color" content="#7B47D8">
-        <title>@yield('title') — {{ config('app.name', 'G. Collection') }} Admin</title>
+        <title>@yield('title') — Al-Asra Store Admin</title>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

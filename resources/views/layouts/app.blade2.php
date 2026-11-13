@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>@yield('title', 'G. Collection — Wear the Story, Every Stitch')</title>
+        <title>@yield('title', 'Al-Asra Store — Original & Imported Essentials')</title>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,14 +67,14 @@
             {{-- HEADER --}}
             <header class="bg-cream/95 backdrop-blur border-b border-black/10 sticky top-0 z-50" x-data="{ open:false }">
                 <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <a href="{{ route('home') }}" class="font-serif text-2xl tracking-tight">G. Collection</a>
+                    <a href="{{ route('home') }}" class="font-serif text-2xl tracking-tight">Al-Asra Store</a>
 
                     <!-- <nav class="hidden md:flex items-center gap-8 text-sm">
                         <a href="{{ route('shop') }}" class="hover:text-rose transition">Shop</a>
                         <a href="{{ route('shop') }}?category=stitched" class="hover:text-rose transition">Stitched</a>
                         <a href="{{ route('shop') }}?category=unstitched" class="hover:text-rose transition">Unstitched</a>
                         <a href="{{ route('shop') }}?category=accessories" class="hover:text-rose transition">Accessories</a>
-                        <a href="https://wa.me/923347779231" class="hover:text-rose transition">Contact</a>
+                        <a href="https://wa.me/923159259927" class="hover:text-rose transition">Contact</a>
                     </nav> -->
 
                     <nav class="hidden md:flex items-center gap-8 text-sm">
@@ -149,7 +149,7 @@
             <footer class="bg-ink text-cream">
                 <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
                     <div class="col-span-2 md:col-span-1">
-                        <p class="font-serif text-3xl mb-3">G. Collection</p>
+                        <p class="font-serif text-3xl mb-3">Al-Asra Store</p>
                         <p class="text-sm text-cream/60 leading-relaxed max-w-xs">A full collection of stitched and unstitched ladies' clothing from Karachi, Pakistan.</p>
                     </div>
                     <div>
@@ -164,7 +164,7 @@
                     <div>
                         <p class="text-[11px] uppercase tracking-[0.2em] text-rose mb-4">Customer support</p>
                         <ul class="space-y-2 text-sm text-cream/80">
-                            <li><a href="https://wa.me/923347779231" class="hover:text-rose">Contact us</a></li>
+                            <li><a href="https://wa.me/923159259927" class="hover:text-rose">Contact us</a></li>
                             <li><a href="{{ route('home') }}#faq" class="hover:text-rose">FAQ</a></li>
                             <li><a href="#" class="hover:text-rose">Shipping information</a></li>
                             <li><a href="#" class="hover:text-rose">Returns &amp; exchanges</a></li>
@@ -174,14 +174,14 @@
                         <p class="text-[11px] uppercase tracking-[0.2em] text-rose mb-4">Contact</p>
                         <ul class="space-y-2 text-sm text-cream/80">
                             <li>Karachi, Pakistan</li>
-                            <li>Mon–Sat, 11:00 AM – 9:00 PM</li>
-                            <li><a href="https://wa.me/923347779231" class="hover:text-rose">WhatsApp +92 334 7779231</a></li>
-                            <li><a href="mailto:support@gdotcollection.com" class="hover:text-rose">support@gdotcollection.com</a></li>
+                            <li>Mon–Sat, 11:00 AM – 8:30 PM</li>
+                            <li><a href="https://wa.me/923159259927" class="hover:text-rose">WhatsApp +92 315 9259927</a></li>
+                            <li><a href="mailto:support@alasra.online" class="hover:text-rose">support@alasra.online</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="border-t border-cream/10 max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between gap-3 text-xs text-cream/50">
-                    <span>© {{ date('Y') }} G. Collection. All rights reserved.</span>
+                    <span>© {{ date('Y') }} Al-Asra Store. All rights reserved.</span>
                     <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="hover:text-rose">Back to top ↑</a>
                 </div>
             </footer>

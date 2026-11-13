@@ -14,9 +14,9 @@
             <aside class="hidden lg:flex relative bg-plum text-cream p-12 flex-col justify-between overflow-hidden">
                 <div class="absolute -right-16 -bottom-10 w-72 h-96 arch bg-rose/25"></div>
                 <div class="absolute right-24 -bottom-10 w-44 h-60 arch bg-cream/10"></div>
-                <p class="relative font-serif text-2xl">G. Collection</p>
+                <p class="relative font-serif text-2xl">Al-Asra</p>
                 <div class="relative">
-                    <h2 class="font-serif text-5xl leading-[1.05]">Wear the story,<br>every stitch.</h2>
+                    <h2 class="font-serif text-5xl leading-[1.05]">Shop with care,<br>every day.</h2>
                     <p class="mt-4 text-cream/70 max-w-xs">Log in to track your orders and check out faster.</p>
                 </div>
             </aside>
@@ -95,7 +95,7 @@
                 </a>
 
                 <div class="mt-8 pt-6 border-t border-black/10 text-center text-sm text-muted space-y-2">
-                    <p>New to G. Collection?
+                    <p>New to Al-Asra?
                         <a href="{{ route('customer.register') }}" class="text-plum font-medium underline underline-offset-4 hover:text-rose transition">Create an account</a>
                     </p>
                     <p><a href="{{ route('shop') }}" class="hover:text-rose transition">Continue shopping as a guest →</a></p>

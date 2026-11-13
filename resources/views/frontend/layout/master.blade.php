@@ -6,10 +6,10 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="theme-color" content="#FAF7F2">
         <meta name="google-site-verification" content="34nT_JEFzVeXLPCWFWLIy66AtSTk3QgX34tg0nbr8uw" />
-        <meta name="title" content="G.Collection | Women's Clothing & Bags Online in Pakistan">
-        <meta name="description" content="Shop stylish women's clothing, handbags and fashion accessories at G.Collection. Discover the latest fashion trends with delivery across Pakistan.">
+        <meta name="title" content="Al-Asra Store | Original & Imported Essentials in Pakistan">
+        <meta name="description" content="Discover original, imported, and everyday products at Al-Asra Store, delivered across Pakistan.">
         
-        <title>@yield('title') | G.Collection — Women's Clothing & Bags Online in Pakistan</title>
+        <title>@yield('title') | Al-Asra Store — Original & Imported Essentials in Pakistan</title>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +97,13 @@
                 ['Blogs', 'blogs'],
                 ['Contact', 'contact'],
             ];
-            $gcCats = ['stitched' => 'Stitched', 'unstitched' => 'Unstitched', 'accessories' => 'Accessories'];
+            $gcCats = \App\Models\ProductCategory::query()
+                ->where('is_active', true)
+                ->whereHas('collection', fn ($query) => $query->where('is_active', true))
+                ->orderBy('name')
+                ->limit(4)
+                ->pluck('name', 'slug')
+                ->all();
             $gcSkipDrawer = request()->routeIs('cart.*', 'checkout.*');
             $userSvg = '<svg class="w-[22px] h-[22px]" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
         @endphp
@@ -112,7 +118,7 @@
         <!-- HEADER -->
         <header class="bg-cream/95 backdrop-blur border-b border-black/10 sticky top-0 z-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-                <a href="{{ route('home') }}" class="font-serif text-2xl tracking-tight">{{ setting('site_name', 'G. Collection') }}</a>
+                <a href="{{ route('home') }}" class="font-serif text-2xl tracking-tight">{{ setting('site_name', 'Al-Asra Store') }}</a>
 
                 <nav class="hidden md:flex items-center gap-9 text-sm" aria-label="Main">
                     @foreach($gcNav as [$label, $name])
@@ -197,7 +203,7 @@
                 <div class="max-w-3xl mx-auto">
                     <form method="GET" action="{{ route('shop') }}" class="flex items-center gap-3 bg-white rounded-full border border-black/10 p-2 pl-5 shadow-sm focus-within:ring-4 ring-plum/10">
                         <svg class="w-5 h-5 text-muted shrink-0" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-                        <input type="search" name="q" value="{{ request('q') }}" placeholder="Search products, clothing, bags..." aria-label="Search products"
+                        <input type="search" name="q" value="{{ request('q') }}" placeholder="Search products and everyday essentials..." aria-label="Search products"
                             class="flex-1 min-w-0 bg-transparent py-2 text-sm focus:outline-none">
                         <button type="submit" class="bg-plum text-white text-xs sm:text-sm rounded-full px-5 sm:px-6 py-2.5 hover:bg-ink transition">Search</button>
                         <button type="button" @click="searchModal = false" class="p-2 text-muted hover:text-ink" aria-label="Close search">
@@ -206,9 +212,9 @@
                     </form>
                     <div class="flex items-center gap-2 mt-3 text-xs text-muted px-2">
                         <span>Popular:</span>
-                        <a href="{{ route('shop') }}?category=stitched" class="border border-black/15 rounded-full px-3 py-1 hover:border-plum hover:text-plum bg-white">Stitched</a>
-                        <a href="{{ route('shop') }}?category=unstitched" class="border border-black/15 rounded-full px-3 py-1 hover:border-plum hover:text-plum bg-white">Unstitched</a>
-                        <a href="{{ route('shop') }}?category=accessories" class="border border-black/15 rounded-full px-3 py-1 hover:border-plum hover:text-plum bg-white">Accessories</a>
+                        @foreach(array_slice($gcCats, 0, 3, true) as $slug => $category)
+                            <a href="{{ route('shop') }}?category={{ $slug }}" class="border border-black/15 rounded-full px-3 py-1 hover:border-plum hover:text-plum bg-white">{{ $category }}</a>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -360,8 +366,8 @@
         <footer class="bg-ink text-cream {{ $gcSkipDrawer ? '' : 'pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0' }}">
             <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-5 gap-10">
                 <div class="col-span-2 md:col-span-1">
-                    <p class="font-serif text-3xl mb-3">{{ setting('site_name', 'G. Collection') }}</p>
-                    <p class="text-sm text-cream/60 leading-relaxed max-w-xs">{{ setting('footer_about', "A full collection of stitched and unstitched ladies' clothing from Karachi, Pakistan.") }}</p>
+                    <p class="font-serif text-3xl mb-3">{{ setting('site_name', 'Al-Asra Store') }}</p>
+                    <p class="text-sm text-cream/60 leading-relaxed max-w-xs">{{ setting('footer_about', 'Original, imported, and everyday essentials selected with care in Karachi and delivered across Pakistan.') }}</p>
                     @if(setting('social_instagram') || setting('social_facebook') || setting('social_tiktok'))
                         <div class="flex items-center gap-3 mt-4 text-cream/70">
                             @if(setting('social_instagram'))
@@ -418,13 +424,13 @@
                     <ul class="space-y-2 text-sm text-cream/80">
                         <li>{{ setting('contact_address', 'Karachi, Pakistan') }}</li>
                         <li>{{ setting('contact_hours', 'Mon–Sat, 11:00 AM – 9:00 PM') }}</li>
-                        <li><a href="{{ whatsapp_link() }}" target="_blank" rel="noopener" class="hover:text-rose">WhatsApp {{ setting('contact_phone', '+92 334 7779231') }}</a></li>
-                        <li><a href="mailto:{{ setting('contact_email', 'support@gdotcollection.com') }}" class="hover:text-rose">{{ setting('contact_email', 'support@gdotcollection.com') }}</a></li>
+                        <li><a href="{{ whatsapp_link() }}" target="_blank" rel="noopener" class="hover:text-rose">WhatsApp {{ setting('contact_phone', '+92 315 9259927') }}</a></li>
+                        <li><a href="mailto:{{ setting('contact_email', 'support@alasra.online') }}" class="hover:text-rose">{{ setting('contact_email', 'support@alasra.online') }}</a></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-cream/10 max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between gap-3 text-xs text-cream/50">
-                <span>© {{ date('Y') }} {{ setting('copyright_text', 'G. Collection. All rights reserved.') }}</span>
+                <span>© {{ date('Y') }} {{ setting('copyright_text', 'Al-Asra Store. All rights reserved.') }}</span>
                 <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="hover:text-rose">Back to top ↑</a>
             </div>
         </footer>

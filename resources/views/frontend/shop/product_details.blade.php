@@ -9,7 +9,7 @@
     $cslug = $product->productCategory?->slug ?? (is_string($product->category) ? \Illuminate\Support\Str::slug($product->category) : null);
     $isWishlisted = in_array($product->id, array_map('intval', session('wishlist', [])), true);
     $desc  = trim((string) ($product->description ?? ''));
-    $wa    = 'https://wa.me/923347779231?text=' . urlencode("Hi G. Collection! I'm interested in: {$product->name} (Rs. " . number_format($price) . ") " . url()->current());
+    $wa    = 'https://wa.me/923159259927?text=' . urlencode("Hi Al-Asra! I'm interested in: {$product->name} (Rs. " . number_format($price) . ") " . url()->current());
 @endphp
 
 <div x-data="{ q: 1, zoom: false, copied: false }" @keydown.escape.window="zoom=false">

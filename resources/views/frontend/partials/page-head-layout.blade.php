@@ -67,9 +67,9 @@
                 <h2 class="font-serif text-2xl">Need a hand?</h2>
                 <p class="text-cream/70 text-sm mt-1">Our team is happy to help. Mon–Sat, 11:00 AM – 9:00 PM.</p>
                 <div class="mt-5 flex flex-col sm:flex-row gap-3 text-sm">
-                    <a href="https://wa.me/923347779231" class="text-center bg-cream text-plum font-medium rounded-full px-6 py-3 hover:bg-white transition">WhatsApp us</a>
-                    <a href="tel:+923347779231" class="text-center border border-cream/30 rounded-full px-6 py-3 hover:bg-cream/10 transition">+92 334 7779231</a>
-                    <a href="mailto:support@gdotcollection.com" class="text-center border border-cream/30 rounded-full px-6 py-3 hover:bg-cream/10 transition">Email support</a>
+                    <a href="https://wa.me/923159259927" class="text-center bg-cream text-plum font-medium rounded-full px-6 py-3 hover:bg-white transition">WhatsApp us</a>
+                    <a href="tel:+923159259927" class="text-center border border-cream/30 rounded-full px-6 py-3 hover:bg-cream/10 transition">+92 315 9259927</a>
+                    <a href="mailto:support@alasra.online" class="text-center border border-cream/30 rounded-full px-6 py-3 hover:bg-cream/10 transition">Email support</a>
                 </div>
             </div>
         </div>

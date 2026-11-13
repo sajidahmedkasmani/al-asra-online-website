@@ -6,7 +6,7 @@
         <div style="white-space:pre-wrap">{{ $campaign->content }}</div>
         <hr style="border:0;border-top:1px solid #eee;margin:32px 0 16px">
         <p style="font-size:12px;color:#666">
-            You received this email because you subscribed to G. Collection updates.
+            You received this email because you subscribed to Al-Asra Store updates.
             <a href="{{ $unsubscribeUrl }}">Unsubscribe</a>
         </p>
     </main>
