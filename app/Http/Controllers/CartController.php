@@ -33,8 +33,8 @@ class CartController extends Controller
             $cart[$product->id] = [
                 'id' => $product->id,
                 'name' => $product->name,
-                'price' => $product->price,
-                'image' => $product->image,
+                'price' => $product->display_price,
+                'image' => $product->display_image,
                 'quantity' => $qty,
             ];
         }
@@ -46,6 +46,48 @@ class CartController extends Controller
         }
 
         return back()->with('success', 'Product added to cart!');
+    }
+
+    public function sync(Request $request)
+    {
+        $data = $request->validate([
+            'items' => ['present', 'array', 'max:30'],
+            'items.*.id' => ['required', 'integer', 'distinct', 'exists:products,id'],
+            'items.*.qty' => ['required', 'integer', 'min:1', 'max:99'],
+        ]);
+
+        $products = Product::whereIn('id', collect($data['items'])->pluck('id'))
+            ->where('is_active', true)
+            ->get()
+            ->keyBy('id');
+
+        if ($products->count() !== count($data['items'])) {
+            return response()->json([
+                'message' => 'One or more products are no longer available. Please update your cart.',
+            ], 422);
+        }
+
+        $cart = [];
+        foreach ($data['items'] as $item) {
+            $product = $products[$item['id']];
+            $cart[$product->id] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->display_price,
+                'image' => $product->display_image,
+                'quantity' => $item['qty'],
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        $summary = CartSummary::for($cart);
+
+        return response()->json([
+            'message' => 'Cart synchronized.',
+            'cart' => $cart,
+            'summary' => $summary,
+        ]);
     }
 
     public function update(Request $request)

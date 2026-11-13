@@ -18,13 +18,6 @@ class CheckoutController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
-        if (empty($cart)) {
-            if (request()->expectsJson()) {
-                return response()->json(['message' => 'Your cart is empty.'], 422);
-            }
-
-            return redirect()->route('shop')->with('error', 'Your cart is empty.');
-        }
         $summary = CartSummary::for($cart);
         $viewData = compact('cart', 'summary');
 
@@ -71,7 +64,7 @@ class CheckoutController extends Controller
                 return back()->with('error', 'One product is no longer available.');
             }
             $freshCart[$id] = [
-                'price' => (float) $products[$id]->price,
+                'price' => (float) $products[$id]->display_price,
                 'quantity' => (int) $item['quantity'],
             ];
         }
@@ -97,7 +90,7 @@ class CheckoutController extends Controller
             ]);
 
             foreach ($cart as $id => $item) {
-                $unitPrice = (float) $products[$id]->price;
+                $unitPrice = (float) $products[$id]->display_price;
                 $lineTotal = $unitPrice * $item['quantity'];
 
                 OrderItem::create([
@@ -146,7 +139,7 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            return redirect()->route('order.success', $order->order_number);
+            return redirect()->route('order.success', $order->order_number)->with('clear_cart', true);
 
         } catch (\Throwable $e) {
             DB::rollBack();

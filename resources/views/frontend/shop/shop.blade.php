@@ -9,18 +9,18 @@
 .shop-breadcrumb{display:flex;gap:9px;align-items:center;margin-bottom:20px;color:#765c62;font-size:12px}
 .shop-breadcrumb a:hover{color:var(--orange)}
 .shop-heading-row{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;position:relative;z-index:1}
-.shop-heading h1{font-size:clamp(30px,5vw,58px);line-height:1.08;color:var(--maroon)}
+.shop-heading h1{font-size:clamp(30px,5vw,58px);line-height:1.08;color:var(--plum)}
 .shop-heading p{margin-top:12px;color:#6b5960;font-size:14px}
 .shop-search{display:flex;align-items:center;gap:8px;width:min(380px,100%);padding:6px 7px 6px 16px;background:#fff;border:1px solid #5a102422;border-radius:999px;box-shadow:0 12px 30px -20px #5a102466}
 .shop-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;padding:9px 0;font:inherit;font-size:13px}
-.shop-search button{border:0;border-radius:99px;background:var(--maroon);color:#fff;padding:11px 20px;font:700 12px 'DM Sans';cursor:pointer}
+.shop-search button{border:0;border-radius:99px;background:var(--plum);color:#fff;padding:11px 20px;font:700 12px 'DM Sans';cursor:pointer}
 .shop-search button:hover{background:var(--orange)}
 .shop-filters{background:#fff;border-bottom:1px solid var(--line);box-shadow:0 8px 20px -20px #1e0a14}
 .shop-filter-inner{width:min(1320px,100%);margin:0 auto;padding:16px 5vw;display:grid;gap:12px}
 .shop-filter-row{display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none}
 .shop-filter-row::-webkit-scrollbar{display:none}
 .shop-chip{flex:none;display:inline-flex;align-items:center;min-height:38px;padding:8px 16px;border:1px solid #5a102425;border-radius:99px;color:var(--ink);font-size:12px;transition:background .2s,color .2s,border-color .2s}
-.shop-chip:hover,.shop-chip.active{background:var(--maroon);border-color:var(--maroon);color:#fff}
+.shop-chip:hover,.shop-chip.active{background:var(--plum);border-color:var(--plum);color:#fff}
 .shop-chip.sub{min-height:32px;padding:6px 13px;font-size:11px}
 .shop-subfilters{padding-left:12px}
 .shop-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -36,7 +36,7 @@
 .shop-grid .pcard h3{min-height:2.6em}
 .shop-pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:42px}
 .shop-page{min-width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;padding:0 14px;border:1px solid var(--line);border-radius:99px;font-size:12px}
-.shop-page:hover,.shop-page.active{background:var(--maroon);border-color:var(--maroon);color:#fff}
+.shop-page:hover,.shop-page.active{background:var(--plum);border-color:var(--plum);color:#fff}
 .shop-page.disabled{opacity:.4}
 .shop-empty{text-align:center;padding:60px 20px 70px}
 .shop-empty h2{font-size:clamp(24px,4vw,36px);margin-bottom:10px}

@@ -1,77 +1,112 @@
-@extends('frontend.layout.master')
-@section('title', 'Order Confirmed')
+@extends('storefront.layout')
+@section('title', 'Order confirmed | Al-Asra Store')
+
+@push('head')
+<style>
+.success-wrap{width:min(760px,100%);margin:0 auto;padding:52px 5vw 76px}
+.success-card{padding:clamp(24px,5vw,48px);border:1px solid #5a10241a;border-radius:22px;background:#fff;box-shadow:0 16px 55px -38px #5a102455}
+.success-mark{display:grid;place-items:center;width:66px;height:66px;margin:0 auto 18px;border-radius:50%;background:#edf8ef;color:#28763b;font-size:32px}
+.success-intro{text-align:center}
+.success-intro h1{font-size:clamp(30px,5vw,46px);line-height:1.1;color:var(--plum)}
+.success-intro p{margin-top:10px;color:#765c62;font-size:13px}
+.success-number{display:inline-block;margin-top:12px;padding:8px 14px;border-radius:99px;background:#fff4ea;color:var(--plum);font-size:12px;font-weight:700}
+.success-payment{margin-top:26px;padding:18px;border:1px solid #e8d8c8;border-radius:14px;background:#fffaf6;font-size:12px;line-height:1.7}
+.success-payment h2{margin-bottom:7px;font-size:18px}
+.success-payment ul{margin:8px 0 0;padding-left:19px}
+.success-items{margin-top:28px;padding-top:20px;border-top:1px solid var(--line)}
+.success-items h2{margin-bottom:12px;font-size:20px}
+.success-line,.success-total{display:flex;justify-content:space-between;gap:12px;padding:8px 0;font-size:12px}
+.success-total{margin-top:8px;padding-top:15px;border-top:1px solid var(--line);font-size:13px}
+.success-total b{font-size:20px;color:var(--plum)}
+.success-account{margin-top:24px;padding:18px;border:1px solid #f2c5d6;border-radius:14px;background:#fff7fa;font-size:12px;line-height:1.6}
+.success-account h2{margin-bottom:6px;font-size:18px}
+.success-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:26px}
+.success-actions a{padding:13px 22px;border:1px solid var(--plum);border-radius:99px;color:var(--plum);font-size:12px;font-weight:700}
+.success-actions a.primary{background:var(--plum);color:#fff}
+.success-actions a:hover{background:var(--orange);border-color:var(--orange);color:#fff}
+</style>
+@endpush
 
 @section('content')
-@php $s = config('app.settings', []); @endphp
-<div class="max-w-2xl mx-auto px-4 py-16">
-    <div class="bg-white rounded-xl shadow-sm p-10 text-center">
-        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">✓</div>
-        <h1 class="text-3xl font-bold mb-2">Order Confirmed!</h1>
-        <p class="text-gray-600 mb-6">Order #: <strong>{{ $order->order_number }}</strong></p>
+@php
+    $s = config('app.settings', []);
+    $shipping = (int) ($order->shipping_paisa ?? 0);
+    $orderTotal = (float) ($order->total ?? 0);
+@endphp
+<main class="success-wrap">
+    <article class="success-card">
+        <header class="success-intro">
+            <div class="success-mark" aria-hidden="true">✓</div>
+            <span class="kick">Thank you for shopping with us</span>
+            <h1>Order confirmed</h1>
+            <p>We've received your order and will contact you with delivery updates.</p>
+            <span class="success-number">Order #{{ $order->order_number }}</span>
+        </header>
 
         @if($order->payment_method === 'bank_transfer')
-            <div class="bg-yellow-50 border border-yellow-300 rounded-lg p-5 text-left mb-6">
-                <h3 class="font-bold mb-2">Bank Transfer Instructions</h3>
-                <p class="text-sm mb-2">Please transfer <strong>Rs. {{ number_format($order->total) }}</strong> to:</p>
-                <ul class="text-sm space-y-1">
+            <section class="success-payment">
+                <h2>Bank transfer instructions</h2>
+                <p>Please transfer <strong>PKR {{ number_format($orderTotal) }}</strong> to:</p>
+                <ul>
                     <li><strong>Bank:</strong> {{ $s['bank_name'] ?? 'Meezan Bank' }}</li>
-                    <li><strong>Account Title:</strong> {{ $s['bank_account_title'] ?? 'G. Collection' }}</li>
-                    <li><strong>Account No:</strong> {{ $s['bank_account_no'] ?? '1234567890' }}</li>
+                    <li><strong>Account title:</strong> {{ $s['bank_account_title'] ?? 'G. Collection' }}</li>
+                    <li><strong>Account number:</strong> {{ $s['bank_account_no'] ?? '1234567890' }}</li>
                     <li><strong>IBAN:</strong> {{ $s['bank_iban'] ?? 'PK00MEZN0000000012345678' }}</li>
                 </ul>
-                <p class="text-sm mt-3 text-gray-600">After transfer, send screenshot to WhatsApp: {{ $s['whatsapp_number'] ?? '0300-1234567' }}</p>
-            </div>
+                <p style="margin-top:8px">After transfer, send a screenshot to WhatsApp: {{ $s['whatsapp_number'] ?? '0300-1234567' }}</p>
+            </section>
         @else
-            <div class="bg-green-50 border border-green-300 rounded-lg p-5 mb-6">
-                <p class="text-sm">You will pay <strong>Rs. {{ number_format($order->total) }}</strong> in cash when your order is delivered.</p>
-            </div>
+            <section class="success-payment">
+                You will pay <strong>PKR {{ number_format($orderTotal) }}</strong> in cash when your order is delivered.
+            </section>
         @endif
 
-        <div class="text-left border-t pt-4">
-            <h3 class="font-semibold mb-2">Items</h3>
+        <section class="success-items" aria-label="Order details">
+            <h2>Order details</h2>
             @foreach($order->items as $item)
-                <div class="flex justify-between py-1 text-sm">
+                @php $unitPrice = isset($item->unit_price_paisa) ? $item->unit_price_paisa / 100 : (float) $item->price; @endphp
+                <div class="success-line">
                     <span>{{ $item->product_name }} × {{ $item->quantity }}</span>
-                    <span>Rs. {{ number_format($item->price * $item->quantity) }}</span>
+                    <span>PKR {{ number_format($unitPrice * $item->quantity) }}</span>
                 </div>
             @endforeach
-            <div class="flex justify-between border-t mt-3 pt-3 text-sm">
-                <span>Shipping</span>
-                <span>{{ ($order->shipping_paisa ?? 0) > 0 ? 'Rs. '.number_format($order->shipping_paisa / 100) : 'Free' }}</span>
+            <div class="success-line">
+                <span>Delivery</span>
+                <span>{{ $shipping > 0 ? 'PKR '.number_format($shipping / 100) : 'Free' }}</span>
             </div>
-        </div>
+            <div class="success-total">
+                <span>Total paid on delivery</span>
+                <b>PKR {{ number_format($orderTotal) }}</b>
+            </div>
+        </section>
 
-        {{-- Post-purchase account creation prompt (sirf guest ke liye) --}}
         @guest('customer')
-            <div class="bg-rose-50 border border-rose-200 rounded-xl p-6 mt-8 text-left">
-                <h3 class="text-lg font-semibold text-rose-800 mb-2">Create an account & earn loyalty rewards</h3>
-                <p class="text-sm text-rose-700 mb-4">
-                    Your order is confirmed! Create an account with the same email
-                    (<strong>{{ $order->customer_email ?? $order->email }}</strong>) to track this order
-                    and earn points on every future purchase.
-                </p>
-                <a href="{{ route('customer.register', ['email' => $order->customer_email ?? $order->email]) }}"
-                   class="inline-block bg-rose-600 text-white text-sm rounded-lg px-5 py-2 hover:bg-rose-700">
-                    Create Account
-                </a>
-                <a href="{{ route('shop') }}"
-                   class="inline-block ml-2 border border-rose-300 text-rose-700 text-sm rounded-lg px-5 py-2 hover:bg-rose-100">
-                    Continue as Guest
-                </a>
-            </div>
+            <section class="success-account">
+                <h2>Create an account</h2>
+                <p>Register with {{ $order->email }} to track this order and get more from your next visit.</p>
+                <a href="{{ route('customer.register', ['email' => $order->email]) }}" style="text-decoration:underline">Create your account</a>
+            </section>
         @endguest
 
         @auth('customer')
-            <div class="bg-green-50 border border-green-200 rounded-xl p-4 mt-8 text-sm text-green-800">
-                Points earned on this order will appear in your account dashboard.
-                <a href="{{ route('customer.dashboard') }}" class="underline font-medium">View account</a>
-            </div>
+            <section class="success-account">
+                Loyalty points earned on this order will appear in your account.
+                <a href="{{ route('customer.dashboard') }}" style="text-decoration:underline">View account</a>
+            </section>
         @endauth
 
-        <a href="{{ route('shop') }}"
-           class="inline-block mt-8 bg-rose-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-rose-700">
-            Continue Shopping
-        </a>
-    </div>
-</div>
+        <nav class="success-actions" aria-label="Next steps">
+            <a class="primary" href="{{ route('shop') }}">Continue shopping</a>
+            @auth('customer')
+                <a href="{{ route('customer.dashboard') }}">My account</a>
+            @endauth
+        </nav>
+    </article>
+</main>
 @endsection
+
+@if(session('clear_cart'))
+    @push('scripts')
+        <script>AlAsraCart.save([]);</script>
+    @endpush
+@endif
