@@ -46,7 +46,7 @@
     $footerLinkGroups = [
         'shop' => [
             'title' => 'Shop links',
-            'links' => [
+            'defaults' => [
                 ['All products', '/shop'],
                 ['Organic', '/shop?category=organic'],
                 ['Natural care', '/shop?category=natural-care'],
@@ -54,13 +54,38 @@
         ],
         'help' => [
             'title' => 'Help links',
-            'links' => [
-                ['Track order', '/track'],
-                ['About us', '/about'],
+            'defaults' => [
+                ['Track order', route('customer.dashboard')],
+                ['About us', route('aboutus')],
                 ['Contact', '/contact'],
             ],
         ],
     ];
+    foreach ($footerLinkGroups as $group => &$definition) {
+        $hasSavedLinks = array_key_exists("store_footer_{$group}_links", $settings);
+        $savedLinks = $hasSavedLinks ? json_decode($settings["store_footer_{$group}_links"], true) : [];
+        if (!$hasSavedLinks || !is_array($savedLinks)) {
+            foreach ($definition['defaults'] as $index => [$text, $url]) {
+                $number = $index + 1;
+                $savedText = $settings["store_footer_{$group}_link_{$number}_text"] ?? $text;
+                $savedUrl = $settings["store_footer_{$group}_link_{$number}_url"] ?? $url;
+                if ($savedText !== '' || $savedUrl !== '') {
+                    $savedLinks[] = ['text' => $savedText, 'url' => $savedUrl];
+                }
+            }
+        }
+
+        $definition['links'] = array_values(array_map(static function ($link) {
+            return [
+                'text' => (string) ($link['text'] ?? ''),
+                'url' => (string) ($link['url'] ?? ''),
+            ];
+        }, $savedLinks));
+        if (old('store_footer_links.'.$group) !== null) {
+            $definition['links'] = old('store_footer_links.'.$group);
+        }
+    }
+    unset($definition);
 @endphp
 <div class="max-w-6xl mx-auto" x-data="{ tab: '{{ $activeTab }}' }">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -188,21 +213,28 @@
                         <label class="block text-xs font-medium text-gray-700 mb-1">Column heading</label>
                         <input name="store_footer_{{ $group }}_title" value="{{ old('store_footer_'.$group.'_title', $settings['store_footer_'.$group.'_title'] ?? ucfirst($group)) }}" class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm">
                     </div>
-                    <div class="grid md:grid-cols-3 gap-4">
-                        @foreach($definition['links'] as $index => $link)
-                            @php $number = $index + 1; @endphp
-                            <div class="rounded-xl border border-gray-100 bg-gray-50 p-3 space-y-3">
-                                <p class="text-[11px] font-semibold uppercase text-gray-500">Link {{ $number }}</p>
-                                <div>
-                                    <label class="block text-xs text-gray-600 mb-1">Text</label>
-                                    <input name="store_footer_{{ $group }}_link_{{ $number }}_text" value="{{ old('store_footer_'.$group.'_link_'.$number.'_text', $settings['store_footer_'.$group.'_link_'.$number.'_text'] ?? $link[0]) }}" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                    <div x-data="{ links: @js($definition['links']) }">
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <template x-for="(link, index) in links" :key="index">
+                                <div class="rounded-xl border border-gray-100 bg-gray-50 p-3 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-[11px] font-semibold uppercase text-gray-500" x-text="'Link ' + (index + 1)"></p>
+                                        <button type="button" @click="links.splice(index, 1)" class="text-xs font-medium text-red-600 hover:text-red-800">Remove</button>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Text</label>
+                                        <input x-model="link.text" :name="'store_footer_links[{{ $group }}][' + index + '][text]'" maxlength="255" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Link URL</label>
+                                        <input x-model="link.url" :name="'store_footer_links[{{ $group }}][' + index + '][url]'" maxlength="255" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-xs text-gray-600 mb-1">Link URL</label>
-                                    <input name="store_footer_{{ $group }}_link_{{ $number }}_url" value="{{ old('store_footer_'.$group.'_link_'.$number.'_url', $settings['store_footer_'.$group.'_link_'.$number.'_url'] ?? $link[1]) }}" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
-                                </div>
-                            </div>
-                        @endforeach
+                            </template>
+                        </div>
+                        <button type="button" @click="links.push({ text: '', url: '' })" class="mt-4 inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:border-brand-500 hover:text-brand-600">
+                            <span aria-hidden="true">+</span> Add link
+                        </button>
                     </div>
                 </section>
             @endforeach

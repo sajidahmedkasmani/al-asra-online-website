@@ -56,11 +56,11 @@ class CmsController extends Controller
                 'store_footer_phone', 'store_footer_email', 'store_footer_hours',
                 'store_footer_instagram_label', 'store_footer_instagram_url', 'store_footer_copyright',
             ];
-            for ($group = 1; $group <= 3; $group++) {
-                foreach (['shop', 'help'] as $column) {
-                    $footerFields[] = "store_footer_{$column}_link_{$group}_text";
-                    $footerFields[] = "store_footer_{$column}_link_{$group}_url";
-                }
+            $rules['store_footer_links'] = 'nullable|array';
+            foreach (['shop', 'help'] as $column) {
+                $rules["store_footer_links.{$column}"] = 'nullable|array';
+                $rules["store_footer_links.{$column}.*.text"] = 'nullable|string|max:255';
+                $rules["store_footer_links.{$column}.*.url"] = 'nullable|string|max:255';
             }
             foreach ($footerFields as $field) {
                 $rules[$field] = 'nullable|string|max:255';
@@ -87,6 +87,16 @@ class CmsController extends Controller
         $inputs = $request->validate($rules);
         if ($tab === 'announcement') {
             $inputs['store_announcement_enabled'] = $request->boolean('store_announcement_enabled') ? '1' : '0';
+        }
+        if ($tab === 'footer') {
+            $links = $inputs['store_footer_links'] ?? [];
+            unset($inputs['store_footer_links']);
+            foreach (['shop', 'help'] as $column) {
+                $groupLinks = array_values(array_filter($links[$column] ?? [], static function ($link) {
+                    return trim((string) ($link['text'] ?? '')) !== '' || trim((string) ($link['url'] ?? '')) !== '';
+                }));
+                $inputs["store_footer_{$column}_links"] = json_encode($groupLinks, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            }
         }
 
         Setting::setMany($inputs);
