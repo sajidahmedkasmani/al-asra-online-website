@@ -1,5 +1,5 @@
 @php
-    $img   = $p->display_image ?? $p->image ?? ('https://placehold.co/600x800/F8DCE8/5B1A4A?text=' . urlencode($p->name));
+    $img   = $p->display_image ?? $p->image ?? ('https://placehold.co/600x800/FFF4EA/4A1530?text=' . urlencode($p->name));
     $price = $p->display_price ?? $p->price;
     $cname = $p->productCategory?->name ?? ($p->category ?? null);
     $isNew = $p->created_at && $p->created_at->gt(now()->subDays(14));
@@ -24,13 +24,10 @@
             @endif
         </div>
 
-        <form action="{{ route('cart.add') }}" method="POST" class="absolute right-3 bottom-3 z-10">
-            @csrf
-            <input type="hidden" name="product_id" value="{{ $p->id }}">
-            <input type="hidden" name="quantity" value="1">
-            <button type="submit" aria-label="Add {{ $p->name }} to cart" title="Quick add"
-                    class="w-10 h-10 rounded-full bg-white text-plum shadow-lg flex items-center justify-center text-xl leading-none hover:bg-plum hover:text-white active:scale-95 transition md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0">+</button>
-        </form>
+        <button type="button" data-cart-add data-product-id="{{ $p->id }}" data-product-name="{{ $p->name }}"
+                data-product-price="{{ $price }}" data-product-image="{{ $img }}"
+                aria-label="Add {{ $p->name }} to cart" title="Quick add"
+                class="absolute right-3 bottom-3 z-10 w-10 h-10 rounded-full bg-white text-plum shadow-lg flex items-center justify-center text-xl leading-none hover:bg-plum hover:text-white active:scale-95 transition md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0">+</button>
         <button type="button" data-wishlist-toggle data-product-id="{{ $p->id }}" aria-pressed="{{ $isWishlisted ? 'true' : 'false' }}"
                 aria-label="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}"
                 class="absolute right-3 top-3 z-10 w-10 h-10 rounded-full bg-white/95 shadow flex items-center justify-center transition hover:text-rose {{ $isWishlisted ? 'text-rose' : 'text-ink/70' }}">

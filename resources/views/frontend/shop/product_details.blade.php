@@ -1,9 +1,9 @@
-@extends('frontend.layout.master')
-@section('title', $product->name)
+@extends('storefront.legacy-layout')
+@section('title', $product->name.' | Al-Asra Store')
 
 @section('content')
 @php
-    $img   = $product->display_image ?? $product->image ?? ('https://placehold.co/900x1200/F8DCE8/5B1A4A?text=' . urlencode($product->name));
+    $img   = $product->display_image ?? $product->image ?? ('https://placehold.co/900x1200/FFF4EA/4A1530?text=' . urlencode($product->name));
     $price = $product->display_price ?? $product->price;
     $cname = $product->productCategory?->name ?? $product->category;
     $cslug = $product->productCategory?->slug ?? (is_string($product->category) ? \Illuminate\Support\Str::slug($product->category) : null);
@@ -53,17 +53,16 @@
             </div>
 
             {{-- add to cart --}}
-            <form id="add-form" action="{{ route('cart.add') }}" method="POST" class="mb-4">
-                @csrf
-                <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <form id="add-form" data-cart-form data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}"
+                  data-product-price="{{ $price }}" data-product-image="{{ $img }}" class="mb-4">
                 <p class="text-[11px] uppercase tracking-[0.2em] text-muted mb-3">Quantity</p>
                 <div class="flex flex-wrap items-center gap-3">
                     <div class="inline-flex items-center bg-white border border-black/10 rounded-full">
                         <button type="button" @click="q = Math.max(1, q - 1)" class="w-11 h-11 text-lg hover:text-plum" aria-label="Decrease">−</button>
-                        <input type="number" name="quantity" x-model.number="q" min="1" class="w-12 text-center bg-transparent text-sm focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none">
-                        <button type="button" @click="q++" class="w-11 h-11 text-lg hover:text-plum" aria-label="Increase">+</button>
+                        <input type="number" name="quantity" x-model.number="q" min="1" max="99" class="w-12 text-center bg-transparent text-sm focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none">
+                        <button type="button" @click="q = Math.min(99, q + 1)" class="w-11 h-11 text-lg hover:text-plum" aria-label="Increase">+</button>
                     </div>
-                    <button class="flex-1 min-w-[180px] bg-plum text-white rounded-full py-3.5 text-sm hover:bg-ink active:scale-[.99] transition inline-flex items-center justify-center gap-3 group">
+                    <button type="submit" class="flex-1 min-w-[180px] bg-plum text-white rounded-full py-3.5 text-sm hover:bg-ink active:scale-[.99] transition inline-flex items-center justify-center gap-3 group">
                         Add to cart
                         <span class="group-hover:translate-x-1 transition">→</span>
                     </button>
@@ -91,7 +90,7 @@
                 @foreach([
                     ['Shipping & delivery','Free shipping on orders of Rs. 10,000 and above. Below that, standard delivery charges apply. We deliver across Pakistan from Karachi.'],
                     ['Returns & exchanges','Please contact us on WhatsApp within 48 hours of delivery to discuss returns or exchanges.'],
-                    ['Care','Wash gently in cool water, turn embroidered pieces inside out, dry in the shade and iron on the reverse.'],
+                    ['Product care','Follow the care, storage and usage instructions provided with the product.'],
                 ] as $n => [$t,$d])
                     <div class="border-b border-black/10">
                         <button type="button" @click="o = (o === {{ $n + 1 }} ? 0 : {{ $n + 1 }})" class="w-full flex items-center justify-between py-4 text-left">

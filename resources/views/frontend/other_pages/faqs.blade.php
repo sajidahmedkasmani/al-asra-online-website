@@ -1,4 +1,4 @@
-@extends('frontend.layout.master')
+@extends('storefront.legacy-layout')
 @section('title', 'FAQs | Al-Asra Store')
 
 
