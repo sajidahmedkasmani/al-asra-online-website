@@ -21,7 +21,7 @@
             @endif
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Category</label>
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Category</label>
                 <input type="text" name="category" list="cat-suggestions" value="{{ old('category', $faq->category ?? 'Ordering & payments') }}" required placeholder="e.g. Shipping & delivery" class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
                 <datalist id="cat-suggestions">
                     @foreach($categories as $c)
@@ -37,12 +37,12 @@
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Question</label>
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Question</label>
                 <input type="text" name="question" value="{{ old('question', $faq->question) }}" required placeholder="e.g. How do I pay?" class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Answer</label>
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Answer</label>
                 <textarea name="answer" rows="4" required placeholder="Detailed response for customer..." class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none leading-relaxed">{{ old('answer', $faq->answer) }}</textarea>
             </div>
 

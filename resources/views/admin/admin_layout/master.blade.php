@@ -4,25 +4,40 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="theme-color" content="#7B47D8">
-        <title>@yield('title') — Al-Asra Store Admin</title>
+        <meta name="theme-color" content="#0F2B2A">
+        <title>@yield('title') — {{ config('app.name', 'Store') }} Admin</title>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
+            /*  THEME TOKENS: change the look of the whole admin from here.
+                brand = primary (buttons, links, focus) · bloom = brass accent
+                lav = page canvas · ink = dark chrome + text                    */
             tailwind.config = {
                 theme: {
                     extend: {
                         colors: {
-                            brand: { 50:'#F4EFFD', 100:'#E9E0FB', 200:'#D3C2F7', 400:'#9B73E8', 500:'#8451DB', 600:'#7340C8', 700:'#5F32A8' },
-                            bloom: { 400:'#FF7BA9', 500:'#F9528A' },
-                            lav: '#EFEBF7',
-                            ink: '#1F1B2E',
+                            brand: { 50:'#EAF5F3', 100:'#D3EBE6', 200:'#A9D6CE', 300:'#7BBFB3', 400:'#3DA697', 500:'#228B7C', 600:'#12766B', 700:'#0D5E55' },
+                            bloom: { 400:'#D9A93F', 500:'#B8821F' },
+                            lav: '#EEF1EF',
+                            ink: '#0F2B2A',
+                            gray: { 50:'#F5F7F6', 100:'#EBEFED', 200:'#DCE3E0', 300:'#C3CDC9', 400:'#8E9C97', 500:'#66756F', 600:'#4B5A55', 700:'#36433F', 800:'#222D2A', 900:'#121B19' },
                         },
-                        fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                        fontFamily: {
+                            sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+                            mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+                        },
+                        borderRadius: { md:'0.25rem', lg:'0.3125rem', xl:'0.375rem', '2xl':'0.5rem', '3xl':'0.5rem' },
+                        boxShadow: {
+                            sm:'0 1px 2px rgba(15,43,42,.06)',
+                            md:'0 2px 6px -1px rgba(15,43,42,.10)',
+                            lg:'0 8px 20px -6px rgba(15,43,42,.18)',
+                            xl:'0 12px 28px -8px rgba(15,43,42,.22)',
+                            '2xl':'0 18px 40px -10px rgba(15,43,42,.28)',
+                        },
                     }
                 }
             }
@@ -47,254 +62,225 @@
 
         <style>
             [x-cloak]{display:none!important}
-            .rail{background:linear-gradient(180deg,#7B47D8 0%,#9A72E6 55%,#C9B2F5 100%)}
-            .btn-bloom{background:linear-gradient(90deg,#FF7BA9,#F9528A);box-shadow:0 8px 18px -6px rgba(249,82,138,.55)}
-            .soft{box-shadow:0 6px 24px -10px rgba(95,50,168,.18)}
-            .lift{transition:transform .25s ease, box-shadow .25s ease}
-            .lift:hover{transform:translateY(-3px);box-shadow:0 16px 30px -14px rgba(95,50,168,.35)}
-            body{background:
-                radial-gradient(900px 500px at 0% 0%, #F7F4FC 0%, transparent 60%),
-                radial-gradient(800px 500px at 100% 100%, #E3D9F6 0%, transparent 60%), #EFEBF7;
-                -webkit-tap-highlight-color:transparent}
-            @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-            .rise{opacity:0;animation:rise .55s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
-            @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-            .grow{transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
+            body{background:#EEF1EF;-webkit-tap-highlight-color:transparent;font-feature-settings:"tnum" 1}
+            /* flat bordered panel (was a floating soft-shadow card) */
+            .soft{border:1px solid #D9E0DD;box-shadow:0 1px 0 rgba(15,43,42,.03)}
+            .lift{transition:border-color .15s ease}
+            .lift:hover{border-color:#12766B}
+            .btn-bloom{background:#12766B;color:#fff;transition:background-color .15s ease}
+            .btn-bloom:hover{background:#0D5E55;opacity:1}
+            /* page-load fades were removed on purpose; classes kept so existing markup still works */
+            .rise{opacity:1;animation:none}
+            @keyframes bar-rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+            /* renamed from .grow: Tailwind has its own .grow (flex-grow) which stretched every bar to full height */
+            .bar-rise{transform-origin:bottom;animation:bar-rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
             .scroll-thin::-webkit-scrollbar{width:6px;height:6px}
-            .scroll-thin::-webkit-scrollbar-thumb{background:#D3C2F7;border-radius:9px}
-            @media (prefers-reduced-motion:reduce){.rise,.grow{animation:none;opacity:1}}
+            .scroll-thin::-webkit-scrollbar-thumb{background:#C3CDC9;border-radius:9px}
+            a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #3DA697;outline-offset:2px}
+            @media (prefers-reduced-motion:reduce){.bar-rise{animation:none}}
         </style>
     </head>
 
-    <body class="font-sans text-ink antialiased">
+    <body class="font-sans text-ink antialiased min-h-screen">
         @php
-            $nav = [
-                ['Dashboard', 'admin.dashboard',      'admin.dashboard',   'M3 12l9-9 9 9M5 10v10h5v-6h4v6h5V10'],
-                ['Products',  'admin.products.index', 'admin.products.*',  'M20 7l-8-4-8 4m16 0v10l-8 4m8-14l-8 4m0 10L4 17V7m8 14V11'],
-                ['Orders',    'admin.orders.index',   'admin.orders.*',    'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 5h6M9 12h6M9 16h4'],
-                ['Sliders',   'admin.sliders.index',  'admin.sliders.*',   'M4 5a1 1 0 011-1h14a1 1 0 011 1v10a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm4 14h8m-4-4v4'],
-                ['CMS Content','admin.cms.index',     'admin.cms.*',       'M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm3 4h10M7 14h7'],
-                ['FAQs',      'admin.faqs.index',     'admin.faqs.*',      'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
-                ['Settings',  'admin.settings.edit',  'admin.settings.*',  'M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z'],
-                ['Users',     'admin.users.index',    'admin.users.*',     'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'],
-                ['Newsletters', 'admin.newsletters.index', 'admin.newsletters.*', 'M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z'],
-            ];
-            $navPermissions = [
-                'admin.dashboard' => 'admin.dashboard',
-                'admin.products.index' => 'products.view',
-                'admin.orders.index' => 'orders.view',
-                'admin.sliders.index' => 'sliders.view',
-                'admin.cms.index' => 'cms.view',
-                'admin.faqs.index' => 'faqs.view',
-                'admin.settings.edit' => 'settings.view',
-                'admin.users.index' => 'users.view',
-                'admin.newsletters.index' => 'newsletter.manage',
-            ];
-            $user = auth()->user();
-            $initial = strtoupper(substr($user->name ?? 'A', 0, 1));
+        $nav = [
+            ['Dashboard', 'admin.dashboard',      'admin.dashboard',   'M3 12l9-9 9 9M5 10v10h5v-6h4v6h5V10'],
+            ['Products',  'admin.products.index', 'admin.products.*',  'M20 7l-8-4-8 4m16 0v10l-8 4m8-14l-8 4m0 10L4 17V7m8 14V11'],
+            ['Orders',    'admin.orders.index',   'admin.orders.*',    'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 5h6M9 12h6M9 16h4'],
+            ['Sliders',   'admin.sliders.index',  'admin.sliders.*',   'M4 5a1 1 0 011-1h14a1 1 0 011 1v10a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm4 14h8m-4-4v4'],
+            ['CMS Content','admin.cms.index',     'admin.cms.*',       'M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm3 4h10M7 14h7'],
+            ['FAQs',      'admin.faqs.index',     'admin.faqs.*',      'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
+            ['Settings',  'admin.settings.edit',  'admin.settings.*',  'M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z'],
+            ['Users',     'admin.users.index',    'admin.users.*',     'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'],
+            ['Newsletters', 'admin.newsletters.index', 'admin.newsletters.*', 'M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z'],
+        ];
+        $navPermissions = [
+            'admin.dashboard' => 'admin.dashboard',
+            'admin.products.index' => 'products.view',
+            'admin.orders.index' => 'orders.view',
+            'admin.sliders.index' => 'sliders.view',
+            'admin.cms.index' => 'cms.view',
+            'admin.faqs.index' => 'faqs.view',
+            'admin.settings.edit' => 'settings.view',
+            'admin.users.index' => 'users.view',
+            'admin.newsletters.index' => 'newsletter.manage',
+        ];
+        $user = auth()->user();
+        $initial = strtoupper(substr($user->name ?? 'A', 0, 1));
+            $appName = config('app.name', 'Store');
+            $brandMark = strtoupper(mb_substr($appName, 0, 1));
         @endphp
 
         <div x-data="{ menu: false }"
             x-effect="document.body.classList.toggle('overflow-hidden', menu)"
             @keydown.escape.window="menu = false">
 
-            <div class="md:h-screen">
-                <div class="md:overflow-hidden flex md:h-full min-h-screen">
+            {{-- ============ TOP BAR + TAB NAV ============ --}}
+            <header class="print:hidden sticky top-0 z-40">
 
-                    {{-- ICON RAIL (tablet + desktop) --}}
-                    <div class="rail hidden md:flex w-[72px] shrink-0 flex-col items-center py-5 gap-3 text-white/80">
-                        <a href="{{ route('admin.dashboard') }}" class="w-10 h-10 mb-4 rounded-full bg-white/25 flex items-center justify-center text-white font-semibold">G</a>
-                        @foreach($nav as [$label,$route,$pattern,$icon])
-                            @can($navPermissions[$route])
-                            <a href="{{ route($route) }}" title="{{ $label }}"
-                            class="w-11 h-11 rounded-xl flex items-center justify-center transition {{ request()->routeIs($pattern) ? 'bg-white/25 text-white shadow-inner' : 'hover:bg-white/15' }}">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="{{ $icon }}"/></svg>
-                            </a>
-                            @endcan
-                        @endforeach
-                        <a href="{{ route('home') }}" title="View site" class="mt-auto w-11 h-11 rounded-xl flex items-center justify-center hover:bg-white/15 transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>
-                        </a>
-                    </div>
+                <div class="bg-ink text-white border-b-2 border-bloom-400">
+                    <div class="max-w-[1400px] mx-auto h-14 px-4 md:px-8 flex items-center gap-3">
 
-                    {{-- SIDEBAR (large screens) --}}
-                    <aside class="hidden xl:flex w-[230px] shrink-0 bg-white flex-col px-5 py-6">
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 mb-8 px-1">
-                            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-bloom-400"></span>
-                            <span class="font-semibold tracking-wide">ADMIN + CMS</span>
+                        <button type="button" @click="menu = true" aria-label="Open menu" aria-haspopup="dialog"
+                                class="md:hidden -ml-1 w-10 h-10 rounded-xl hover:bg-white/10 flex flex-col items-center justify-center gap-[5px] shrink-0 transition">
+                            <span class="block w-[18px] h-[2px] rounded-full bg-white"></span>
+                            <span class="block w-[18px] h-[2px] rounded-full bg-white"></span>
+                            <span class="block w-[18px] h-[2px] rounded-full bg-white"></span>
+                        </button>
+
+                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 min-w-0 mr-2">
+                            <span class="w-8 h-8 rounded-xl bg-white text-ink font-bold text-sm flex items-center justify-center shrink-0">{{ $brandMark }}</span>
+                            <span class="font-semibold truncate max-w-[160px] sm:max-w-[240px]">{{ $appName }}</span>
+                            <span class="hidden sm:inline text-xs text-white/50 border-l border-white/20 pl-2.5">Admin</span>
                         </a>
+
+                        <div class="flex-1"></div>
+
+                        @can('orders.view')
+                        <form method="GET" action="{{ route('admin.orders.index') }}" class="hidden lg:flex items-center gap-2 bg-white/10 rounded-xl px-3 py-1.5 text-sm w-72 focus-within:bg-white/15 focus-within:ring-1 ring-brand-300 transition">
+                            <svg class="w-4 h-4 text-white/50 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+                            <input name="q" type="search" placeholder="Search orders" class="bg-transparent outline-none w-full text-white placeholder:text-white/50">
+                        </form>
+                        @endcan
 
                         @can('products.create')
                         <a href="{{ route('admin.products.create') }}"
-                        class="btn-bloom text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 text-sm font-medium mb-7 hover:opacity-90 transition">
-                            <span class="text-lg leading-none">+</span> Add Product
+                           class="hidden sm:inline-flex items-center gap-1.5 bg-bloom-400 hover:bg-bloom-500 hover:text-white text-ink text-sm font-medium rounded-xl px-3.5 py-1.5 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                            Add product
                         </a>
                         @endcan
 
-                        <p class="text-[11px] text-gray-400 mb-3 px-1">Manage</p>
-                        <nav class="space-y-1 text-sm flex-1">
-                            @foreach($nav as [$label,$route,$pattern,$icon])
-                                @can($navPermissions[$route])
-                                <a href="{{ route($route) }}"
-                                class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition {{ request()->routeIs($pattern) ? 'bg-brand-50 text-brand-600 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-ink' }}">
-                                    <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="{{ $icon }}"/></svg>
-                                    {{ $label }}
-                                </a>
-                                @endcan
-                            @endforeach
-                        </nav>
+                        <a href="{{ route('home') }}" title="View site" aria-label="View site" class="hidden sm:flex w-9 h-9 rounded-xl hover:bg-white/10 items-center justify-center text-white/70 hover:text-white transition">
+                            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>
+                        </a>
 
-                        <div class="pt-5 border-t border-gray-100 text-sm space-y-1">
-                            <a href="{{ route('home') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-ink transition">← Back to site</a>
-                            <form method="POST" action="{{ route('logout') }}">@csrf
-                                <button class="w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition">Logout</button>
-                            </form>
-                        </div>
-                    </aside>
-
-                    {{-- MAIN --}}
-                    <div class="flex-1 min-w-0 flex flex-col bg-lav/70">
-                        <header class="sticky md:static top-0 z-30 h-16 md:h-[72px] shrink-0 px-4 md:px-8 flex items-center justify-between gap-3 bg-lav/90 backdrop-blur md:bg-transparent border-b border-white/70">
-                            <div class="flex items-center gap-3 min-w-0">
-                                <button type="button" @click="menu = true" aria-label="Open menu" aria-haspopup="dialog"
-                                        class="md:hidden w-10 h-10 rounded-xl bg-white soft flex flex-col items-center justify-center gap-[5px] shrink-0 active:scale-95 transition">
-                                    <span class="block w-[18px] h-[2px] rounded-full bg-ink"></span>
-                                    <span class="block w-[18px] h-[2px] rounded-full bg-ink"></span>
-                                    <span class="block w-[18px] h-[2px] rounded-full bg-ink"></span>
-                                </button>
-                                <h1 class="text-lg md:text-xl font-semibold truncate">@yield('title')</h1>
-                            </div>
-
-                            <div class="flex items-center gap-3">
-                                @can('orders.view')
-                                <form method="GET" action="{{ route('admin.orders.index') }}" class="hidden lg:flex items-center gap-2 bg-white/80 rounded-xl px-4 py-2 text-xs w-64 focus-within:ring-2 ring-brand-200 transition">
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
-                                    <input name="q" type="search" placeholder="Search orders..." class="bg-transparent outline-none w-full placeholder:text-gray-400">
-                                </form>
-
-                                <a href="{{ route('admin.orders.index') }}" class="w-9 h-9 rounded-xl bg-white soft flex items-center justify-center text-gray-500 hover:text-brand-600 transition" aria-label="Orders">
-                                    <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 11-6 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                </a>
-                                @endcan
-
-                                {{-- profile dropdown --}}
-                                <div class="relative" x-data="{ o:false }" @click.outside="o=false" @keydown.escape.window="o=false">
-                                    <button @click="o=!o" class="flex items-center gap-2 bg-white soft rounded-xl pl-1.5 pr-3 py-1.5 hover:bg-brand-50 transition">
-                                        <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-400 to-bloom-400 text-white text-xs font-semibold flex items-center justify-center">{{ $initial }}</span>
-                                        <span class="hidden sm:block text-sm text-gray-600 max-w-[110px] truncate">{{ $user->name ?? 'Admin' }}</span>
-                                        <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" stroke-linecap="round"/></svg>
-                                    </button>
-                                    <div x-cloak x-show="o" x-transition.origin.top.right class="absolute right-0 mt-2 w-52 bg-white rounded-2xl soft border border-gray-100 p-2 text-sm z-50">
-                                        <div class="px-3 py-2 border-b border-gray-100 mb-1">
-                                            <p class="font-medium truncate">{{ $user->name ?? 'Admin' }}</p>
-                                            <p class="text-[11px] text-gray-400 truncate">{{ $user->email ?? '' }}</p>
-                                            @if($user->role)
-                                                <p class="text-[11px] text-brand-600 truncate">{{ $user->role }}</p>
-                                            @endif
-                                        </div>
-                                        <a href="{{ route('home') }}" class="block px-3 py-2 rounded-xl hover:bg-brand-50 text-gray-600">View site</a>
-                                        @can('settings.view')
-                                        <a href="{{ route('admin.settings.edit') }}" class="block px-3 py-2 rounded-xl hover:bg-brand-50 text-gray-600">Settings</a>
-                                        @endcan
-                                        @can('newsletter.manage')
-                                        <a href="{{ route('admin.newsletters.index') }}" class="block px-3 py-2 rounded-xl hover:bg-brand-50 text-gray-600">Newsletters</a>
-                                        @endcan
-                                        @can('users.edit')
-                                        <a href="{{ route('admin.permissions.index') }}" class="block px-3 py-2 rounded-xl hover:bg-brand-50 text-gray-600">Manage Permissions</a>
-                                        @endcan
-                                        <form method="POST" action="{{ route('logout') }}">@csrf
-                                            <button class="w-full text-left px-3 py-2 rounded-xl hover:bg-red-50 text-red-500">Logout</button>
-                                        </form>
-                                    </div>
+                        {{-- profile dropdown --}}
+                        <div class="relative" x-data="{ o:false }" @click.outside="o=false" @keydown.escape.window="o=false">
+                            <button @click="o=!o" class="flex items-center gap-2 rounded-xl pl-1 pr-2 py-1 hover:bg-white/10 transition" aria-haspopup="menu" :aria-expanded="o">
+                                <span class="w-8 h-8 rounded-xl bg-brand-500 text-white text-xs font-semibold flex items-center justify-center">{{ $initial }}</span>
+                                <span class="hidden sm:block text-sm text-white/90 max-w-[110px] truncate">{{ $user->name ?? 'Admin' }}</span>
+                                <svg class="w-3 h-3 text-white/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" stroke-linecap="round"/></svg>
+                            </button>
+                            <div x-cloak x-show="o" x-transition.origin.top.right class="absolute right-0 mt-2 w-56 bg-white text-ink rounded-2xl shadow-xl border border-gray-200 p-1.5 text-sm z-50">
+                                <div class="px-3 py-2 border-b border-gray-100 mb-1">
+                                    <p class="font-medium truncate">{{ $user->name ?? 'Admin' }}</p>
+                                    <p class="text-xs text-gray-400 truncate">{{ $user->email ?? '' }}</p>
+                                    @if($user->role)
+                                        <p class="text-xs text-brand-600 truncate">{{ $user->role }}</p>
+                                    @endif
                                 </div>
+                                <a href="{{ route('home') }}" class="block px-3 py-2 rounded-xl hover:bg-gray-50 text-gray-600">View site</a>
+                                @can('settings.view')
+                                <a href="{{ route('admin.settings.edit') }}" class="block px-3 py-2 rounded-xl hover:bg-gray-50 text-gray-600">Settings</a>
+                                @endcan
+                                @can('newsletter.manage')
+                                <a href="{{ route('admin.newsletters.index') }}" class="block px-3 py-2 rounded-xl hover:bg-gray-50 text-gray-600">Newsletters</a>
+                                @endcan
+                                @can('users.edit')
+                                <a href="{{ route('admin.permissions.index') }}" class="block px-3 py-2 rounded-xl hover:bg-gray-50 text-gray-600">Manage Permissions</a>
+                                @endcan
+                                <form method="POST" action="{{ route('logout') }}">@csrf
+                                    <button class="w-full text-left px-3 py-2 rounded-xl hover:bg-rose-50 text-rose-600">Logout</button>
+                                </form>
                             </div>
-                        </header>
-
-                        <main class="flex-1 md:overflow-y-auto scroll-thin px-4 py-5 md:p-8 pb-10 md:pb-8">
-                            @if(session('success'))
-                                <div class="rise bg-emerald-50 text-emerald-700 border border-emerald-100 px-4 py-3 rounded-2xl text-sm mb-5">{{ session('success') }}</div>
-                            @endif
-                            @if(session('error'))
-                                <div class="rise bg-rose-50 text-rose-700 border border-rose-100 px-4 py-3 rounded-2xl text-sm mb-5">{{ session('error') }}</div>
-                            @endif
-                            @yield('content')
-                        </main>
+                        </div>
                     </div>
                 </div>
+
+                {{-- tab navigation (tablet + desktop) --}}
+                <nav class="hidden md:block bg-white border-b border-gray-200" aria-label="Admin sections">
+                    <div class="max-w-[1400px] mx-auto px-4 md:px-8 flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                        @foreach($nav as [$label,$route,$pattern,$icon])
+                            @can($navPermissions[$route])
+                            @php $on = request()->routeIs($pattern); @endphp
+                            <a href="{{ route($route) }}" @if($on) aria-current="page" @endif
+                               class="shrink-0 flex items-center gap-2 h-11 px-3 text-sm border-b-2 -mb-px transition {{ $on ? 'border-bloom-400 text-ink font-medium' : 'border-transparent text-gray-500 hover:text-ink hover:border-gray-300' }}">
+                                <svg class="w-[17px] h-[17px] {{ $on ? 'text-brand-600' : '' }}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="{{ $icon }}"/></svg>
+                                {{ $label }}
+                            </a>
+                            @endcan
+                        @endforeach
+                    </div>
+                </nav>
+            </header>
+
+            {{-- ============ PAGE ============ --}}
+            <div class="max-w-[1400px] mx-auto px-4 md:px-8 pt-6 md:pt-8 pb-12 print:p-0">
+                <h1 class="print:hidden text-2xl md:text-[28px] leading-tight font-semibold tracking-tight mb-5 md:mb-6">@yield('title')</h1>
+
+                <main>
+                    @if(session('success'))
+                        <div class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-4 py-3 rounded-2xl text-sm mb-5">{{ session('success') }}</div>
+                    @endif
+                    @if(session('error'))
+                        <div class="bg-rose-50 text-rose-800 border border-rose-200 px-4 py-3 rounded-2xl text-sm mb-5">{{ session('error') }}</div>
+                    @endif
+                    @yield('content')
+                </main>
             </div>
 
-            {{-- FULL-SCREEN MENU (mobile) --}}
-            <div x-cloak x-show="menu"
-                x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-105" x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-105"
-                class="md:hidden fixed inset-0 z-[60] overflow-y-auto overscroll-contain text-white bg-gradient-to-br from-brand-700 via-brand-600 to-brand-400"
-                role="dialog" aria-modal="true" aria-label="Menu">
+            {{-- ============ MOBILE DRAWER ============ --}}
+            <div x-cloak x-show="menu" class="print:hidden md:hidden fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Menu">
+                <div x-show="menu" x-transition.opacity.duration.200ms @click="menu = false" class="absolute inset-0 bg-ink/60"></div>
 
-                <div class="pointer-events-none absolute -right-16 -top-16 w-64 h-64 rounded-full bg-white/10"></div>
-                <div class="pointer-events-none absolute -left-24 bottom-16 w-72 h-72 rounded-full bg-bloom-400/25 blur-2xl"></div>
+                <aside x-show="menu"
+                       x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
+                       x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
+                       class="absolute inset-y-0 left-0 w-[290px] max-w-[85%] bg-ink text-white flex flex-col overflow-y-auto overscroll-contain pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]">
 
-                <div class="relative min-h-full flex flex-col px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-
-                    {{-- top bar --}}
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-9 h-9 rounded-full bg-white/25 flex items-center justify-center font-semibold">G</span>
-                            <span class="font-semibold tracking-wide">G. ADMIN</span>
-                        </div>
-                        <button type="button" @click="menu = false" aria-label="Close menu"
-                                class="w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 backdrop-blur flex items-center justify-center active:scale-90 transition">
+                    <div class="flex items-center justify-between px-4 h-12 mb-2">
+                        <span class="flex items-center gap-2.5 min-w-0">
+                            <span class="w-8 h-8 rounded-xl bg-white text-ink font-bold text-sm flex items-center justify-center shrink-0">{{ $brandMark }}</span>
+                            <span class="font-semibold truncate">{{ $appName }}</span>
+                        </span>
+                        <button type="button" @click="menu = false" aria-label="Close menu" class="w-10 h-10 rounded-xl hover:bg-white/10 flex items-center justify-center transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
                         </button>
                     </div>
 
-                    {{-- user card --}}
-                    <div class="rise flex items-center gap-4 rounded-3xl bg-white/15 backdrop-blur px-4 py-4 mb-6" style="--d:.02s">
-                        <span class="w-12 h-12 rounded-2xl bg-white text-brand-600 text-lg font-semibold flex items-center justify-center shrink-0">{{ $initial }}</span>
+                    <div class="mx-4 mb-4 flex items-center gap-3 rounded-2xl bg-white/10 px-3 py-3">
+                        <span class="w-10 h-10 rounded-xl bg-brand-500 text-white font-semibold flex items-center justify-center shrink-0">{{ $initial }}</span>
                         <div class="min-w-0">
-                            <p class="font-medium truncate">{{ $user->name ?? 'Admin' }}</p>
-                            <p class="text-xs text-white/70 truncate">{{ $user->email ?? '' }}</p>
+                            <p class="text-sm font-medium truncate">{{ $user->name ?? 'Admin' }}</p>
+                            <p class="text-xs text-white/60 truncate">{{ $user->email ?? '' }}</p>
                             @if($user->role)
-                                <p class="text-xs text-white/80 truncate">{{ $user->role }}</p>
+                                <p class="text-xs text-bloom-400 truncate">{{ $user->role }}</p>
                             @endif
                         </div>
                     </div>
 
-                    {{-- main links --}}
-                    <p class="rise text-[11px] uppercase tracking-[0.2em] text-white/60 mb-3 px-1" style="--d:.05s">Manage</p>
-                    <nav class="space-y-2.5">
+                    @can('products.create')
+                    <a href="{{ route('admin.products.create') }}" @click="menu = false"
+                       class="mx-4 mb-4 inline-flex items-center justify-center gap-1.5 bg-bloom-400 text-ink text-sm font-medium rounded-xl py-2.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                        Add product
+                    </a>
+                    @endcan
+
+                    <nav class="flex-1 px-2 space-y-0.5">
                         @foreach($nav as [$label,$route,$pattern,$icon])
                             @can($navPermissions[$route])
                                 @php $on = request()->routeIs($pattern); @endphp
-                                <a href="{{ route($route) }}" @click="menu = false" style="--d:{{ 0.07 + $loop->index * 0.05 }}s"
-                                class="rise flex items-center gap-4 rounded-3xl px-4 py-3.5 transition active:scale-[.98]
-                                        {{ $on ? 'bg-white text-brand-700 shadow-xl shadow-black/10' : 'bg-white/10 hover:bg-white/20 active:bg-white/25' }}">
-                                    <span class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 {{ $on ? 'bg-brand-50 text-brand-600' : 'bg-white/15' }}">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="{{ $icon }}"/></svg>
-                                    </span>
-                                    <span class="flex-1 text-lg font-medium">{{ $label }}</span>
-                                    <svg class="w-5 h-5 {{ $on ? 'text-brand-400' : 'text-white/40' }}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
+                                <a href="{{ route($route) }}" @click="menu = false"
+                                   class="flex items-center gap-3 px-3 py-3 rounded-xl text-[15px] border-l-2 transition {{ $on ? 'bg-white/10 border-bloom-400 text-white font-medium' : 'border-transparent text-white/70 hover:bg-white/5 hover:text-white' }}">
+                                    <svg class="w-5 h-5 shrink-0 {{ $on ? 'text-bloom-400' : '' }}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="{{ $icon }}"/></svg>
+                                    {{ $label }}
                                 </a>
                             @endcan
                         @endforeach
                     </nav>
 
-                    {{-- more --}}
-                    <p class="rise text-[11px] uppercase tracking-[0.2em] text-white/60 mt-7 mb-3 px-1" style="--d:.4s">More</p>
-                    <div class="rise grid grid-cols-2 gap-2.5" style="--d:.42s">
-                        <a href="{{ route('home') }}" class="rounded-2xl bg-white/10 hover:bg-white/20 px-4 py-3.5 text-sm font-medium transition active:scale-[.98]">↗ View site</a>
-                        @can('newsletter.manage')
-                            <a href="{{ route('admin.newsletters.index') }}" @click="menu = false" class="rounded-2xl bg-white/10 hover:bg-white/20 px-4 py-3.5 text-sm font-medium transition active:scale-[.98]">Newsletters</a>
-                        @endcan
+                    <div class="px-2 mt-4 pt-3 border-t border-white/10 space-y-0.5 text-[15px]">
+                        <a href="{{ route('home') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition">View site</a>
                         @can('users.edit')
-                            <a href="{{ route('admin.permissions.index') }}" @click="menu = false" class="rounded-2xl bg-white/10 hover:bg-white/20 px-4 py-3.5 text-sm font-medium transition active:scale-[.98]">Permissions</a>
+                        <a href="{{ route('admin.permissions.index') }}" @click="menu = false" class="flex items-center gap-3 px-3 py-3 rounded-xl text-white/70 hover:bg-white/5 hover:text-white transition">Permissions</a>
                         @endcan
+                        <form method="POST" action="{{ route('logout') }}">@csrf
+                            <button class="w-full text-left flex items-center gap-3 px-3 py-3 rounded-xl text-rose-300 hover:bg-white/5 transition">Logout</button>
+                        </form>
                     </div>
-
-                    {{-- logout --}}
-                    <form method="POST" action="{{ route('logout') }}" class="rise mt-auto pt-8" style="--d:.46s">@csrf
-                        <button class="w-full rounded-2xl bg-white text-rose-600 font-medium py-3.5 text-sm active:scale-[.98] transition">Logout</button>
-                    </form>
-                </div>
+                </aside>
             </div>
 
         </div>{{-- /menu state wrapper --}}

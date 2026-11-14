@@ -50,7 +50,7 @@
                     </td>
                     <td class="font-medium">{{ $s->title ?: '—' }}</td>
                     <td>
-                        <span class="px-2 py-1 rounded text-xs {{ $s->content_type === 'image_only' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700' }}">
+                        <span class="px-2 py-1 rounded text-xs {{ $s->content_type === 'image_only' ? 'bg-brand-100 text-brand-700' : 'bg-sky-100 text-sky-700' }}">
                             {{ $s->content_type === 'image_only' ? 'Image Only' : 'Custom' }}
                         </span>
                     </td>

@@ -37,16 +37,14 @@
 <div class="space-y-5 md:space-y-6">
 
     {{-- ============ HEADER ============ --}}
-    <div class="rise relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-500 to-brand-400 text-white p-5 md:p-7">
-        <div class="absolute -right-8 -top-10 w-44 h-44 rounded-full bg-white/10"></div>
-        <div class="absolute right-24 -bottom-14 w-32 h-32 rounded-full bg-bloom-400/30"></div>
+    <div class="rise relative overflow-hidden rounded-3xl bg-ink text-white p-5 md:p-7">
 
         <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div class="min-w-0">
                 <a href="{{ route('admin.orders.index') }}" class="print:hidden inline-flex items-center gap-1.5 text-xs text-white/70 hover:text-white mb-3 transition">← All orders</a>
                 <div class="flex items-center gap-3 flex-wrap">
                     <h2 class="font-mono text-xl md:text-2xl font-semibold tracking-wide break-all">{{ $order->order_number }}</h2>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium {{ $badge }}">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded text-[11px] font-medium {{ $badge }}">
                         <span class="w-1.5 h-1.5 rounded-full {{ $dot }}"></span>{{ ucfirst($order->status) }}
                     </span>
                 </div>
@@ -83,7 +81,7 @@
                         @if(! $loop->last)
                             <span class="absolute top-4 left-1/2 w-full h-0.5 {{ $step !== false && $i < $step ? 'bg-brand-500' : 'bg-gray-100' }}"></span>
                         @endif
-                        <span class="relative z-10 mx-auto w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition
+                        <span class="relative z-10 mx-auto w-8 h-8 rounded-md flex items-center justify-center text-xs font-semibold transition
                             {{ $done ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-400' }} {{ $now ? 'ring-4 ring-brand-100' : '' }}">
                             {{ $done && ! $now ? '✓' : $i + 1 }}
                         </span>
@@ -119,7 +117,7 @@
                 {{-- desktop table --}}
                 <div class="hidden md:block overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead class="text-left text-[11px] uppercase tracking-wider text-gray-400">
+                        <thead class="text-left text-[11px] text-gray-400">
                             <tr><th class="py-2 font-medium">Product</th><th class="font-medium">Price</th><th class="font-medium">Qty</th><th class="font-medium text-right">Subtotal</th></tr>
                         </thead>
                         <tbody>
@@ -153,7 +151,7 @@
                 </div>
 
                 <div class="flex items-center gap-4 mb-5">
-                    <span class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-400 to-bloom-400 text-white font-semibold text-lg flex items-center justify-center shrink-0">{{ strtoupper(substr($order->customer_name, 0, 1)) }}</span>
+                    <span class="w-12 h-12 rounded-2xl bg-brand-600 text-white font-semibold text-lg flex items-center justify-center shrink-0">{{ strtoupper(substr($order->customer_name, 0, 1)) }}</span>
                     <div class="min-w-0">
                         <p class="font-medium truncate">{{ $order->customer_name }}</p>
                         @if($order->email)<a href="mailto:{{ $order->email }}" class="text-xs text-brand-600 hover:underline break-all">{{ $order->email }}</a>@endif
@@ -162,22 +160,22 @@
 
                 <dl class="grid sm:grid-cols-2 gap-3 text-sm">
                     <div class="bg-lav/60 rounded-2xl px-4 py-3">
-                        <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">Phone</dt>
+                        <dt class="text-[11px] text-gray-400 mb-0.5">Phone</dt>
                         <dd class="font-medium">{{ $order->phone ?: '—' }}</dd>
                     </div>
                     <div class="bg-lav/60 rounded-2xl px-4 py-3">
-                        <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">City</dt>
+                        <dt class="text-[11px] text-gray-400 mb-0.5">City</dt>
                         <dd class="font-medium">{{ $order->city ?: '—' }}</dd>
                     </div>
                     <div class="bg-lav/60 rounded-2xl px-4 py-3 sm:col-span-2">
-                        <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">Address</dt>
+                        <dt class="text-[11px] text-gray-400 mb-0.5">Address</dt>
                         <dd class="font-medium leading-relaxed">{{ $order->address ?: '—' }}</dd>
                     </div>
                 </dl>
 
                 @if($order->notes)
                     <div class="mt-4 rounded-2xl bg-amber-50 border border-amber-100 px-4 py-3 text-sm text-amber-800">
-                        <p class="text-[11px] uppercase tracking-wider text-amber-600 mb-0.5">Customer notes</p>
+                        <p class="text-[11px] text-amber-600 mb-0.5">Customer notes</p>
                         {{ $order->notes }}
                     </div>
                 @endif
@@ -207,7 +205,7 @@
                         <button class="btn-bloom w-full text-white text-sm font-medium rounded-xl py-3 hover:opacity-90 active:scale-[.99] transition">Update status</button>
                     </form>
                 @else
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium {{ $badge }}">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium {{ $badge }}">
                         <span class="w-1.5 h-1.5 rounded-full {{ $dot }}"></span>{{ ucfirst($order->status) }}
                     </span>
                 @endcan
@@ -217,9 +215,9 @@
             <div class="rise bg-white rounded-3xl soft p-5 md:p-6" style="--d:.18s">
                 <h2 class="font-semibold mb-4">Payment</h2>
                 <div class="flex items-center gap-3 mb-4">
-                    <span class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl {{ $isCod ? 'bg-amber-50' : 'bg-sky-50' }}">{{ $isCod ? '💵' : '🏦' }}</span>
+                    <span class="w-11 h-11 rounded-2xl flex items-center justify-center {{ $isCod ? 'bg-amber-50 text-amber-700' : 'bg-sky-50 text-sky-700' }}">@if($isCod)<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 7h18v10H3zM12 14a2 2 0 100-4 2 2 0 000 4z"/></svg>@else<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18"/></svg>@endif</span>
                     <div>
-                        <p class="text-[11px] uppercase tracking-wider text-gray-400">Method</p>
+                        <p class="text-[11px] text-gray-400">Method</p>
                         <p class="text-sm font-medium">{{ $isCod ? 'Cash on Delivery' : 'Bank Transfer' }}</p>
                     </div>
                 </div>

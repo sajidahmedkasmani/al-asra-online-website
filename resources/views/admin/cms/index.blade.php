@@ -160,7 +160,7 @@
                     @foreach($trustDefaults as $index => $defaults)
                         @php $number = $index + 1; @endphp
                         <div class="rounded-xl border border-gray-100 bg-gray-50 p-3 space-y-3">
-                            <p class="text-[11px] font-semibold uppercase text-gray-500">Message {{ $number }}</p>
+                            <p class="text-[11px] font-semibold text-gray-500">Message {{ $number }}</p>
                             <div>
                                 <label class="block text-xs text-gray-600 mb-1">Title</label>
                                 <input name="store_home_trust_{{ $number }}_title" value="{{ old('store_home_trust_'.$number.'_title', $settings['store_home_trust_'.$number.'_title'] ?? $defaults[0]) }}" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
@@ -218,7 +218,7 @@
                             <template x-for="(link, index) in links" :key="index">
                                 <div class="rounded-xl border border-gray-100 bg-gray-50 p-3 space-y-3">
                                     <div class="flex items-center justify-between">
-                                        <p class="text-[11px] font-semibold uppercase text-gray-500" x-text="'Link ' + (index + 1)"></p>
+                                        <p class="text-[11px] font-semibold text-gray-500" x-text="'Link ' + (index + 1)"></p>
                                         <button type="button" @click="links.splice(index, 1)" class="text-xs font-medium text-red-600 hover:text-red-800">Remove</button>
                                     </div>
                                     <div>

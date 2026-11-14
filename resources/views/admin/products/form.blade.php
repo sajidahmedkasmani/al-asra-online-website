@@ -59,7 +59,7 @@
                 </div>
 
                 <label class="block">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Product name <span class="text-rose-500">*</span></span>
+                    <span class="text-xs font-semibold text-gray-500">Product name <span class="text-rose-500">*</span></span>
                     <input type="text" name="name" x-model="name" required placeholder="e.g. Mint Green Floral Lawn Suit"
                            class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-brand-500 focus:ring-4 ring-brand-100 transition @error('name') border-rose-300 @enderror">
                     @error('name') <p class="text-rose-500 text-xs mt-1.5">{{ $message }}</p> @enderror
@@ -67,7 +67,7 @@
 
                 <div class="grid sm:grid-cols-2 gap-5">
                     <label class="block">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Price <span class="text-rose-500">*</span></span>
+                        <span class="text-xs font-semibold text-gray-500">Price <span class="text-rose-500">*</span></span>
                         <div class="mt-2 flex items-center border border-gray-200 rounded-2xl focus-within:border-brand-500 focus-within:ring-4 ring-brand-100 transition @error('price') border-rose-300 @enderror">
                             <span class="pl-4 text-sm text-gray-400">Rs.</span>
                             <input type="number" step="0.01" name="price" x-model="price" required placeholder="2500"
@@ -76,7 +76,7 @@
                         @error('price') <p class="text-rose-500 text-xs mt-1.5">{{ $message }}</p> @enderror
                     </label>
                     <label class="block">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Stock</span>
+                        <span class="text-xs font-semibold text-gray-500">Stock</span>
                         <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" min="0" placeholder="Leave empty for unlimited"
                                class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-brand-500 focus:ring-4 ring-brand-100 transition @error('stock') border-rose-300 @enderror">
                         @error('stock') <p class="text-rose-500 text-xs mt-1.5">{{ $message }}</p> @enderror
@@ -84,7 +84,7 @@
                 </div>
 
                 <label class="block">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Category</span>
+                    <span class="text-xs font-semibold text-gray-500">Category</span>
                     <select name="category_id" class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-brand-500 focus:ring-4 ring-brand-100 transition">
                         <option value="">No category</option>
                         @foreach($categories as $category)
@@ -101,7 +101,7 @@
 
                 <label class="block" x-data="{ n: @js(strlen((string) old('description', $product->description ?? ''))) }">
                     <span class="flex items-center justify-between">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Description</span>
+                        <span class="text-xs font-semibold text-gray-500">Description</span>
                         <span class="text-[11px] text-gray-400" x-text="n + ' characters'"></span>
                     </span>
                     <textarea name="description" rows="6" @input="n = $event.target.value.length" placeholder="Fabric, work, what's included, care tips..."
@@ -139,7 +139,7 @@
                        :class="drag ? 'border-brand-500 bg-brand-50' : 'border-gray-200 hover:border-brand-300 hover:bg-brand-50/50'"
                        @dragover.prevent="drag = true" @dragleave.prevent="drag = false" @drop.prevent="drop($event)">
                     <input type="file" name="image_file" accept="image/*" x-ref="file" @change="pickFile($event)" class="sr-only">
-                    <span class="block text-2xl mb-1">📷</span>
+                    <svg class="w-7 h-7 mx-auto mb-1 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 7a2 2 0 012-2h2l1.5-2h5L16 5h2a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V7zm8 10a4 4 0 100-8 4 4 0 000 8z"/></svg>
                     <span class="block text-sm font-medium" x-text="fileName || 'Click or drop an image'">Click or drop an image</span>
                     <span class="block text-[11px] text-gray-400 mt-1">JPG, PNG or WEBP</span>
                 </label>
@@ -171,8 +171,8 @@
     </div>
 
     {{-- ============ SAVE BAR ============ --}}
-    <div class="sticky bottom-[5.5rem] md:bottom-4 z-20">
-        <div class="bg-white/95 backdrop-blur rounded-2xl soft border border-white px-4 py-3 flex items-center justify-between gap-3">
+    <div class="sticky bottom-3 md:bottom-4 z-20">
+        <div class="bg-white/95 backdrop-blur rounded-2xl soft border border-gray-300 px-4 py-3 flex items-center justify-between gap-3">
             <a href="{{ route('admin.products.index') }}" class="text-xs font-medium text-gray-500 hover:text-ink px-4 py-2.5 rounded-xl hover:bg-gray-100 transition">Cancel</a>
             <button class="btn-bloom text-white text-sm font-medium rounded-xl px-8 py-3 hover:opacity-90 active:scale-[.98] transition">
                 {{ $product->exists ? 'Save changes' : 'Save product' }}

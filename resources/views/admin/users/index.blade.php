@@ -27,7 +27,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-gray-100 bg-gray-50/50 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <tr class="border-b border-gray-100 bg-gray-50/50 text-[11px] font-semibold text-gray-400">
                         <th class="py-3.5 px-5">User</th>
                         <th class="py-3.5 px-5">Email</th>
                         <th class="py-3.5 px-5 text-center">Status</th>
@@ -40,7 +40,7 @@
                         <tr class="hover:bg-gray-50/60 transition">
                             <td class="py-4 px-5">
                                 <div class="flex items-center gap-3">
-                                    <span class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-400 to-bloom-400 text-white text-xs font-semibold flex items-center justify-center shrink-0">
+                                    <span class="w-8 h-8 rounded-md bg-brand-600 text-white text-xs font-semibold flex items-center justify-center shrink-0">
                                         {{ strtoupper(substr($u->name, 0, 1)) }}
                                     </span>
                                     <div>
@@ -62,15 +62,15 @@
                                     @if($u->id !== auth()->id() && $u->id !== 1)
                                         <form method="POST" action="{{ route('admin.users.toggle-active', $u) }}" class="inline">
                                             @csrf
-                                            <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold transition {{ $u->is_active ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                                            <button type="submit" class="px-3 py-1 rounded text-[11px] font-semibold transition {{ $u->is_active ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
                                                 {{ $u->is_active ? 'Active' : 'Inactive' }}
                                             </button>
                                         </form>
                                     @else
-                                        <span class="px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600">Active</span>
+                                        <span class="px-3 py-1 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-600">Active</span>
                                     @endif
                                 @else
-                                    <span class="px-3 py-1 rounded-full text-[11px] font-semibold {{ $u->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500' }}">
+                                    <span class="px-3 py-1 rounded text-[11px] font-semibold {{ $u->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500' }}">
                                         {{ $u->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 @endcan
