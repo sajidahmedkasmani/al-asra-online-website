@@ -17,7 +17,8 @@ class CheckoutController extends Controller
 {
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cart = CartSummary::refreshPrices(session()->get('cart', []));
+        session()->put('cart', $cart);
         $summary = CartSummary::for($cart);
         $viewData = compact('cart', 'summary');
 
@@ -65,6 +66,7 @@ class CheckoutController extends Controller
             }
             $freshCart[$id] = [
                 'price' => (float) $products[$id]->display_price,
+                'original_price' => (float) $products[$id]->original_price,
                 'quantity' => (int) $item['quantity'],
             ];
         }

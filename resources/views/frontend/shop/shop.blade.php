@@ -146,6 +146,7 @@
                         'id' => $product->id,
                         'name' => $product->name,
                         'price' => (float) $product->display_price,
+                        'original_price' => (float) $product->original_price,
                         'image' => $image,
                     ];
                 @endphp
@@ -156,7 +157,12 @@
                     <small>{{ $product->productCategory?->name ?? $product->category ?? 'Al-Asra' }}</small>
                     <h3><a href="{{ $product->product_url }}">{{ $product->name }}</a></h3>
                     <div class="prow">
-                        <b>PKR {{ number_format((float) $product->display_price) }}</b>
+                        <b>
+                            @if($product->has_discount)
+                                <del class="text-gray-400 font-normal mr-1">PKR {{ number_format($product->original_price) }}</del>
+                            @endif
+                            PKR {{ number_format((float) $product->display_price) }}
+                        </b>
                         <button class="addbag" type="button" onclick='AlAsraCart.add(@json($cartItem))'>Add to bag</button>
                     </div>
                 </article>

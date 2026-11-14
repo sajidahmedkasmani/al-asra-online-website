@@ -10,7 +10,8 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cart = CartSummary::refreshPrices(session()->get('cart', []));
+        session()->put('cart', $cart);
         $summary = CartSummary::for($cart);
 
         return view('frontend.shop.cart', compact('cart', 'summary'));
@@ -34,6 +35,7 @@ class CartController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->display_price,
+                'original_price' => $product->original_price,
                 'image' => $product->display_image,
                 'quantity' => $qty,
             ];
@@ -74,6 +76,7 @@ class CartController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->display_price,
+                'original_price' => $product->original_price,
                 'image' => $product->display_image,
                 'quantity' => $item['qty'],
             ];
@@ -125,7 +128,8 @@ class CartController extends Controller
 
     private function cartResponse(Request $request, string $message)
     {
-        $cart = session()->get('cart', []);
+        $cart = CartSummary::refreshPrices(session()->get('cart', []));
+        session()->put('cart', $cart);
         $summary = CartSummary::for($cart);
         $viewData = compact('cart', 'summary');
 

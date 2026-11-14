@@ -10,13 +10,14 @@ class Product extends Model
 {
     protected $fillable = [
     'name', 'slug', 'price', 'description', 'image',
-    'stock', 'is_active', 'external_id', 'price_paisa',
+    'stock', 'is_active', 'external_id', 'price_paisa', 'discount_price',
     'image_url', 'category', 'category_id',
 ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'price' => 'decimal:2',
+        'discount_price' => 'decimal:2',
     ];
 
     public function getRouteKeyName(): string
@@ -49,12 +50,23 @@ class Product extends Model
         return $this->image_url;
     }
 
-    public function getDisplayPriceAttribute(): float
+    public function getOriginalPriceAttribute(): float
     {
         if ($this->price > 0) {
             return (float) $this->price;
         }
         return $this->price_paisa / 100;
+    }
+
+    public function getHasDiscountAttribute(): bool
+    {
+        return $this->discount_price !== null
+            && (float) $this->discount_price < $this->original_price;
+    }
+
+    public function getDisplayPriceAttribute(): float
+    {
+        return $this->has_discount ? (float) $this->discount_price : $this->original_price;
     }
 
     public function getProductUrlAttribute(): string

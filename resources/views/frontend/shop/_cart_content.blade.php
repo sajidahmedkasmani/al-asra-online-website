@@ -27,7 +27,12 @@
                                     <div class="flex items-start justify-between gap-3">
                                         <div class="min-w-0">
                                             <h2 class="font-medium leading-snug">{{ $item['name'] }}</h2>
-                                            <p class="text-sm text-muted mt-1">Rs. {{ number_format($item['price']) }}</p>
+                                            <p class="text-sm text-muted mt-1">
+                                                @if(($item['original_price'] ?? $item['price']) > $item['price'])
+                                                    <del class="mr-1">Rs. {{ number_format($item['original_price']) }}</del>
+                                                @endif
+                                                <span>Rs. {{ number_format($item['price']) }}</span>
+                                            </p>
                                         </div>
                                         <form action="{{ route('cart.remove') }}" method="POST">
                                             @csrf

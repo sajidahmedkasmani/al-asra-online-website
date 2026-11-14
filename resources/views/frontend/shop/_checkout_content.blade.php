@@ -85,7 +85,12 @@
             @foreach($cart as $item)
                 <div class="flex justify-between py-2 border-b last:border-0 text-sm">
                     <span>{{ $item['name'] }} × {{ $item['quantity'] }}</span>
-                    <span>Rs. {{ number_format($item['price'] * $item['quantity']) }}</span>
+                    <span>
+                        @if(($item['original_price'] ?? $item['price']) > $item['price'])
+                            <del class="text-gray-400 mr-1">Rs. {{ number_format($item['original_price'] * $item['quantity']) }}</del>
+                        @endif
+                        Rs. {{ number_format($item['price'] * $item['quantity']) }}
+                    </span>
                 </div>
             @endforeach
             <div class="space-y-2 border-t mt-3 pt-3 text-sm">

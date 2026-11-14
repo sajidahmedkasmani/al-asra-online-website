@@ -20,7 +20,7 @@ class OrderController extends Controller {
    $products=Product::whereIn('external_id',$ids)->where('is_active',true)->get()->keyBy('external_id');
    if($products->count()!==$ids->count()) abort(422,'One or more products are unavailable.');
    $lines=[]; $subtotal=0;
-   foreach($data['items'] as $item){ $p=$products[$item['product_id']]; $line=$p->price_paisa*$item['quantity']; $subtotal+=$line; $lines[]=['product_id'=>$p->id,'product_name'=>$p->name,'unit_price_paisa'=>$p->price_paisa,'quantity'=>$item['quantity'],'line_total_paisa'=>$line]; }
+   foreach($data['items'] as $item){ $p=$products[$item['product_id']]; $unitPrice=(int) round($p->display_price*100); $line=$unitPrice*$item['quantity']; $subtotal+=$line; $lines[]=['product_id'=>$p->id,'product_name'=>$p->name,'unit_price_paisa'=>$unitPrice,'quantity'=>$item['quantity'],'line_total_paisa'=>$line]; }
    $o=Order::create(['order_number'=>'GC-'.now()->format('ymd').'-'.Str::upper(Str::random(6)),'customer_name'=>$data['customer_name'],'email'=>$data['email']??null,'phone'=>$data['phone'],'address'=>$data['address'],'city'=>$data['city'],'payment_method'=>$data['payment_method'],'subtotal_paisa'=>$subtotal,'status'=>'pending','customer_note'=>$data['customer_note']??null]);
    $o->items()->createMany($lines); return $o;
   });

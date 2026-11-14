@@ -25,7 +25,7 @@
         </div>
 
         <button type="button" data-cart-add data-product-id="{{ $p->id }}" data-product-name="{{ $p->name }}"
-                data-product-price="{{ $price }}" data-product-image="{{ $img }}"
+                data-product-price="{{ $price }}" data-product-original-price="{{ $p->original_price }}" data-product-image="{{ $img }}"
                 aria-label="Add {{ $p->name }} to cart" title="Quick add"
                 class="absolute right-3 bottom-3 z-10 w-10 h-10 rounded-full bg-white text-plum shadow-lg flex items-center justify-center text-xl leading-none hover:bg-plum hover:text-white active:scale-95 transition md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0">+</button>
         <button type="button" data-wishlist-toggle data-product-id="{{ $p->id }}" aria-pressed="{{ $isWishlisted ? 'true' : 'false' }}"
@@ -37,6 +37,11 @@
 
     <a href="{{ $p->product_url }}" data-product-card class="block pt-3">
         <h3 class="text-[13px] md:text-sm leading-snug line-clamp-2 group-hover:text-plum transition">{{ $p->name }}</h3>
-        <p class="text-sm font-medium mt-1">Rs. {{ number_format($price) }}</p>
+        <p class="text-sm font-medium mt-1">
+            @if($p->has_discount)
+                <del class="text-muted font-normal mr-1">Rs. {{ number_format($p->original_price) }}</del>
+            @endif
+            <span>Rs. {{ number_format($price) }}</span>
+        </p>
     </a>
 </div>

@@ -23,6 +23,7 @@
 .bag-quantity button:disabled{opacity:.35;cursor:not-allowed}
 .bag-quantity span{min-width:28px;text-align:center;font-size:12px}
 .bag-line-total{font-weight:700;font-size:13px}
+.bag-alert{margin-bottom:16px;padding:12px 14px;border:1px solid #e8bbb1;border-radius:10px;background:#fff5f2;color:#8f2f20;font-size:12px}
 .bag-continue{display:inline-flex;align-items:center;gap:8px;margin-top:22px;color:#765c62;font-size:12px}
 .bag-summary{position:sticky;top:105px;padding:24px;border:1px solid #5a10241a;border-radius:18px;background:#fff;box-shadow:0 12px 40px -28px #5a102455}
 .bag-summary h2{margin-bottom:20px;font-size:24px}
@@ -51,6 +52,7 @@
         <h1>Your bag</h1>
         <p id="bag-item-count" aria-live="polite"></p>
     </div>
+    <p class="bag-alert" id="bag-sync-error" role="alert" hidden></p>
     <div id="bag-content" aria-live="polite"></div>
     <div class="bag-mobile-checkout" id="bag-mobile-checkout" hidden>
         <div><small class="bag-muted">Total</small><br><b id="bag-mobile-total"></b></div>
@@ -66,6 +68,7 @@
     const initialCart = @json(array_values($cart));
     const itemCount = document.getElementById('bag-item-count');
     const content = document.getElementById('bag-content');
+    const syncError = document.getElementById('bag-sync-error');
     const mobileCheckout = document.getElementById('bag-mobile-checkout');
     const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -77,6 +80,7 @@
             id: item.id,
             name: item.name,
             price: Number(item.price),
+            original_price: Number(item.original_price ?? item.price),
             image: item.image,
             qty: Number(item.quantity)
         })));
@@ -98,7 +102,7 @@
                 <img class="bag-image" src="${escapeHtml(item.image || '/logo.png')}" alt="${escapeHtml(item.name)}" loading="lazy">
                 <div class="bag-item">
                     <div class="bag-item-top">
-                        <div><h2>${escapeHtml(item.name)}</h2><p class="bag-unit">${money(item.price)} each</p></div>
+                        <div><h2>${escapeHtml(item.name)}</h2><p class="bag-unit">${Number(item.original_price) > Number(item.price) ? `<del>${money(item.original_price)}</del> ` : ''}${money(item.price)} each</p></div>
                         <button class="bag-remove" type="button" data-remove="${escapeHtml(item.id)}" aria-label="Remove ${escapeHtml(item.name)}">Remove</button>
                     </div>
                     <div class="bag-item-bottom">
@@ -153,6 +157,13 @@
     });
 
     render();
+    AlAsraCart.sync().then(() => {
+        syncError.hidden = true;
+        render();
+    }).catch(error => {
+        syncError.textContent = `We couldn't refresh your cart prices. Please try again. ${error.message || ''}`.trim();
+        syncError.hidden = false;
+    });
 })();
 </script>
 @endpush

@@ -71,6 +71,18 @@ Order request example:
 
 For the order endpoint, `product_id` is the existing catalogue's external WooCommerce ID. The backend re-reads current prices from MySQL; it does not trust frontend prices. Payment methods are `cod` and `bank_transfer`. The backend stores the order and item lines transactionally.
 
+## Product discount campaigns
+
+Admins can create campaigns for all active products, a category, one product, or products in an original-price range. Discounts may be percentage-based or a fixed rupee amount. Set a start time and either an end time or leave the end time empty for an ongoing campaign. If campaigns overlap, the one with the latest start time takes precedence.
+
+Campaign prices are stored in `products.discount_price`; the original product price is not overwritten. The storefront, cart, checkout, and API use the current discounted price and show the original price alongside it. `campaigns:sync-prices` applies scheduled campaigns and clears prices after they expire or are disabled. The Laravel scheduler runs this command every minute, so production must invoke the scheduler each minute:
+
+```cron
+* * * * * cd /path/to/laravel-app && php artisan schedule:run >> /dev/null 2>&1
+```
+
+For local development, `php artisan schedule:work` runs the scheduler continuously.
+
 ## Important before public launch
 
 - Set `APP_DEBUG=false`, use HTTPS, strong DB credentials, and restrict CORS to the exact production frontend origin.

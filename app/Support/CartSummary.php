@@ -2,10 +2,29 @@
 
 namespace App\Support;
 
+use App\Models\Product;
 use App\Models\Setting;
 
 class CartSummary
 {
+    public static function refreshPrices(array $cart): array
+    {
+        if ($cart === []) {
+            return [];
+        }
+
+        $products = Product::whereIn('id', array_keys($cart))->get()->keyBy('id');
+
+        foreach ($cart as $id => $item) {
+            if (isset($products[$id])) {
+                $cart[$id]['price'] = $products[$id]->display_price;
+                $cart[$id]['original_price'] = $products[$id]->original_price;
+            }
+        }
+
+        return $cart;
+    }
+
     public static function for(array $cart): array
     {
         $subtotal = (float) collect($cart)->sum(

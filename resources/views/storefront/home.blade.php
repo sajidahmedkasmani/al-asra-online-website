@@ -145,9 +145,9 @@
         <div class="pgrid" id="home-products">
             @forelse($products as $p)
                 @php
-                    $cartItem = ['id' => $p->id, 'name' => $p->name, 'price' => (float) $p->display_price, 'image' => $imgFor($p)];
+                    $cartItem = ['id' => $p->id, 'name' => $p->name, 'price' => (float) $p->display_price, 'original_price' => (float) $p->original_price, 'image' => $imgFor($p)];
                 @endphp
-                <article class="pcard" data-category="{{ $p->productCategory?->slug }}"><a class="pic" href="{{ $p->product_url }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></a><small>{{ $p->productCategory?->name ?? 'Al-Asra' }}</small><h3><a href="{{ $p->product_url }}">{{ $p->name }}</a></h3><div class="prow"><b>PKR {{ number_format((float)$p->display_price) }}</b><button class="addbag" type="button" onclick='AlAsraCart.add(@json($cartItem))'>Add to bag</button></div></article>
+                <article class="pcard" data-category="{{ $p->productCategory?->slug }}"><a class="pic" href="{{ $p->product_url }}"><img src="{{ $imgFor($p) }}" alt="{{ $p->name }}"></a><small>{{ $p->productCategory?->name ?? 'Al-Asra' }}</small><h3><a href="{{ $p->product_url }}">{{ $p->name }}</a></h3><div class="prow"><b>@if($p->has_discount)<del>PKR {{ number_format($p->original_price) }}</del> @endif PKR {{ number_format((float)$p->display_price) }}</b><button class="addbag" type="button" onclick='AlAsraCart.add(@json($cartItem))'>Add to bag</button></div></article>
             @empty
                 <div class="empty">Our collection is being refreshed. Please check back soon.</div>
             @endforelse

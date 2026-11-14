@@ -45,7 +45,12 @@
                 <svg class="w-5 h-5" fill="{{ $isWishlisted ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.3-9A5.3 5.3 0 0 1 12 6a5.3 5.3 0 0 1 9.3 6C19 16.4 12 21 12 21Z"/></svg>
                 <span data-wishlist-label>{{ $isWishlisted ? 'Saved to wishlist' : 'Add to wishlist' }}</span>
             </button>
-            <p class="text-2xl md:text-3xl font-medium text-plum mb-1">Rs. {{ number_format($price) }}</p>
+            <p class="text-2xl md:text-3xl font-medium text-plum mb-1">
+                @if($product->has_discount)
+                    <del class="text-muted text-lg font-normal mr-2">Rs. {{ number_format($product->original_price) }}</del>
+                @endif
+                <span>Rs. {{ number_format($price) }}</span>
+            </p>
             <p class="text-xs text-muted mb-8">Free shipping on orders of Rs. 10,000 and above</p>
 
             <div class="text-ink/75 leading-[1.8] text-[15px] mb-8">
@@ -54,7 +59,7 @@
 
             {{-- add to cart --}}
             <form id="add-form" data-cart-form data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}"
-                  data-product-price="{{ $price }}" data-product-image="{{ $img }}" class="mb-4">
+                  data-product-price="{{ $price }}" data-product-original-price="{{ $product->original_price }}" data-product-image="{{ $img }}" class="mb-4">
                 <p class="text-[11px] uppercase tracking-[0.2em] text-muted mb-3">Quantity</p>
                 <div class="flex flex-wrap items-center gap-3">
                     <div class="inline-flex items-center bg-white border border-black/10 rounded-full">

@@ -17,6 +17,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\Admin\QueueMonitorController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CatalogController;
+use App\Http\Controllers\Admin\CampaignController;
 use App\Http\Controllers\WishlistController;
 
 use App\Http\Controllers\CustomerAuthController;
@@ -99,6 +100,21 @@ use App\Http\Controllers\CustomerProfileController;
             ->middleware('can:products.delete')->name('products.destroy');
         Route::post('products/bulk-status', [ProductController::class, 'bulkStatus'])
             ->middleware('can:products.bulk-status')->name('products.bulk-status');
+
+        Route::middleware('can:products.view')->group(function () {
+            Route::get('campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
+        });
+        Route::middleware('can:products.create')->group(function () {
+            Route::get('campaigns/create', [CampaignController::class, 'create'])->name('campaigns.create');
+            Route::post('campaigns', [CampaignController::class, 'store'])->name('campaigns.store');
+        });
+        Route::middleware('can:products.edit')->group(function () {
+            Route::get('campaigns/{campaign}/edit', [CampaignController::class, 'edit'])->name('campaigns.edit');
+            Route::put('campaigns/{campaign}', [CampaignController::class, 'update'])->name('campaigns.update');
+            Route::post('campaigns/{campaign}/toggle', [CampaignController::class, 'toggle'])->name('campaigns.toggle');
+        });
+        Route::delete('campaigns/{campaign}', [CampaignController::class, 'destroy'])
+            ->middleware('can:products.delete')->name('campaigns.destroy');
 
         Route::middleware('can:orders.view')->group(function () {
             Route::get('orders', [OrderController::class, 'index'])->name('orders.index');

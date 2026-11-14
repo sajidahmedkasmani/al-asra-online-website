@@ -72,8 +72,8 @@ class ShopController extends Controller
         }
 
         match ($request->query('sort', 'newest')) {
-            'price_asc' => $query->orderBy('price'),
-            'price_desc' => $query->orderByDesc('price'),
+            'price_asc' => $query->orderByRaw('CASE WHEN discount_price IS NOT NULL THEN discount_price WHEN price > 0 THEN price ELSE price_paisa / 100.0 END ASC'),
+            'price_desc' => $query->orderByRaw('CASE WHEN discount_price IS NOT NULL THEN discount_price WHEN price > 0 THEN price ELSE price_paisa / 100.0 END DESC'),
             default => $query->latest(),
         };
 

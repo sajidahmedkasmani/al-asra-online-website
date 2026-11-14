@@ -149,6 +149,7 @@
             id: item.id,
             name: item.name,
             price: Number(item.price),
+            original_price: Number(item.original_price ?? item.price),
             image: item.image,
             qty: Number(item.quantity)
         })));
@@ -161,7 +162,7 @@
             <div class="checkout-item">
                 <img src="${escapeHtml(item.image || '/logo.png')}" alt="${escapeHtml(item.name)}">
                 <div><p class="checkout-item-name">${escapeHtml(item.name)}</p><p class="checkout-item-qty">Qty ${Number(item.qty)}</p></div>
-                <b class="checkout-item-price">${money(item.price * item.qty)}</b>
+                <b class="checkout-item-price">${Number(item.original_price) > Number(item.price) ? `<del>${money(item.original_price * item.qty)}</del> ` : ''}${money(item.price * item.qty)}</b>
             </div>
         `).join('') : '<p class="checkout-muted">Your bag is empty. <a href="{{ route('shop') }}" style="text-decoration:underline">Continue shopping</a>.</p>';
         totalsElement.innerHTML = `
@@ -195,6 +196,10 @@
     });
 
     renderOrder();
+    AlAsraCart.sync().then(renderOrder).catch(error => {
+        errorElement.textContent = error.message || 'We could not refresh your cart prices. Please try again.';
+        errorElement.hidden = false;
+    });
 })();
 </script>
 @endpush
