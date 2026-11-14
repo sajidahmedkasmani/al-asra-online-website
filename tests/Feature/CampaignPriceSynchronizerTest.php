@@ -220,6 +220,30 @@ class CampaignPriceSynchronizerTest extends TestCase
         $this->assertSame(4500.0, (float) $higherProduct->fresh()->discount_price);
     }
 
+    public function test_pivot_migration_preserves_existing_single_product_campaigns(): void
+    {
+        $product = $this->product('legacy-campaign-item', 1000);
+        $campaignId = DB::table('campaigns')->insertGetId([
+            'name' => 'Legacy product campaign',
+            'type' => 'product',
+            'discount_type' => 'percentage',
+            'discount_value' => 10,
+            'product_id' => $product->id,
+            'starts_at' => now()->subMinute()->toDateTimeString(),
+            'is_active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $migration = require database_path('migrations/2026_11_14_000002_create_campaign_products_table.php');
+        $migration->up();
+
+        $this->assertDatabaseHas('campaign_products', [
+            'campaign_id' => $campaignId,
+            'product_id' => $product->id,
+        ]);
+    }
+
     private function product(string $slug, float $price, ?int $categoryId = null, bool $isActive = true): Product
     {
         return Product::create([

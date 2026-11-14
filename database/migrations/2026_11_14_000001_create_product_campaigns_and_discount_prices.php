@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('discount_type', 20);
             $table->decimal('discount_value', 12, 2);
             $table->foreignId('category_id')->nullable()->constrained('product_categories')->nullOnDelete();
+            $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete();
             $table->decimal('price_min', 12, 2)->nullable();
             $table->decimal('price_max', 12, 2)->nullable();
             $table->dateTime('starts_at');
@@ -28,17 +29,10 @@ return new class extends Migration
 
             $table->index(['is_active', 'starts_at', 'ends_at']);
         });
-
-        Schema::create('campaign_products', function (Blueprint $table) {
-            $table->foreignId('campaign_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->primary(['campaign_id', 'product_id']);
-        });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('campaign_products');
         Schema::dropIfExists('campaigns');
 
         Schema::table('products', function (Blueprint $table) {
