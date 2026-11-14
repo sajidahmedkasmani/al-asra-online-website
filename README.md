@@ -73,15 +73,15 @@ For the order endpoint, `product_id` is the existing catalogue's external WooCom
 
 ## Product discount campaigns
 
-Admins can create campaigns for all active products, a category, one product, or products in an original-price range. Discounts may be percentage-based or a fixed rupee amount. Set a start time and either an end time or leave the end time empty for an ongoing campaign. If campaigns overlap, the one with the latest start time takes precedence.
+Admins can create campaigns for all active products, a category, one or more products, or products in an original-price range. A price-range campaign needs at least one bound; the minimum, maximum, or both can be supplied. Discounts may be percentage-based or a fixed rupee amount. Set a start time and either an end time or leave the end time empty for an ongoing campaign. If campaigns overlap, the one with the latest start time takes precedence.
 
-Campaign prices are stored in `products.discount_price`; the original product price is not overwritten. The storefront, cart, checkout, and API use the current discounted price and show the original price alongside it. `campaigns:sync-prices` applies scheduled campaigns and clears prices after they expire or are disabled. The Laravel scheduler runs this command every minute, so production must invoke the scheduler each minute:
+Campaign prices are stored in `products.discount_price`; the original product price is not overwritten. The storefront, cart, checkout, and API use the current discounted price and show the original price alongside it. `campaign-cron.php` runs `campaigns:sync-prices` and clears prices after campaigns expire or are disabled. Add a Hostinger cron job to run it every minute:
 
 ```cron
-* * * * * cd /path/to/laravel-app && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /path/to/laravel-app && php campaign-cron.php
 ```
 
-For local development, `php artisan schedule:work` runs the scheduler continuously.
+Keep the existing `queue-cron.php` email/queue job separate.
 
 ## Important before public launch
 

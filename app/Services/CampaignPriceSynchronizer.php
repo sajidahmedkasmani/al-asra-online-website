@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Campaign;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class CampaignPriceSynchronizer
@@ -17,18 +18,15 @@ class CampaignPriceSynchronizer
 
             $basePrice = 'CASE WHEN price > 0 THEN price ELSE price_paisa / 100.0 END';
 
-            foreach (Campaign::effectiveAt(now())->get() as $campaign) {
+            foreach (Campaign::effectiveAt(now())->with('products:id')->get() as $campaign) {
                 $query = Product::query()
                     ->where('is_active', true)
                     ->whereNull('discount_price');
 
                 match ($campaign->type) {
                     'category' => $query->where('category_id', $campaign->category_id),
-                    'product' => $query->whereKey($campaign->product_id),
-                    'price_range' => $query->whereRaw(
-                        "{$basePrice} BETWEEN CAST(? AS DECIMAL(12,2)) AND CAST(? AS DECIMAL(12,2))",
-                        [$campaign->price_min, $campaign->price_max]
-                    ),
+                    'product' => $query->whereIn('id', $campaign->products->modelKeys()),
+                    'price_range' => $this->applyPriceRange($query, $basePrice, $campaign),
                     default => null,
                 };
 
@@ -46,5 +44,22 @@ class CampaignPriceSynchronizer
 
             return $changed;
         });
+    }
+
+    private function applyPriceRange(Builder $query, string $basePrice, Campaign $campaign): void
+    {
+        if ($campaign->price_min !== null) {
+            $query->whereRaw(
+                "{$basePrice} >= CAST(? AS DECIMAL(12,2))",
+                [$campaign->price_min]
+            );
+        }
+
+        if ($campaign->price_max !== null) {
+            $query->whereRaw(
+                "{$basePrice} <= CAST(? AS DECIMAL(12,2))",
+                [$campaign->price_max]
+            );
+        }
     }
 }

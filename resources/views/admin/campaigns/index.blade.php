@@ -31,8 +31,9 @@
                         @php
                             $target = match ($campaign->type) {
                                 'category' => $campaign->category?->name ?? 'Category removed',
-                                'product' => $campaign->product?->name ?? 'Product removed',
-                                'price_range' => 'Rs. '.number_format($campaign->price_min).' – '.number_format($campaign->price_max),
+                                'product' => $campaign->products->pluck('name')->join(', ') ?: 'No products selected',
+                                'price_range' => ($campaign->price_min !== null ? 'Rs. '.number_format($campaign->price_min) : 'Any price')
+                                    .' – '.($campaign->price_max !== null ? 'Rs. '.number_format($campaign->price_max) : 'No upper limit'),
                                 default => 'All active products',
                             };
                             $status = !$campaign->is_active

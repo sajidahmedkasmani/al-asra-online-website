@@ -5,6 +5,7 @@
 @php
     $selectedType = old('type', $campaign->type ?? 'all_active');
     $selectedDiscountType = old('discount_type', $campaign->discount_type ?? 'percentage');
+    $selectedProductIds = old('product_ids', $selectedProductIds);
     $startsAt = old('starts_at', $campaign->starts_at?->format('Y-m-d\TH:i') ?? now()->format('Y-m-d\TH:i'));
     $endsAt = old('ends_at', $campaign->ends_at?->format('Y-m-d\TH:i'));
 @endphp
@@ -36,7 +37,7 @@
                     class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-brand-500">
                 <option value="all_active">All active products</option>
                 <option value="category">A specific category</option>
-                <option value="product">A specific product</option>
+                <option value="product">Specific products</option>
                 <option value="price_range">Products within a price range</option>
             </select>
         </div>
@@ -55,32 +56,32 @@
         </div>
 
         <div x-cloak x-show="type === 'product'">
-            <label for="campaign-product" class="text-xs font-semibold uppercase tracking-wider text-gray-500">Product</label>
-            <select id="campaign-product" name="product_id" :required="type === 'product'"
-                    class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm">
-                <option value="">Choose product</option>
+            <label for="campaign-products" class="text-xs font-semibold uppercase tracking-wider text-gray-500">Products</label>
+            <select id="campaign-products" name="product_ids[]" multiple :required="type === 'product'"
+                    class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm" size="7">
                 @foreach($products as $product)
-                    <option value="{{ $product->id }}" @selected((string) old('product_id', $campaign->product_id) === (string) $product->id)>
+                    <option value="{{ $product->id }}" @selected(in_array((string) $product->id, array_map('strval', $selectedProductIds), true))>
                         {{ $product->name }} — Rs. {{ number_format($product->price > 0 ? $product->price : $product->price_paisa / 100) }}
                     </option>
                 @endforeach
             </select>
+            <span class="block text-xs text-gray-400 mt-1">Select one or more products. Use Ctrl (Windows) or Command (Mac) to select multiple.</span>
         </div>
 
         <div x-cloak x-show="type === 'price_range'" class="grid sm:grid-cols-2 gap-4">
             <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Minimum original price (Rs.)</span>
-                <input type="number" name="price_min" min="0" step="0.01" :required="type === 'price_range'"
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Minimum original price (Rs.) — optional</span>
+                <input type="number" name="price_min" min="0" step="0.01"
                        value="{{ old('price_min', $campaign->price_min) }}"
                        class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm">
             </label>
             <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Maximum original price (Rs.)</span>
-                <input type="number" name="price_max" min="0" step="0.01" :required="type === 'price_range'"
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Maximum original price (Rs.) — optional</span>
+                <input type="number" name="price_max" min="0" step="0.01"
                        value="{{ old('price_max', $campaign->price_max) }}"
                        class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm">
             </label>
-            <p class="sm:col-span-2 text-xs text-gray-400">Both limits are inclusive and use each product's original price.</p>
+            <p class="sm:col-span-2 text-xs text-gray-400">Enter a minimum, a maximum, or both. Limits are inclusive and use original prices.</p>
         </div>
 
         <div class="grid sm:grid-cols-2 gap-4">

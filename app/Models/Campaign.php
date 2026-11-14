@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Campaign extends Model
 {
@@ -14,7 +15,6 @@ class Campaign extends Model
         'discount_type',
         'discount_value',
         'category_id',
-        'product_id',
         'price_min',
         'price_max',
         'starts_at',
@@ -36,9 +36,9 @@ class Campaign extends Model
         return $this->belongsTo(ProductCategory::class);
     }
 
-    public function product(): BelongsTo
+    public function products(): BelongsToMany
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsToMany(Product::class, 'campaign_products');
     }
 
     public function scopeEffectiveAt(Builder $query, $time): Builder

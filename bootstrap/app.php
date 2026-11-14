@@ -19,7 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('newsletter:dispatch-due')->everyMinute()->withoutOverlapping();
-        $schedule->command('campaigns:sync-prices')->everyMinute()->withoutOverlapping();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

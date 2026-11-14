@@ -13,7 +13,7 @@ class CampaignController extends Controller
 {
     public function index()
     {
-        $campaigns = Campaign::with(['category', 'product'])
+        $campaigns = Campaign::with(['category', 'products'])
             ->latest()
             ->paginate(15);
 
@@ -28,7 +28,9 @@ class CampaignController extends Controller
     public function store(Request $request, CampaignPriceSynchronizer $synchronizer)
     {
         $data = $this->validated($request);
-        Campaign::create($this->targetFields($data));
+        $productIds = $this->targetFields($data);
+        $campaign = Campaign::create($data);
+        $campaign->products()->sync($productIds);
         $synchronizer->sync();
 
         return redirect()->route('admin.campaigns.index')->with('success', 'Campaign created.');
@@ -42,7 +44,9 @@ class CampaignController extends Controller
     public function update(Request $request, Campaign $campaign, CampaignPriceSynchronizer $synchronizer)
     {
         $data = $this->validated($request);
-        $campaign->update($this->targetFields($data));
+        $productIds = $this->targetFields($data);
+        $campaign->update($data);
+        $campaign->products()->sync($productIds);
         $synchronizer->sync();
 
         return redirect()->route('admin.campaigns.index')->with('success', 'Campaign updated.');
@@ -68,8 +72,9 @@ class CampaignController extends Controller
     {
         $categories = ProductCategory::with('collection')->orderBy('name')->get();
         $products = Product::orderBy('name')->get(['id', 'name', 'price', 'price_paisa']);
+        $selectedProductIds = $campaign->exists ? $campaign->products()->pluck('products.id')->all() : [];
 
-        return view('admin.campaigns.form', compact('campaign', 'categories', 'products'));
+        return view('admin.campaigns.form', compact('campaign', 'categories', 'products', 'selectedProductIds'));
     }
 
     private function validated(Request $request): array
@@ -78,31 +83,43 @@ class CampaignController extends Controller
             ? ['required', 'numeric', 'gt:0', 'lte:100']
             : ['required', 'numeric', 'gt:0'];
 
+        $priceMinRules = ['nullable', 'numeric', 'min:0'];
+        $priceMaxRules = ['nullable', 'numeric', 'min:0'];
+        if ($request->input('type') === 'price_range') {
+            $priceMinRules[] = 'required_without:price_max';
+            $priceMaxRules[] = 'required_without:price_min';
+            if ($request->filled('price_min')) {
+                $priceMaxRules[] = 'gte:price_min';
+            }
+        }
+
         return $request->validate([
             'name' => ['required', 'string', 'max:160'],
             'type' => ['required', 'in:all_active,category,product,price_range'],
             'discount_type' => ['required', 'in:percentage,fixed'],
             'discount_value' => $discountValueRules,
             'category_id' => ['nullable', 'required_if:type,category', 'integer', 'exists:product_categories,id'],
-            'product_id' => ['nullable', 'required_if:type,product', 'integer', 'exists:products,id'],
-            'price_min' => ['nullable', 'required_if:type,price_range', 'numeric', 'min:0'],
-            'price_max' => ['nullable', 'required_if:type,price_range', 'numeric', 'gte:price_min'],
+            'product_ids' => ['nullable', 'required_if:type,product', 'array', 'min:1'],
+            'product_ids.*' => ['required', 'integer', 'distinct', 'exists:products,id'],
+            'price_min' => $priceMinRules,
+            'price_max' => $priceMaxRules,
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'date', 'after:starts_at'],
             'is_active' => ['nullable', 'boolean'],
         ]);
     }
 
-    private function targetFields(array $data): array
+    private function targetFields(array &$data): array
     {
         $type = $data['type'];
+        $productIds = $type === 'product' ? ($data['product_ids'] ?? []) : [];
 
         $data['category_id'] = $type === 'category' ? ($data['category_id'] ?? null) : null;
-        $data['product_id'] = $type === 'product' ? ($data['product_id'] ?? null) : null;
         $data['price_min'] = $type === 'price_range' ? ($data['price_min'] ?? null) : null;
         $data['price_max'] = $type === 'price_range' ? ($data['price_max'] ?? null) : null;
         $data['is_active'] = (bool) ($data['is_active'] ?? false);
+        unset($data['product_ids']);
 
-        return $data;
+        return $productIds;
     }
 }

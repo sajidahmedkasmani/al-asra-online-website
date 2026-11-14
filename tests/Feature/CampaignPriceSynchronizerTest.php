@@ -40,6 +40,7 @@ class CampaignPriceSynchronizerTest extends TestCase
         $otherCategory = $this->category('accessories', 'bags');
         $categoryProduct = $this->product('category-item', 1000, $category->id);
         $selectedProduct = $this->product('selected-item', 2000, $otherCategory->id);
+        $anotherSelectedProduct = $this->product('another-selected-item', 2200, $otherCategory->id);
         $rangeProduct = $this->product('range-item', 3000, $otherCategory->id);
         $outsideRange = $this->product('outside-range', 5000, $otherCategory->id);
 
@@ -52,7 +53,7 @@ class CampaignPriceSynchronizerTest extends TestCase
         ]);
         $this->campaign([
             'type' => 'product',
-            'product_id' => $selectedProduct->id,
+            'product_ids' => [$selectedProduct->id, $anotherSelectedProduct->id],
             'discount_type' => 'percentage',
             'discount_value' => 20,
             'starts_at' => now()->subMinutes(2),
@@ -70,6 +71,7 @@ class CampaignPriceSynchronizerTest extends TestCase
 
         $this->assertSame(900.0, (float) $categoryProduct->fresh()->discount_price);
         $this->assertSame(1600.0, (float) $selectedProduct->fresh()->discount_price);
+        $this->assertSame(1760.0, (float) $anotherSelectedProduct->fresh()->discount_price);
         $this->assertSame(2750.0, (float) $rangeProduct->fresh()->discount_price);
         $this->assertNull($outsideRange->fresh()->discount_price);
     }
@@ -162,12 +164,15 @@ class CampaignPriceSynchronizerTest extends TestCase
             ->get(route('admin.campaigns.create'))
             ->assertOk()
             ->assertSee('Create Campaign')
-            ->assertSee('Products within a price range');
+            ->assertSee('Products within a price range')
+            ->assertSee('name="product_ids[]"', false);
 
+        $anotherProduct = $this->product('another-admin-campaign-item', 2000);
         $this->actingAs($admin)
             ->post(route('admin.campaigns.store'), [
                 'name' => 'Admin test sale',
-                'type' => 'all_active',
+                'type' => 'product',
+                'product_ids' => [$product->id, $anotherProduct->id],
                 'discount_type' => 'percentage',
                 'discount_value' => 15,
                 'starts_at' => now()->subMinute()->format('Y-m-d H:i:s'),
@@ -177,11 +182,42 @@ class CampaignPriceSynchronizerTest extends TestCase
             ->assertRedirect(route('admin.campaigns.index'));
 
         $this->assertSame(850.0, (float) $product->fresh()->discount_price);
+        $this->assertSame(1700.0, (float) $anotherProduct->fresh()->discount_price);
         $this->assertDatabaseHas('campaigns', [
             'name' => 'Admin test sale',
-            'type' => 'all_active',
+            'type' => 'product',
             'is_active' => true,
         ]);
+    }
+
+    public function test_admin_can_create_a_price_range_with_only_one_bound(): void
+    {
+        $cheapProduct = $this->product('below-minimum', 1000);
+        $includedProduct = $this->product('above-minimum', 3000);
+        $higherProduct = $this->product('also-above-minimum', 5000);
+        $admin = User::create([
+            'name' => 'Campaign Admin',
+            'email' => 'range-admin@example.com',
+            'password' => 'password',
+            'is_admin' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.campaigns.store'), [
+                'name' => 'Minimum-only sale',
+                'type' => 'price_range',
+                'price_min' => 2000,
+                'discount_type' => 'percentage',
+                'discount_value' => 10,
+                'starts_at' => now()->subMinute()->format('Y-m-d H:i:s'),
+                'ends_at' => '',
+                'is_active' => 1,
+            ])
+            ->assertRedirect(route('admin.campaigns.index'));
+
+        $this->assertNull($cheapProduct->fresh()->discount_price);
+        $this->assertSame(2700.0, (float) $includedProduct->fresh()->discount_price);
+        $this->assertSame(4500.0, (float) $higherProduct->fresh()->discount_price);
     }
 
     private function product(string $slug, float $price, ?int $categoryId = null, bool $isActive = true): Product
@@ -209,7 +245,10 @@ class CampaignPriceSynchronizerTest extends TestCase
 
     private function campaign(array $overrides = []): Campaign
     {
-        return Campaign::create(array_merge([
+        $productIds = $overrides['product_ids'] ?? [];
+        unset($overrides['product_ids']);
+
+        $campaign = Campaign::create(array_merge([
             'name' => 'Test campaign',
             'type' => 'all_active',
             'discount_type' => 'percentage',
@@ -218,5 +257,11 @@ class CampaignPriceSynchronizerTest extends TestCase
             'ends_at' => null,
             'is_active' => true,
         ], $overrides));
+
+        if ($productIds !== []) {
+            $campaign->products()->sync($productIds);
+        }
+
+        return $campaign;
     }
 }
