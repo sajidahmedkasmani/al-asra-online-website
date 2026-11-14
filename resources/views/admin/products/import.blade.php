@@ -33,7 +33,9 @@
      }">
 
     {{-- ============ INTRO ============ --}}
-    <div class="rise relative overflow-hidden rounded-3xl bg-ink text-white p-6 md:p-8">
+    <div class="rise relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-500 to-brand-400 text-white p-6 md:p-8">
+        <div class="absolute -right-8 -top-10 w-44 h-44 rounded-full bg-white/10"></div>
+        <div class="absolute right-20 -bottom-14 w-32 h-32 rounded-full bg-bloom-400/30"></div>
         <div class="relative">
             <h2 class="text-2xl md:text-3xl font-semibold leading-tight">Import products from CSV</h2>
             <p class="text-sm text-white/80 mt-2 max-w-xl">Ek saath bohot saare products add karo. CSV file upload karo, system sirf neeche wale columns accept karega.</p>
@@ -55,7 +57,7 @@
           class="rise bg-white rounded-3xl soft p-5 md:p-7 space-y-5" style="--d:.06s">
         @csrf
         <div class="flex items-center gap-3">
-            <span class="w-8 h-8 rounded-md bg-brand-600 text-white text-xs font-semibold flex items-center justify-center">1</span>
+            <span class="w-8 h-8 rounded-full bg-brand-600 text-white text-xs font-semibold flex items-center justify-center">1</span>
             <h3 class="font-semibold">Upload your CSV file</h3>
         </div>
 
@@ -66,7 +68,7 @@
 
             <template x-if="!file">
                 <span class="block">
-                    <span class="mx-auto w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1zM14 3v5h5M9 13h6M9 17h6"/></svg></span>
+                    <span class="mx-auto w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mb-3">📄</span>
                     <span class="block text-sm font-medium">Click to choose, or drop your CSV here</span>
                     <span class="block text-xs text-gray-400 mt-1">.csv or .txt file</span>
                 </span>
@@ -93,7 +95,7 @@
     {{-- ============ COLUMNS ============ --}}
     <div class="rise bg-white rounded-3xl soft p-5 md:p-7" style="--d:.12s">
         <div class="flex items-center gap-3 mb-1">
-            <span class="w-8 h-8 rounded-md bg-brand-50 text-brand-600 text-xs font-semibold flex items-center justify-center">i</span>
+            <span class="w-8 h-8 rounded-full bg-brand-50 text-brand-600 text-xs font-semibold flex items-center justify-center">i</span>
             <h3 class="font-semibold">Expected columns</h3>
         </div>
         <p class="text-xs text-gray-400 mb-5 ml-11">Pehli row mein ye column names honay chahiye, bilkul isi tarah likhay hue.</p>
@@ -104,7 +106,7 @@
                 <div class="rounded-2xl border border-gray-100 p-4">
                     <div class="flex items-center justify-between mb-2">
                         <code class="text-xs bg-brand-50 text-brand-700 rounded-lg px-2.5 py-1 font-semibold">{{ $col }}</code>
-                        <span class="text-[10px] font-medium rounded px-2.5 py-1 {{ $req ? 'bg-rose-50 text-rose-600' : 'bg-gray-100 text-gray-500' }}">{{ $req ? 'Zaroori' : 'Optional' }}</span>
+                        <span class="text-[10px] font-medium rounded-full px-2.5 py-1 {{ $req ? 'bg-rose-50 text-rose-600' : 'bg-gray-100 text-gray-500' }}">{{ $req ? 'Zaroori' : 'Optional' }}</span>
                     </div>
                     <p class="text-xs text-gray-500">{{ $note }}</p>
                     <p class="text-xs mt-1.5 text-ink break-all"><span class="text-gray-400">e.g.</span> {{ $ex }}</p>
@@ -115,14 +117,14 @@
         {{-- desktop table --}}
         <div class="hidden md:block overflow-hidden rounded-2xl border border-gray-100">
             <table class="w-full text-sm">
-                <thead class="bg-brand-50/60 text-left text-[11px] text-gray-400">
+                <thead class="bg-brand-50/60 text-left text-[11px] uppercase tracking-wider text-gray-400">
                     <tr><th class="py-3 px-4 font-medium">Column</th><th class="font-medium">Zaroori?</th><th class="font-medium">Example</th><th class="font-medium">Note</th></tr>
                 </thead>
                 <tbody>
                     @foreach($columns as [$col, $req, $ex, $note])
                         <tr class="border-t border-gray-100">
                             <td class="py-3 px-4"><code class="text-xs bg-brand-50 text-brand-700 rounded-lg px-2.5 py-1 font-semibold">{{ $col }}</code></td>
-                            <td><span class="text-[11px] font-medium rounded px-2.5 py-1 {{ $req ? 'bg-rose-50 text-rose-600' : 'bg-gray-100 text-gray-500' }}">{{ $req ? 'Haan' : 'Nahi' }}</span></td>
+                            <td><span class="text-[11px] font-medium rounded-full px-2.5 py-1 {{ $req ? 'bg-rose-50 text-rose-600' : 'bg-gray-100 text-gray-500' }}">{{ $req ? 'Haan' : 'Nahi' }}</span></td>
                             <td class="text-xs text-ink pr-3">{{ $ex }}</td>
                             <td class="text-xs text-gray-400 pr-4">{{ $note }}</td>
                         </tr>
@@ -133,12 +135,12 @@
 
         <div class="mt-5 grid sm:grid-cols-3 gap-3 text-xs">
             @foreach([
-                ['', 'Pehli row = headers', 'Column names pehli line mein likho.'],
-                ['', 'UTF-8 encoding', 'Excel se "CSV UTF-8" ke taur par save karo.'],
-                ['', 'Pehle chhota test', '2-3 rows se try karo, phir poori file.'],
+                ['💡', 'Pehli row = headers', 'Column names pehli line mein likho.'],
+                ['🔤', 'UTF-8 encoding', 'Excel se "CSV UTF-8" ke taur par save karo.'],
+                ['🧪', 'Pehle chhota test', '2-3 rows se try karo, phir poori file.'],
             ] as [$i, $t, $d])
                 <div class="rounded-2xl bg-lav/60 px-4 py-3.5">
-                    <p class="font-medium mb-0.5">{{ $t }}</p>
+                    <p class="font-medium mb-0.5">{{ $i }} {{ $t }}</p>
                     <p class="text-gray-500 leading-relaxed">{{ $d }}</p>
                 </div>
             @endforeach

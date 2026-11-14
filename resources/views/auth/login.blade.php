@@ -1,352 +1,171 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>Log in – Al-Asra Store Admin</title>
-
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
-        <link rel="manifest" href="/assets/favicon/site.webmanifest">
+        <meta name="theme-color" content="#0B1F2A">
+        <title>Sign in — {{ config('app.name', 'Store') }} Admin</title>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: { extend: {
+                    colors: {
+                        brand: { 50:'#ECFDF8', 100:'#D1FAEC', 200:'#A7F3DB', 300:'#6EE7C3', 400:'#2DD4A4', 500:'#14B88A', 600:'#0E9F77', 700:'#0B7F60' },
+                        bloom: { 400:'#A78BFA', 500:'#8B5CF6' },
+                        ink: '#0B1F2A',
+                    },
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+                } }
+            }
+        </script>
+        <script src="//unpkg.com/alpinejs" defer></script>
+
         <style>
-            :root {
-                --night: #1B1048;
-                --night-deep: #0F0A2C;
-                --violet: #7C5CFF;
-                --ink: #14102B;
-                --coral: #FF7A59;
-                --sun: #FFD24A;
-                --paper: #F7F5FF;
-                --line: #D9D3F2;
-                --muted: #6B6590;
-                --danger: #D6285A;
-            }
-            *, *::before, *::after { box-sizing: border-box; }
-            html, body { height: 100%; margin: 0; }
-            body {
-                font-family: 'Bricolage Grotesque', system-ui, sans-serif;
-                color: var(--ink);
-                background: var(--paper);
-                -webkit-font-smoothing: antialiased;
-            }
-
-            .page { min-height: 100%; display: grid; grid-template-columns: 1.05fr 1fr; }
-
-            /* ---------- Left: animated stage ---------- */
-            .stage-panel {
-                position: relative; overflow: hidden;
-                display: flex; flex-direction: column; justify-content: space-between;
-                padding: 40px 48px;
-                background: var(--night);
-                color: #fff;
-            }
-            .aurora { position: absolute; inset: 0; pointer-events: none; }
-            .aurora span {
-                position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55;
-                animation: drift 16s ease-in-out infinite alternate;
-            }
-            .aurora span:nth-child(1) { width: 380px; height: 380px; background: var(--violet); top: -80px; left: -60px; }
-            .aurora span:nth-child(2) { width: 300px; height: 300px; background: #FF5D8F; bottom: 10%; right: -80px; animation-duration: 20s; animation-delay: -6s; }
-            .aurora span:nth-child(3) { width: 260px; height: 260px; background: #35D6B0; bottom: -90px; left: 25%; opacity: .35; animation-duration: 24s; animation-delay: -12s; }
-            @keyframes drift {
-                from { transform: translate(0, 0) scale(1); }
-                to   { transform: translate(60px, 40px) scale(1.18); }
-            }
-
-            .brand { position: relative; font-weight: 800; font-size: 22px; letter-spacing: -.02em; display: flex; align-items: center; gap: 10px; }
-            .brand i { width: 28px; height: 28px; border-radius: 9px; background: var(--sun); display: inline-block; transform: rotate(12deg); }
-
-            .stage-wrap { position: relative; flex: 1; display: flex; align-items: flex-end; justify-content: center; min-height: 320px; }
-            .stage { position: relative; width: 420px; height: 340px; transform-origin: bottom center; }
-
-            .char { position: absolute; bottom: 0; transition: transform .4s cubic-bezier(.2,.8,.2,1); }
-            .c-violet { left: 70px;  width: 180px; height: 340px; background: var(--violet); border-radius: 16px 16px 0 0; z-index: 1; }
-            .c-ink    { left: 215px; width: 120px; height: 240px; background: var(--ink); border-radius: 14px 14px 0 0; z-index: 2; box-shadow: 0 0 0 2px rgba(255,255,255,.08); }
-            .c-coral  { left: 0;     width: 240px; height: 120px; background: var(--coral); border-radius: 120px 120px 0 0; z-index: 3; }
-            .c-sun    { left: 280px; width: 140px; height: 170px; background: var(--sun); border-radius: 70px 70px 0 0; z-index: 3; }
-
-            .eyes { position: absolute; display: flex; gap: 18px; transition: transform .35s cubic-bezier(.2,.8,.2,1); }
-            .c-violet .eyes { top: 52px; left: 40px; }
-            .c-ink .eyes    { top: 36px; left: 26px; gap: 14px; }
-            .c-coral .eyes  { top: 58px; left: 82px; gap: 26px; }
-            .c-sun .eyes    { top: 54px; left: 38px; gap: 20px; }
-
-            .eye { position: relative; width: 20px; height: 20px; border-radius: 50%; background: #fff; display: grid; place-items: center; overflow: hidden; transition: transform .18s ease; }
-            .c-coral .eye, .c-sun .eye { width: 12px; height: 12px; background: var(--ink); }
-            .pupil { width: 9px; height: 9px; border-radius: 50%; background: var(--ink); will-change: transform; }
-            .c-coral .pupil, .c-sun .pupil { width: 100%; height: 100%; background: transparent; }
-
-            .mouth { position: absolute; left: 44px; top: 96px; width: 40px; height: 14px; border-bottom: 4px solid var(--ink); border-radius: 0 0 40px 40px; transition: all .3s ease; }
-
-            /* eyes closed while typing a hidden password */
-            .stage.shy .eye { transform: scaleY(.08); }
-            .stage.shy .eyes { transform: translateY(4px); }
-            .stage.shy .mouth { width: 16px; height: 16px; border: 4px solid var(--ink); border-radius: 50%; left: 56px; }
-            .stage.blink .eye { transform: scaleY(.08); }
-            /* when password is visible: look away, shy peek */
-            .stage.peek .c-violet { transform: skewX(-4deg); }
-            .stage.peek .c-ink { transform: skewX(4deg) translateY(4px); }
-
-            .tagline { position: relative; max-width: 420px; }
-            .tagline h2 { margin: 0 0 6px; font-size: 30px; line-height: 1.1; letter-spacing: -.03em; font-weight: 700; }
-            .tagline p { margin: 0; color: #C9C1F5; font-size: 16px; line-height: 1.5; }
-
-            /* ---------- Right: form ---------- */
-            .form-panel { display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
-            .card { width: 100%; max-width: 400px; }
-            .card.shake { animation: shake .5s cubic-bezier(.36,.07,.19,.97); }
-            @keyframes shake {
-                10%, 90% { transform: translateX(-2px); }
-                20%, 80% { transform: translateX(4px); }
-                30%, 50%, 70% { transform: translateX(-8px); }
-                40%, 60% { transform: translateX(8px); }
-            }
-            .card h1 { margin: 0 0 6px; font-size: 38px; line-height: 1.05; letter-spacing: -.035em; font-weight: 800; }
-            .card .sub { margin: 0 0 28px; color: var(--muted); font-size: 16px; }
-
-            .status { background: #E4F8F1; color: #0B6B50; border-radius: 12px; padding: 12px 14px; margin-bottom: 18px; font-size: 14px; }
-
-            .field { margin-bottom: 18px; }
-            .field label { display: block; font-weight: 500; font-size: 14px; margin-bottom: 6px; }
-            .control { position: relative; }
-            .control input[type=email], .control input[type=password], .control input[type=text] {
-                width: 100%; height: 52px; padding: 0 16px; font: inherit; font-size: 16px; color: var(--ink);
-                background: #fff; border: 2px solid var(--line); border-radius: 14px; outline: none;
-                transition: border-color .2s, box-shadow .2s, transform .2s;
-            }
-            .control input:hover { border-color: #BDB3EE; }
-            .control input:focus { border-color: var(--violet); box-shadow: 0 0 0 5px rgba(124,92,255,.18); }
-            .control.has-toggle input { padding-right: 56px; }
-            .toggle {
-                position: absolute; right: 6px; top: 6px; width: 40px; height: 40px; border: 0; border-radius: 10px;
-                background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center;
-                transition: background .2s, color .2s;
-            }
-            .toggle:hover { background: #EEEAFD; color: var(--violet); }
-            .toggle:focus-visible, .btn:focus-visible, .forgot:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
-            .toggle svg { width: 22px; height: 22px; }
-            .toggle .off { display: none; }
-            .toggle.on .off { display: block; } .toggle.on .on-eye { display: none; }
-
-            .err { margin: 6px 0 0; color: var(--danger); font-size: 14px; }
-
-            .row { display: flex; align-items: center; justify-content: space-between; margin: 4px 0 24px; font-size: 14px; gap: 12px; flex-wrap: wrap; }
-            .check { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-            .check input { position: absolute; opacity: 0; }
-            .box { width: 22px; height: 22px; border: 2px solid var(--line); border-radius: 7px; background: #fff; display: grid; place-items: center; transition: all .2s; }
-            .box svg { width: 14px; height: 14px; stroke: #fff; stroke-width: 3; fill: none; stroke-dasharray: 20; stroke-dashoffset: 20; transition: stroke-dashoffset .25s ease .05s; }
-            .check input:checked + .box { background: var(--violet); border-color: var(--violet); }
-            .check input:checked + .box svg { stroke-dashoffset: 0; }
-            .check input:focus-visible + .box { outline: 3px solid var(--violet); outline-offset: 2px; }
-            .forgot { color: var(--violet); font-weight: 500; text-decoration: none; border-radius: 6px; }
-            .forgot:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-            .btn {
-                position: relative; overflow: hidden; width: 100%; height: 54px; border: 0; border-radius: 14px; cursor: pointer;
-                font: inherit; font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -.01em;
-                background: linear-gradient(135deg, var(--violet), #5A3DE0);
-                box-shadow: 0 10px 24px -8px rgba(124,92,255,.7);
-                transition: transform .15s ease, box-shadow .2s ease;
-            }
-            .btn::after {
-                content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
-                background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent);
-                transform: skewX(-20deg); transition: left .6s ease;
-            }
-            .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -10px rgba(124,92,255,.8); }
-            .btn:hover::after { left: 130%; }
-            .btn:active { transform: translateY(0) scale(.99); }
-            .btn .spin { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto; }
-            .btn.loading .label { display: none; } .btn.loading .spin { display: block; }
-            @keyframes spin { to { transform: rotate(360deg); } }
-
-            /* ---------- Responsive ---------- */
-            @media (max-width: 900px) {
-                .page { grid-template-columns: 1fr; }
-                .stage-panel { padding: 24px; min-height: 300px; }
-                .tagline { display: none; }
-                .stage { transform: scale(.62); }
-                .stage-wrap { min-height: 220px; }
-                .form-panel { padding: 32px 20px 48px; }
-                .card h1 { font-size: 32px; }
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-                *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
-            }
+            [x-cloak]{display:none!important}
+            .hero{background:
+                radial-gradient(620px 420px at 12% 8%, rgba(45,212,164,.55), transparent 62%),
+                radial-gradient(560px 460px at 92% 22%, rgba(139,92,246,.55), transparent 62%),
+                radial-gradient(640px 520px at 40% 108%, rgba(14,165,233,.50), transparent 62%),
+                linear-gradient(160deg,#0B1F2A 0%,#0C3340 55%,#0D4A4A 100%)}
+            .paper{background:
+                radial-gradient(520px 360px at 100% 0%, rgba(45,212,164,.20), transparent 62%),
+                radial-gradient(520px 360px at 0% 100%, rgba(139,92,246,.14), transparent 62%), #F4F8F7}
+            .glass{background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.22)}
+            .btn-go{background:linear-gradient(135deg,#0E9F77,#0891B2);box-shadow:0 14px 28px -10px rgba(14,159,119,.65);transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
+            .btn-go:hover{filter:brightness(1.07);box-shadow:0 18px 32px -10px rgba(14,159,119,.75)}
+            .btn-go:active{transform:scale(.985)}
+            @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+            .floaty{animation:floaty 6s ease-in-out infinite;animation-delay:var(--d,0s)}
+            @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+            .rise{opacity:0;animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+            @keyframes spin{to{transform:rotate(360deg)}}
+            @media (prefers-reduced-motion:reduce){.floaty,.rise{animation:none;opacity:1}}
         </style>
     </head>
 
-    <body>
-        <div class="page">
+    <body class="font-sans text-ink antialiased">
+        @php
+            $appName = config('app.name', 'Store');
+            $mark = strtoupper(mb_substr($appName, 0, 1));
+        @endphp
 
-            <!-- Left: animated characters -->
-            <section class="stage-panel" aria-hidden="true">
-                <div class="aurora"><span></span><span></span><span></span></div>
+        <div class="min-h-screen lg:grid lg:grid-cols-[1.05fr_1fr]">
 
-                <div class="brand"><i></i>Al-Asra Store</div>
+            {{-- ============ BRAND PANEL ============ --}}
+            <section class="hero relative overflow-hidden text-white px-6 py-8 lg:p-14 flex flex-col justify-between lg:min-h-screen rounded-b-[36px] lg:rounded-none">
+                <div class="pointer-events-none absolute inset-0 opacity-[.14]" style="background-image:radial-gradient(#fff 1px,transparent 1px);background-size:26px 26px"></div>
 
-                <div class="stage-wrap">
-                    <div class="stage" id="stage">
-                        <div class="char c-violet">
-                            <div class="eyes"><div class="eye"><div class="pupil"></div></div><div class="eye"><div class="pupil"></div></div></div>
+                <div class="relative flex items-center gap-3">
+                    <span class="w-11 h-11 rounded-2xl bg-white/95 text-ink font-extrabold text-lg flex items-center justify-center shadow-lg">{{ $mark }}</span>
+                    <span class="font-bold text-lg tracking-tight">{{ $appName }}</span>
+                </div>
+
+                <div class="relative hidden lg:block my-10">
+                    <h1 class="text-[44px] xl:text-[52px] leading-[1.05] font-extrabold tracking-tight max-w-md">Your whole store, in one calm place.</h1>
+                    <p class="mt-5 text-white/75 max-w-sm text-[15px] leading-relaxed">Orders, products, pages and customers. Sign in to pick up right where you left off.</p>
+
+                    {{-- decorative glass dashboard --}}
+                    <div class="relative mt-12 max-w-md h-64" aria-hidden="true">
+                        <div class="floaty glass absolute left-0 top-0 w-72 rounded-3xl p-5 shadow-2xl shadow-black/20">
+                            <div class="flex items-center gap-2 mb-5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-300"></span><span class="w-2.5 h-2.5 rounded-full bg-amber-300"></span><span class="w-2.5 h-2.5 rounded-full bg-emerald-300"></span>
+                            </div>
+                            <div class="flex items-end gap-2.5 h-24">
+                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:38%"></span>
+                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:62%"></span>
+                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:48%"></span>
+                                <span class="flex-1 rounded-t-lg bg-gradient-to-t from-brand-300 to-white" style="height:92%"></span>
+                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:58%"></span>
+                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:74%"></span>
+                            </div>
                         </div>
-                        <div class="char c-ink">
-                            <div class="eyes"><div class="eye"><div class="pupil"></div></div><div class="eye"><div class="pupil"></div></div></div>
+                        <div class="floaty glass absolute right-0 top-20 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-2xl shadow-black/20" style="--d:-2s">
+                            <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-300 to-brand-500 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+                            </span>
+                            <span class="text-sm font-semibold">New order received</span>
                         </div>
-                        <div class="char c-coral">
-                            <div class="eyes"><div class="eye"><div class="pupil"></div></div><div class="eye"><div class="pupil"></div></div></div>
-                        </div>
-                        <div class="char c-sun">
-                            <div class="eyes"><div class="eye"><div class="pupil"></div></div><div class="eye"><div class="pupil"></div></div></div>
-                            <div class="mouth"></div>
+                        <div class="floaty glass absolute left-10 bottom-0 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-2xl shadow-black/20" style="--d:-4s">
+                            <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-bloom-400 to-bloom-500 flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0v10l-8 4m8-14l-8 4m0 10L4 17V7m8 14V11"/></svg>
+                            </span>
+                            <span class="text-sm font-semibold">Product published</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="tagline">
-                    <h2>Your work is waiting.</h2>
-                    <p>Log in and start from where you left off..</p>
-                </div>
+                <p class="relative mt-6 lg:mt-0 text-sm text-white/70 lg:hidden">Sign in to manage your store.</p>
+                <p class="relative hidden lg:block text-xs text-white/50">&copy; {{ date('Y') }} {{ $appName }}</p>
             </section>
 
-            <!-- Right: form -->
-            <main class="form-panel">
-                <div class="card" id="card">
-                    <h1>Welcome back</h1>
-                    <p class="sub">Log in to continue to your account.</p>
+            {{-- ============ FORM ============ --}}
+            <section class="paper flex items-center justify-center px-5 py-10 sm:py-14 lg:min-h-screen">
+                <div class="rise w-full max-w-[420px]" x-data="{ show: false, loading: false }">
 
-                    @if (session('status'))
-                        <div class="status" role="status">{{ session('status') }}</div>
-                    @endif
+                    <div class="bg-white/80 backdrop-blur-xl rounded-[32px] border border-white shadow-[0_30px_70px_-30px_rgba(11,31,42,.35)] p-7 sm:p-9">
+                        <h2 class="text-[28px] font-extrabold tracking-tight">Welcome back</h2>
+                        <p class="text-sm text-gray-500 mt-1.5 mb-7">Sign in to your admin account.</p>
 
-                    <form method="POST" action="{{ route('login') }}" id="loginForm">
-                        @csrf
+                        @if(session('status'))
+                            <div class="mb-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3">{{ session('status') }}</div>
+                        @endif
 
-                        <div class="field">
-                            <label for="email">{{ __('Email') }}</label>
-                            <div class="control">
-                                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="you@example.com">
+                        <form method="POST" action="{{ route('login') }}" @submit="loading = true" class="space-y-5" novalidate>
+                            @csrf
+
+                            <div>
+                                <label for="email" class="block text-[13px] font-semibold text-gray-700 mb-2">Email</label>
+                                <div class="relative">
+                                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
+                                    <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="you@example.com"
+                                           class="w-full rounded-2xl bg-gray-50 border {{ $errors->has('email') ? 'border-rose-300 ring-4 ring-rose-100' : 'border-gray-200' }} pl-11 pr-4 py-3.5 text-sm placeholder:text-gray-400 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 focus:outline-none transition">
+                                </div>
+                                @error('email')<p class="text-xs text-rose-600 mt-2">{{ $message }}</p>@enderror
                             </div>
-                            @error('email') <p class="err">{{ $message }}</p> @enderror
-                        </div>
 
-                        <div class="field">
-                            <label for="password">{{ __('Password') }}</label>
-                            <div class="control has-toggle">
-                                <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
-                                <button type="button" class="toggle" id="toggle" aria-label="Show password" aria-pressed="false">
-                                    <svg class="on-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
-                                    <svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.9 10.9 0 0 1 12 19C5 19 1 12 1 12a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/></svg>
-                                </button>
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label for="password" class="block text-[13px] font-semibold text-gray-700">Password</label>
+                                    @if(Route::has('password.request'))
+                                        <a href="{{ route('password.request') }}" class="text-xs font-medium text-brand-700 hover:underline">Forgot password?</a>
+                                    @endif
+                                </div>
+                                <div class="relative">
+                                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 118 0v3"/></svg>
+                                    <input id="password" name="password" :type="show ? 'text' : 'password'" type="password" required autocomplete="current-password" placeholder="Enter your password"
+                                           class="w-full rounded-2xl bg-gray-50 border border-gray-200 pl-11 pr-12 py-3.5 text-sm placeholder:text-gray-400 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 focus:outline-none transition">
+                                    <button type="button" @click="show = !show" :aria-label="show ? 'Hide password' : 'Show password'"
+                                            class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl text-gray-400 hover:text-brand-600 hover:bg-brand-50 flex items-center justify-center transition">
+                                        <svg x-show="!show" class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                                        <svg x-cloak x-show="show" class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.6 9.6 0 0112 6c6.4 0 10 6 10 6a17 17 0 01-3.2 3.9M6.5 7.5C3.8 9.3 2 12 2 12s3.6 6 10 6c1.5 0 2.9-.3 4.1-.8M9.9 9.9a3 3 0 004.2 4.2"/></svg>
+                                    </button>
+                                </div>
+                                @error('password')<p class="text-xs text-rose-600 mt-2">{{ $message }}</p>@enderror
                             </div>
-                            @error('password') <p class="err">{{ $message }}</p> @enderror
-                        </div>
 
-                        <div class="row">
-                            <label class="check" for="remember_me">
-                                <input id="remember_me" type="checkbox" name="remember">
-                                <span class="box"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>
-                                {{ __('Remember me') }}
+                            <label class="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none">
+                                <input type="checkbox" name="remember" value="1" {{ old('remember') ? 'checked' : '' }} class="w-4 h-4 rounded-md border-gray-300 text-brand-600 focus:ring-brand-400">
+                                Keep me signed in
                             </label>
 
-                            @if (Route::has('password.request'))
-                                <a class="forgot" href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
-                            @endif
-                        </div>
+                            <button type="submit" :disabled="loading" class="btn-go w-full text-white font-semibold rounded-2xl py-3.5 text-sm flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-wait">
+                                <svg x-cloak x-show="loading" class="w-4 h-4" style="animation:spin .8s linear infinite" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity=".3"/><path d="M21 12a9 9 0 00-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+                                <span x-text="loading ? 'Signing in...' : 'Sign in'">Sign in</span>
+                            </button>
+                        </form>
+                    </div>
 
-                        <button type="submit" class="btn" id="submitBtn">
-                            <span class="label">{{ __('Log in') }}</span>
-                            <span class="spin" aria-hidden="true"></span>
-                        </button>
-                    </form>
+                    <p class="text-center text-xs text-gray-400 mt-6">
+                        <a href="{{ route('home') }}" class="hover:text-brand-700 transition">Back to {{ $appName }}</a>
+                    </p>
                 </div>
-            </main>
+            </section>
         </div>
-
-        <script>
-            (function () {
-                var stage = document.getElementById('stage');
-                var pass = document.getElementById('password');
-                var toggle = document.getElementById('toggle');
-                var form = document.getElementById('loginForm');
-                var btn = document.getElementById('submitBtn');
-                var card = document.getElementById('card');
-                var email = document.getElementById('email');
-                var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                var eyes = Array.prototype.slice.call(document.querySelectorAll('.eye'));
-
-                // Pupils follow the cursor
-                function look(x, y) {
-                    eyes.forEach(function (eye) {
-                        var r = eye.getBoundingClientRect();
-                        var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-                        var a = Math.atan2(y - cy, x - cx);
-                        var d = Math.min(5, Math.hypot(x - cx, y - cy) / 25);
-                        eye.firstElementChild.style.transform = 'translate(' + Math.cos(a) * d + 'px,' + Math.sin(a) * d + 'px)';
-                    });
-                }
-                if (!reduce) {
-                    document.addEventListener('mousemove', function (e) { look(e.clientX, e.clientY); });
-                    // When typing the email, look toward the field
-                    email.addEventListener('input', function () {
-                        var r = email.getBoundingClientRect();
-                        var p = Math.min(1, email.value.length / 24);
-                        look(r.left + r.width * p, r.top + r.height / 2);
-                    });
-                }
-
-                // Shy mode: close eyes while a hidden password is focused
-                function sync() {
-                    var hidden = pass.type === 'password';
-                    stage.classList.toggle('shy', document.activeElement === pass && hidden);
-                    stage.classList.toggle('peek', !hidden);
-                }
-                pass.addEventListener('focus', sync);
-                pass.addEventListener('blur', sync);
-
-                toggle.addEventListener('click', function () {
-                    var show = pass.type === 'password';
-                    pass.type = show ? 'text' : 'password';
-                    toggle.classList.toggle('on', show);
-                    toggle.setAttribute('aria-pressed', String(show));
-                    toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
-                    pass.focus();
-                    sync();
-                });
-
-                // Random blink
-                if (!reduce) {
-                    (function blink() {
-                        setTimeout(function () {
-                            if (!stage.classList.contains('shy')) {
-                                stage.classList.add('blink');
-                                setTimeout(function () { stage.classList.remove('blink'); }, 150);
-                            }
-                            blink();
-                        }, 2500 + Math.random() * 3000);
-                    })();
-                }
-
-                // Loading state on submit
-                form.addEventListener('submit', function () {
-                    btn.classList.add('loading');
-                    btn.setAttribute('aria-busy', 'true');
-                });
-
-                // Shake the card if the server returned errors
-                @if ($errors->any())
-                    card.classList.add('shake');
-                @endif
-            })();
-        </script>
     </body>
 </html>

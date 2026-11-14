@@ -62,7 +62,7 @@
     <div class="bg-white rounded-2xl soft overflow-hidden">
         @if($faqs->isEmpty())
             <div class="p-12 text-center text-gray-400">
-                <svg class="w-9 h-9 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-4xl block mb-2">❓</span>
                 <p class="text-base font-medium text-gray-600">No FAQs found</p>
                 <p class="text-xs text-gray-400 mt-1">Get started by creating your first frequently asked question.</p>
                 @can('faqs.create')
@@ -75,7 +75,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-gray-100 bg-gray-50/50 text-[11px] font-semibold text-gray-400">
+                        <tr class="border-b border-gray-100 bg-gray-50/50 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
                             <th class="py-3.5 px-5">Order</th>
                             <th class="py-3.5 px-5">Category</th>
                             <th class="py-3.5 px-5">Question & Answer</th>
@@ -109,7 +109,7 @@
                                     @can('faqs.edit')
                                     <form action="{{ route('admin.faqs.toggle-active', $faq) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="px-3 py-1 rounded text-[11px] font-semibold transition {{ $faq->is_active ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                                        <button type="submit" class="px-3 py-1 rounded-full text-[11px] font-semibold transition {{ $faq->is_active ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
                                             {{ $faq->is_active ? 'Active' : 'Hidden' }}
                                         </button>
                                     </form>

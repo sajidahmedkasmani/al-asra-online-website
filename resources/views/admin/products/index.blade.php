@@ -118,7 +118,7 @@
     <div class="rise bg-white rounded-3xl soft overflow-hidden" style="--d:.1s">
 
         {{-- header --}}
-        <div class="grid {{ $grid }} gap-x-3 items-center px-4 md:px-5 py-3 bg-brand-50/60 text-[11px] text-gray-400">
+        <div class="grid {{ $grid }} gap-x-3 items-center px-4 md:px-5 py-3 bg-brand-50/60 text-[11px] uppercase tracking-wider text-gray-400">
             <input type="checkbox" :checked="allChecked" @change="toggleAll()" class="w-4 h-4 rounded border-gray-300 accent-brand-600" aria-label="Select all">
             <span class="md:hidden normal-case tracking-normal text-xs">Select all on this page</span>
             <span class="hidden md:block">Product</span>
@@ -162,19 +162,19 @@
 
                     {{-- price --}}
                     <div class="md:order-none">
-                        <p class="text-[11px] text-gray-400 md:hidden">Price</p>
+                        <p class="text-[10px] uppercase tracking-wider text-gray-400 md:hidden">Price</p>
                         <p class="text-sm font-semibold whitespace-nowrap">Rs. {{ number_format($p->price) }}</p>
                     </div>
 
                     {{-- stock --}}
                     <div>
-                        <p class="text-[11px] text-gray-400 md:hidden">Stock</p>
+                        <p class="text-[10px] uppercase tracking-wider text-gray-400 md:hidden">Stock</p>
                         @if($stock === null)
                             <span class="text-sm text-gray-500">∞</span>
                         @elseif($stock <= 0)
-                            <span class="px-2.5 py-1 rounded text-[11px] font-medium bg-rose-50 text-rose-600">Out</span>
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-rose-50 text-rose-600">Out</span>
                         @elseif($stock <= 5)
-                            <span class="px-2.5 py-1 rounded text-[11px] font-medium bg-amber-50 text-amber-600">{{ $stock }} left</span>
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-amber-50 text-amber-600">{{ $stock }} left</span>
                         @else
                             <span class="text-sm">{{ $stock }}</span>
                         @endif
@@ -193,7 +193,7 @@
                                 <span class="text-[11px] w-12" :class="on ? 'text-emerald-600' : 'text-gray-400'" x-text="on ? 'Active' : 'Inactive'">{{ $p->is_active ? 'Active' : 'Inactive' }}</span>
                             </div>
                         @else
-                            <span class="px-2.5 py-1 rounded text-[11px] font-medium {{ $p->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500' }}">{{ $p->is_active ? 'Active' : 'Inactive' }}</span>
+                            <span class="px-2.5 py-1 rounded-full text-[11px] font-medium {{ $p->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500' }}">{{ $p->is_active ? 'Active' : 'Inactive' }}</span>
                         @endcan
                     </div>
 
@@ -218,7 +218,7 @@
             </div>
         @empty
             <div class="py-16 text-center border-t border-gray-100">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center mb-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0v10l-8 4m8-14l-8 4m0 10L4 17V7m8 14V11"/></svg></div>
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center text-2xl mb-3">📦</div>
                 <p class="font-medium">No products found</p>
                 <p class="text-xs text-gray-400 mt-1">Try a different search or filter.</p>
                 @if($search || $status)

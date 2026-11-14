@@ -17,25 +17,25 @@
 
         <div class="grid md:grid-cols-2 gap-5 mb-5">
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Full Name <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Full Name <span class="text-rose-500">*</span></label>
                 <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" required placeholder="e.g. Ahmed Khan" class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
                 @error('name') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Email Address <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Email Address <span class="text-rose-500">*</span></label>
                 <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}" required placeholder="name@domain.com" class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
                 @error('email') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Role</label>
+                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Role</label>
                 <input type="text" name="role" value="{{ old('role', $user->role ?? '') }}" maxlength="100" placeholder="e.g. Manager, Staff" class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
                 @error('role') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1.5">
+                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
                     Password {{ $isEdit ? '(Optional)' : '*' }}
                 </label>
                 <input type="password" name="password" {{ $isEdit ? '' : 'required' }} placeholder="{{ $isEdit ? 'Leave blank to keep existing password' : 'Min 8 characters' }}" class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
@@ -46,7 +46,7 @@
             </div>
 
             <div>
-                <label class="block text-xs font-semibold text-gray-700 mb-1.5">Confirm Password</label>
+                <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Confirm Password</label>
                 <input type="password" name="password_confirmation" {{ $isEdit ? '' : 'required' }} placeholder="Re-type password" class="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 outline-none">
             </div>
         </div>
@@ -89,7 +89,7 @@
 
         @if($isEdit && $user->id === 1)
             <div class="mb-5 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-3">
-                <svg class="w-5 h-5 shrink-0 text-amber-700" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6l8-3z"/></svg>
+                <span class="text-xl">👑</span>
                 <span><strong>Super Administrator:</strong> User ID 1 has permanent unrestricted access to all modules regardless of checkbox selections.</span>
             </div>
         @endif
@@ -107,7 +107,7 @@
                     <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-2">
                         <div class="flex items-center gap-2">
                             <span class="font-bold text-sm text-ink">{{ $module }}</span>
-                            <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-brand-100 text-brand-700">
+                            <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-brand-100 text-brand-700">
                                 {{ $modulePermissions->count() }} actions
                             </span>
                         </div>

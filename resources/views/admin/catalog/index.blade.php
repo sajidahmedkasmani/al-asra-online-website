@@ -50,7 +50,7 @@
                     </div>
                     <form method="POST" action="{{ route('admin.catalog.collections.toggle', $collection) }}">
                         @csrf
-                        <button class="px-3 py-1.5 rounded text-xs {{ $collection->is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600' }}">
+                        <button class="px-3 py-1.5 rounded-full text-xs {{ $collection->is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600' }}">
                             {{ $collection->is_active ? 'Active · Deactivate' : 'Inactive · Activate' }}
                         </button>
                     </form>
@@ -64,7 +64,7 @@
                             </div>
                             <form method="POST" action="{{ route('admin.catalog.categories.toggle', $category) }}">
                                 @csrf
-                                <button class="px-3 py-1.5 rounded text-xs {{ $category->is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600' }}">
+                                <button class="px-3 py-1.5 rounded-full text-xs {{ $category->is_active ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-600' }}">
                                     {{ $category->is_active ? 'Active · Deactivate' : 'Inactive · Activate' }}
                                 </button>
                             </form>

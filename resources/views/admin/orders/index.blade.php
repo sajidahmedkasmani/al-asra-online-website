@@ -49,7 +49,7 @@
                 @foreach($statuses as $val => $label)
                     @php $on = $current === (string) $val; @endphp
                     <a href="{{ $url($val ?: null) }}"
-                       class="shrink-0 text-xs rounded-xl px-4 py-2.5 transition {{ $on ? 'bg-brand-600 text-white font-medium shadow-md ' : 'bg-lav/70 text-gray-500 hover:text-ink hover:bg-brand-50' }}">{{ $label }}</a>
+                       class="shrink-0 text-xs rounded-xl px-4 py-2.5 transition {{ $on ? 'bg-brand-600 text-white font-medium shadow-md shadow-brand-600/25' : 'bg-lav/70 text-gray-500 hover:text-ink hover:bg-brand-50' }}">{{ $label }}</a>
                 @endforeach
             </div>
             <p class="hidden sm:block text-xs text-gray-400 shrink-0">{{ $total }} {{ \Illuminate\Support\Str::plural('order', $total) }}</p>
@@ -67,13 +67,13 @@
             <div class="rise bg-white rounded-3xl soft p-4" style="--d:{{ min($loop->index, 8) * 0.04 }}s">
                 <div class="flex items-center justify-between gap-3 mb-3">
                     <a href="{{ route('admin.orders.show', $o) }}" class="font-mono text-xs text-brand-600">{{ $o->order_number }}</a>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium {{ $sb }}">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium {{ $sb }}">
                         <span class="w-1.5 h-1.5 rounded-full {{ $sd }}"></span>{{ ucfirst($o->status) }}
                     </span>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <span class="w-10 h-10 rounded-md bg-brand-100 text-brand-600 text-sm font-semibold flex items-center justify-center shrink-0">{{ strtoupper(substr($o->customer_name, 0, 1)) }}</span>
+                    <span class="w-10 h-10 rounded-full bg-brand-100 text-brand-600 text-sm font-semibold flex items-center justify-center shrink-0">{{ strtoupper(substr($o->customer_name, 0, 1)) }}</span>
                     <div class="min-w-0 flex-1">
                         <p class="font-medium text-sm truncate">{{ $o->customer_name }}</p>
                         <p class="text-xs text-gray-400 truncate">{{ $o->phone }}</p>
@@ -94,15 +94,15 @@
 
                 <div class="flex items-center justify-between gap-3 mt-4 pt-4 border-t border-dashed border-gray-200">
                     <div>
-                        <p class="text-[11px] text-gray-400">Total</p>
+                        <p class="text-[10px] uppercase tracking-wider text-gray-400">Total</p>
                         <p class="text-sm font-semibold">Rs. {{ number_format($o->total) }}</p>
                     </div>
                     <div>
-                        <p class="text-[11px] text-gray-400">Payment</p>
-                        <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-medium {{ $o->payment_method === 'cod' ? 'bg-amber-50 text-amber-700' : 'bg-sky-50 text-sky-600' }}">{{ $o->payment_method === 'cod' ? 'COD' : 'Bank' }}</span>
+                        <p class="text-[10px] uppercase tracking-wider text-gray-400">Payment</p>
+                        <span class="inline-block mt-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium {{ $o->payment_method === 'cod' ? 'bg-amber-50 text-amber-700' : 'bg-sky-50 text-sky-600' }}">{{ $o->payment_method === 'cod' ? 'COD' : 'Bank' }}</span>
                     </div>
                     <div>
-                        <p class="text-[11px] text-gray-400">Date</p>
+                        <p class="text-[10px] uppercase tracking-wider text-gray-400">Date</p>
                         <p class="text-xs text-gray-500">{{ $o->created_at->format('d M Y') }}</p>
                     </div>
                     <a href="{{ route('admin.orders.show', $o) }}" class="bg-brand-600 text-white text-xs font-medium rounded-xl px-4 py-2.5 active:scale-95 transition">View</a>
@@ -110,7 +110,7 @@
             </div>
         @empty
             <div class="bg-white rounded-3xl soft py-14 text-center">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center mb-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 5h6M9 12h6M9 16h4"/></svg></div>
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center text-2xl mb-3">🧾</div>
                 <p class="font-medium">No orders found</p>
                 <p class="text-xs text-gray-400 mt-1">Orders will appear here as they come in.</p>
             </div>
@@ -119,7 +119,7 @@
 
     {{-- ============ DESKTOP: TABLE ============ --}}
     <div class="hidden md:block rise bg-white rounded-3xl soft overflow-hidden" style="--d:.1s">
-        <div class="grid {{ $cols }} gap-x-3 items-center px-5 py-3 bg-brand-50/60 text-[11px] text-gray-400">
+        <div class="grid {{ $cols }} gap-x-3 items-center px-5 py-3 bg-brand-50/60 text-[11px] uppercase tracking-wider text-gray-400">
             <span>Order #</span><span>Customer</span><span>Total</span><span>Payment</span><span>Status</span><span>Date</span><span class="text-right">Action</span>
         </div>
 
@@ -133,7 +133,7 @@
                 <a href="{{ route('admin.orders.show', $o) }}" class="font-mono text-xs text-brand-600 hover:underline truncate">{{ $o->order_number }}</a>
 
                 <div class="flex items-center gap-3 min-w-0">
-                    <span class="w-9 h-9 rounded-md bg-brand-100 text-brand-600 text-xs font-semibold flex items-center justify-center shrink-0">{{ strtoupper(substr($o->customer_name, 0, 1)) }}</span>
+                    <span class="w-9 h-9 rounded-full bg-brand-100 text-brand-600 text-xs font-semibold flex items-center justify-center shrink-0">{{ strtoupper(substr($o->customer_name, 0, 1)) }}</span>
                     <div class="min-w-0">
                         <p class="font-medium truncate">{{ $o->customer_name }}</p>
                         <p class="text-xs text-gray-400 truncate">
@@ -145,10 +145,10 @@
 
                 <span class="font-semibold whitespace-nowrap">Rs. {{ number_format($o->total) }}</span>
 
-                <span><span class="px-2.5 py-1 rounded text-[11px] font-medium {{ $o->payment_method === 'cod' ? 'bg-amber-50 text-amber-700' : 'bg-sky-50 text-sky-600' }}">{{ $o->payment_method === 'cod' ? 'COD' : 'Bank' }}</span></span>
+                <span><span class="px-2.5 py-1 rounded-full text-[11px] font-medium {{ $o->payment_method === 'cod' ? 'bg-amber-50 text-amber-700' : 'bg-sky-50 text-sky-600' }}">{{ $o->payment_method === 'cod' ? 'COD' : 'Bank' }}</span></span>
 
                 <span>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium {{ $sb }}">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium {{ $sb }}">
                         <span class="w-1.5 h-1.5 rounded-full {{ $sd }}"></span>{{ ucfirst($o->status) }}
                     </span>
                 </span>
@@ -161,7 +161,7 @@
             </div>
         @empty
             <div class="py-16 text-center border-t border-gray-100">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center mb-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 5h6M9 12h6M9 16h4"/></svg></div>
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center text-2xl mb-3">🧾</div>
                 <p class="font-medium">No orders found</p>
                 <p class="text-xs text-gray-400 mt-1">@if($search || $current) Try clearing the filters. @else Orders will appear here as they come in. @endif</p>
                 @if($search || $current)<a href="{{ route('admin.orders.index') }}" class="inline-block mt-4 text-xs text-brand-600 hover:underline">Clear filters</a>@endif

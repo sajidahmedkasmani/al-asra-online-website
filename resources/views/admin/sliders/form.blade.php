@@ -180,8 +180,8 @@
 
         {{-- RIGHT: live preview --}}
         <div class="lg:col-span-1">
-            <div class="bg-white rounded-xl shadow-sm p-4 sticky top-28">
-                <p class="text-xs text-gray-500 mb-3">Preview</p>
+            <div class="bg-white rounded-xl shadow-sm p-4 sticky top-24">
+                <p class="text-xs uppercase tracking-widest text-gray-500 mb-3">Preview</p>
                 <div class="aspect-[4/5] rounded-lg overflow-hidden relative"
                      style="{{ $slider->background_style }}">
                     @if($slider->image_url && $slider->content_type === 'image_only')
