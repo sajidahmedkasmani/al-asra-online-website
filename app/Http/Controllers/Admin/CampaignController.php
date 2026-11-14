@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Services\CampaignPriceSynchronizer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class CampaignController extends Controller
 {
@@ -93,7 +94,7 @@ class CampaignController extends Controller
             }
         }
 
-        return $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:160'],
             'type' => ['required', 'in:all_active,category,product,price_range'],
             'discount_type' => ['required', 'in:percentage,fixed'],
@@ -107,6 +108,15 @@ class CampaignController extends Controller
             'ends_at' => ['nullable', 'date', 'after:starts_at'],
             'is_active' => ['nullable', 'boolean'],
         ]);
+
+        foreach (['starts_at', 'ends_at'] as $field) {
+            if (!empty($data[$field])) {
+                $data[$field] = Carbon::parse($data[$field], 'Asia/Karachi')
+                    ->setTimezone(config('app.timezone', 'UTC'));
+            }
+        }
+
+        return $data;
     }
 
     private function targetFields(array &$data): array

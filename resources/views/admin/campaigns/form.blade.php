@@ -6,8 +6,8 @@
     $selectedType = old('type', $campaign->type ?? 'all_active');
     $selectedDiscountType = old('discount_type', $campaign->discount_type ?? 'percentage');
     $selectedProductIds = old('product_ids', $selectedProductIds);
-    $startsAt = old('starts_at', $campaign->starts_at?->format('Y-m-d\TH:i') ?? now()->format('Y-m-d\TH:i'));
-    $endsAt = old('ends_at', $campaign->ends_at?->format('Y-m-d\TH:i'));
+    $startsAt = old('starts_at', $campaign->starts_at?->timezone('Asia/Karachi')->format('Y-m-d\TH:i') ?? now('Asia/Karachi')->format('Y-m-d\TH:i'));
+    $endsAt = old('ends_at', $campaign->ends_at?->timezone('Asia/Karachi')->format('Y-m-d\TH:i'));
 @endphp
 
 <form method="POST" action="{{ $campaign->exists ? route('admin.campaigns.update', $campaign) : route('admin.campaigns.store') }}"
@@ -56,16 +56,18 @@
         </div>
 
         <div x-cloak x-show="type === 'product'">
-            <label for="campaign-products" class="text-xs font-semibold uppercase tracking-wider text-gray-500">Products</label>
-            <select id="campaign-products" name="product_ids[]" multiple :required="type === 'product'"
-                    class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm" size="7">
+            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Products</span>
+            <div id="campaign-products" class="mt-2 max-h-72 overflow-y-auto rounded-2xl border border-gray-200 divide-y divide-gray-100">
                 @foreach($products as $product)
-                    <option value="{{ $product->id }}" @selected(in_array((string) $product->id, array_map('strval', $selectedProductIds), true))>
-                        {{ $product->name }} — Rs. {{ number_format($product->price > 0 ? $product->price : $product->price_paisa / 100) }}
-                    </option>
+                    <label class="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50">
+                        <input type="checkbox" name="product_ids[]" value="{{ $product->id }}"
+                               @checked(in_array((string) $product->id, array_map('strval', $selectedProductIds), true))
+                               class="rounded border-gray-300 text-brand-600 focus:ring-brand-500">
+                        <span>{{ $product->name }} <span class="text-gray-500">— Rs. {{ number_format($product->price > 0 ? $product->price : $product->price_paisa / 100) }}</span></span>
+                    </label>
                 @endforeach
-            </select>
-            <span class="block text-xs text-gray-400 mt-1">Select one or more products. Use Ctrl (Windows) or Command (Mac) to select multiple.</span>
+            </div>
+            <span class="block text-xs text-gray-400 mt-1">Tick one or more products.</span>
         </div>
 
         <div x-cloak x-show="type === 'price_range'" class="grid sm:grid-cols-2 gap-4">
@@ -104,12 +106,12 @@
 
         <div class="grid sm:grid-cols-2 gap-4">
             <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Starts at</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Starts at <span class="ml-1 text-[10px] font-bold text-brand-600">PKT</span></span>
                 <input type="datetime-local" name="starts_at" value="{{ $startsAt }}" required
                        class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm">
             </label>
             <label class="block">
-                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Ends at (optional)</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">Ends at (optional) <span class="ml-1 text-[10px] font-bold text-brand-600">PKT</span></span>
                 <input type="datetime-local" name="ends_at" value="{{ $endsAt }}"
                        class="mt-2 w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm">
                 <span class="block text-xs text-gray-400 mt-1">Leave empty for a campaign with no end date.</span>

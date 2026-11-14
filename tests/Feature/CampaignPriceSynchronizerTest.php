@@ -9,6 +9,7 @@ use App\Models\ProductCategory;
 use App\Models\User;
 use App\Services\CampaignPriceSynchronizer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -165,7 +166,9 @@ class CampaignPriceSynchronizerTest extends TestCase
             ->assertOk()
             ->assertSee('Create Campaign')
             ->assertSee('Products within a price range')
-            ->assertSee('name="product_ids[]"', false);
+            ->assertSee('type="checkbox" name="product_ids[]"', false)
+            ->assertSee('PKT')
+            ->assertDontSee('Use Ctrl');
 
         $anotherProduct = $this->product('another-admin-campaign-item', 2000);
         $this->actingAs($admin)
@@ -188,6 +191,49 @@ class CampaignPriceSynchronizerTest extends TestCase
             'type' => 'product',
             'is_active' => true,
         ]);
+    }
+
+    public function test_campaign_schedule_is_shown_in_pkt_and_saved_in_the_app_timezone(): void
+    {
+        config(['app.timezone' => 'UTC']);
+
+        $admin = User::create([
+            'name' => 'Campaign Admin',
+            'email' => 'campaign-time-admin@example.com',
+            'password' => 'password',
+            'is_admin' => true,
+        ]);
+        $startsAt = now('Asia/Karachi')->addDay()->startOfHour()->format('Y-m-d\TH:i');
+        $endsAt = Carbon::parse($startsAt, 'Asia/Karachi')->addHours(2)->format('Y-m-d\TH:i');
+
+        $this->actingAs($admin)
+            ->post(route('admin.campaigns.store'), [
+                'name' => 'PKT schedule test',
+                'type' => 'all_active',
+                'discount_type' => 'percentage',
+                'discount_value' => 10,
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
+                'is_active' => 1,
+            ])
+            ->assertRedirect(route('admin.campaigns.index'));
+
+        $this->assertDatabaseHas('campaigns', [
+            'name' => 'PKT schedule test',
+            'starts_at' => Carbon::parse($startsAt, 'Asia/Karachi')->setTimezone('UTC')->format('Y-m-d H:i:s'),
+            'ends_at' => Carbon::parse($endsAt, 'Asia/Karachi')->setTimezone('UTC')->format('Y-m-d H:i:s'),
+        ]);
+
+        $campaign = Campaign::where('name', 'PKT schedule test')->firstOrFail();
+        $this->actingAs($admin)
+            ->get(route('admin.campaigns.edit', $campaign))
+            ->assertOk()
+            ->assertSee('value="'.$startsAt.'"', false)
+            ->assertSee('value="'.$endsAt.'"', false);
+
+        $this->get(route('admin.campaigns.index'))
+            ->assertOk()
+            ->assertSee($campaign->starts_at->timezone('Asia/Karachi')->format('M j, Y H:i'));
     }
 
     public function test_admin_can_create_a_price_range_with_only_one_bound(): void

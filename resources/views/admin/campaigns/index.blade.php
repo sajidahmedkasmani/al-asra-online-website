@@ -21,7 +21,7 @@
                         <th class="px-5 py-4 font-semibold">Campaign</th>
                         <th class="px-5 py-4 font-semibold">Target</th>
                         <th class="px-5 py-4 font-semibold">Discount</th>
-                        <th class="px-5 py-4 font-semibold">Schedule</th>
+                        <th class="px-5 py-4 font-semibold">Schedule <span class="text-[10px]">PKT</span></th>
                         <th class="px-5 py-4 font-semibold">Status</th>
                         <th class="px-5 py-4 font-semibold text-right">Actions</th>
                     </tr>
@@ -58,9 +58,9 @@
                                 {{ $campaign->discount_type === 'percentage' ? '%' : 'Rs.' }}
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap text-gray-600">
-                                <p>{{ $campaign->starts_at->format('M j, Y H:i') }}</p>
+                                <p>{{ $campaign->starts_at->timezone('Asia/Karachi')->format('M j, Y H:i') }}</p>
                                 <p class="text-xs text-gray-400 mt-1">
-                                    Until {{ $campaign->ends_at?->format('M j, Y H:i') ?? 'No end date' }}
+                                    Until {{ $campaign->ends_at?->timezone('Asia/Karachi')->format('M j, Y H:i') ?? 'No end date' }}
                                 </p>
                             </td>
                             <td class="px-5 py-4">
