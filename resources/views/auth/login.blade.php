@@ -2,170 +2,246 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="theme-color" content="#0B1F2A">
-        <title>Sign in — {{ config('app.name', 'Store') }} Admin</title>
+        <title>Log in | Al-Asra</title>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                theme: { extend: {
-                    colors: {
-                        brand: { 50:'#ECFDF8', 100:'#D1FAEC', 200:'#A7F3DB', 300:'#6EE7C3', 400:'#2DD4A4', 500:'#14B88A', 600:'#0E9F77', 700:'#0B7F60' },
-                        bloom: { 400:'#A78BFA', 500:'#8B5CF6' },
-                        ink: '#0B1F2A',
-                    },
-                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
-                } }
-            }
-        </script>
-        <script src="//unpkg.com/alpinejs" defer></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
 
         <style>
-            [x-cloak]{display:none!important}
-            .hero{background:
-                radial-gradient(620px 420px at 12% 8%, rgba(45,212,164,.55), transparent 62%),
-                radial-gradient(560px 460px at 92% 22%, rgba(139,92,246,.55), transparent 62%),
-                radial-gradient(640px 520px at 40% 108%, rgba(14,165,233,.50), transparent 62%),
-                linear-gradient(160deg,#0B1F2A 0%,#0C3340 55%,#0D4A4A 100%)}
-            .paper{background:
-                radial-gradient(520px 360px at 100% 0%, rgba(45,212,164,.20), transparent 62%),
-                radial-gradient(520px 360px at 0% 100%, rgba(139,92,246,.14), transparent 62%), #F4F8F7}
-            .glass{background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.22)}
-            .btn-go{background:linear-gradient(135deg,#0E9F77,#0891B2);box-shadow:0 14px 28px -10px rgba(14,159,119,.65);transition:transform .2s ease,filter .2s ease,box-shadow .2s ease}
-            .btn-go:hover{filter:brightness(1.07);box-shadow:0 18px 32px -10px rgba(14,159,119,.75)}
-            .btn-go:active{transform:scale(.985)}
-            @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-            .floaty{animation:floaty 6s ease-in-out infinite;animation-delay:var(--d,0s)}
-            @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-            .rise{opacity:0;animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+            /* ---- brand colours: edit these to match the storefront ---- */
+            :root{
+                --plum:#5B1A4A;      /* primary (button, links, focus) */
+                --rose:#B8456A;      /* hover / focus glow */
+                --cream:#F7F0E6;     /* form side background */
+                --stage:#EEE4D6;     /* video side background */
+                --num:#E2D6C5;       /* giant faded word behind the video */
+                --ink:#12100E;
+                --muted:rgba(18,16,14,.55);
+                --line:rgba(18,16,14,.16);
+                --glass:rgba(255,255,255,.62);
+            }
+            *{box-sizing:border-box;margin:0;padding:0}
+            html{-webkit-text-size-adjust:100%}
+            body{min-height:100vh;background:var(--cream);color:var(--ink);font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+            a{color:inherit;text-decoration:none}
+            img{display:block}
+            button,input{font:inherit;color:inherit}
+            :focus-visible{outline:2px solid var(--plum);outline-offset:3px}
+
+            .lg{display:grid;grid-template-columns:1fr;min-height:100vh}
+
+            /* ============ LEFT: video stage ============ */
+            .stage{position:relative;overflow:hidden;height:300px;background:var(--stage);isolation:isolate}
+            .word{display:none;position:absolute;left:50%;top:50%;z-index:-1;font-size:24vw;line-height:.8;font-weight:800;letter-spacing:-.05em;color:var(--num);white-space:nowrap;
+                transform:translate(-50%,-50%) scaleY(var(--y,1.6));user-select:none}
+            .oval{position:absolute;left:50%;top:50%;height:74%;aspect-ratio:4/5;transform:translate(-50%,-50%);border-radius:50%;padding:6%;
+                background:rgba(255,255,255,.55);box-shadow:0 50px 100px -40px rgba(18,16,14,.4),inset 0 0 0 1px rgba(255,255,255,.8)}
+            .oval>div{width:100%;height:100%;border-radius:50%;overflow:hidden;background:#e4dccd}
+            .oval video{width:100%;height:100%;object-fit:cover;display:block}
+            .stage-logo{position:absolute;top:20px;left:clamp(16px,3vw,40px)}
+            .stage-logo img{height:36px;width:auto;max-width:150px;object-fit:contain}
+            .stage-cap{display:none}
+
+            /* ============ RIGHT: form ============ */
+            .panel{position:relative;z-index:2;margin-top:-28px;border-radius:28px 28px 0 0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px 22px 40px}
+            .back{position:absolute;top:20px;right:20px;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:var(--glass);border:1px solid rgba(18,16,14,.08);font-size:13px;font-weight:500;transition:background .25s,color .25s}
+            .back:hover{background:var(--ink);color:#fff}
+            .back svg{width:16px;height:16px}
+            .card{width:100%;max-width:420px;margin-top:18px}
+            .card h1{font-size:clamp(30px,5vw,40px);line-height:1.05;font-weight:600;letter-spacing:-.035em}
+            .card .sub{margin:10px 0 28px;color:var(--muted);font-size:15px;line-height:1.5}
+            form{display:flex;flex-direction:column;gap:20px}
+            label.lbl{display:block;font-size:14px;font-weight:500;margin-bottom:6px}
+            .row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+            .row .lbl{margin-bottom:0}
+            .forgot{font-size:14px;color:var(--plum);text-decoration:underline;text-underline-offset:4px;transition:color .2s}
+            .forgot:hover{color:var(--rose)}
+
+            .field{position:relative}
+            .field .ic{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:rgba(18,16,14,.35);pointer-events:none}
+            .field input{width:100%;height:54px;border-radius:16px;border:1px solid var(--line);background:#fff;padding:0 16px 0 48px;font-size:16px;transition:border-color .2s,box-shadow .2s}
+            .field input::placeholder{color:rgba(18,16,14,.3)}
+            .field input:focus{outline:none;border-color:var(--plum);box-shadow:0 0 0 4px rgba(184,69,106,.15)}
+            .field.has-error input{border-color:#f87171}
+            .field.pw input{padding-right:56px}
+            .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:12px;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer;transition:background .2s,color .2s}
+            .eye:hover{background:var(--cream);color:var(--plum)}
+            .eye svg{width:20px;height:20px}
+            .eye .off{display:none}
+            .eye[aria-pressed="true"] .on{display:none}
+            .eye[aria-pressed="true"] .off{display:block}
+            .err{margin-top:6px;font-size:13px;color:#dc2626}
+            .alert{border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.4}
+            .alert.bad{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+            .alert.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d}
+
+            .remember{display:inline-flex;align-items:center;gap:12px;min-height:44px;cursor:pointer;user-select:none;font-size:14px;position:relative}
+            .remember input{position:absolute;opacity:0;width:1px;height:1px}
+            .remember .box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(18,16,14,.25);background:#fff;display:grid;place-items:center;transition:background .2s,border-color .2s,box-shadow .2s}
+            .remember .box svg{width:14px;height:14px;color:#fff;opacity:0;transition:opacity .15s}
+            .remember input:checked+.box{background:var(--plum);border-color:var(--plum)}
+            .remember input:checked+.box svg{opacity:1}
+            .remember input:focus-visible+.box{box-shadow:0 0 0 4px rgba(91,26,74,.3)}
+
+            .submit{width:100%;height:56px;border:0;border-radius:999px;background:var(--plum);color:var(--cream);font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;
+                    box-shadow:0 12px 24px -12px rgba(91,26,74,.6);transition:background .25s,transform .2s}
+            .submit:hover{background:var(--ink);transform:translateY(-1px)}
+            .submit:active{transform:scale(.99)}
+            .submit:disabled{opacity:.7;cursor:wait}
+            .spin{display:none;width:20px;height:20px;animation:spin .8s linear infinite}
+            .submit.busy .spin{display:block}
             @keyframes spin{to{transform:rotate(360deg)}}
-            @media (prefers-reduced-motion:reduce){.floaty,.rise{animation:none;opacity:1}}
+
+            .alt{margin-top:26px;text-align:center;font-size:14px;color:var(--muted)}
+            .alt a{color:var(--plum);font-weight:500;text-decoration:underline;text-underline-offset:4px}
+            .alt a:hover{color:var(--rose)}
+
+            /* ============ DESKTOP: split screen ============ */
+            @media (min-width:960px){
+                .lg{grid-template-columns:1.05fr 1fr}
+                .stage{position:sticky;top:0;height:100vh}
+                .word{display:block;font-size:13vw}
+                .oval{height:72%}
+                .stage-cap{display:block;position:absolute;left:clamp(16px,3vw,40px);bottom:clamp(24px,5vh,48px);font-size:clamp(26px,2.6vw,40px);font-weight:600;letter-spacing:-.035em;line-height:1.05}
+                .panel{margin-top:0;border-radius:0;padding:56px 40px}
+                .back{top:28px;right:36px}
+                .card{margin-top:0}
+            }
+            @media (prefers-reduced-motion:reduce){
+                .oval video{display:none}
+                .spin{animation:none}
+                .submit,.back,.eye{transition:none}
+            }
         </style>
     </head>
 
-    <body class="font-sans text-ink antialiased">
+    <body>
         @php
-            $appName = config('app.name', 'Store');
-            $mark = strtoupper(mb_substr($appName, 0, 1));
+            $video = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260713_234424_b1332b69-2e69-4302-8dbc-40f86846afbd.mp4';
         @endphp
 
-        <div class="min-h-screen lg:grid lg:grid-cols-[1.05fr_1fr]">
+        <div class="lg">
 
-            {{-- ============ BRAND PANEL ============ --}}
-            <section class="hero relative overflow-hidden text-white px-6 py-8 lg:p-14 flex flex-col justify-between lg:min-h-screen rounded-b-[36px] lg:rounded-none">
-                <div class="pointer-events-none absolute inset-0 opacity-[.14]" style="background-image:radial-gradient(#fff 1px,transparent 1px);background-size:26px 26px"></div>
+            {{-- ============ LEFT: video ============ --}}
+            <section class="stage" id="stage" aria-hidden="true">
+                <span class="word" id="word">Al-Asra</span>
 
-                <div class="relative flex items-center gap-3">
-                    <span class="w-11 h-11 rounded-2xl bg-white/95 text-ink font-extrabold text-lg flex items-center justify-center shadow-lg">{{ $mark }}</span>
-                    <span class="font-bold text-lg tracking-tight">{{ $appName }}</span>
+                <div class="oval">
+                    <div><video src="{{ $video }}" autoplay loop muted playsinline preload="auto" onerror="this.style.display='none'"></video></div>
                 </div>
 
-                <div class="relative hidden lg:block my-10">
-                    <h1 class="text-[44px] xl:text-[52px] leading-[1.05] font-extrabold tracking-tight max-w-md">Your whole store, in one calm place.</h1>
-                    <p class="mt-5 text-white/75 max-w-sm text-[15px] leading-relaxed">Orders, products, pages and customers. Sign in to pick up right where you left off.</p>
-
-                    {{-- decorative glass dashboard --}}
-                    <div class="relative mt-12 max-w-md h-64" aria-hidden="true">
-                        <div class="floaty glass absolute left-0 top-0 w-72 rounded-3xl p-5 shadow-2xl shadow-black/20">
-                            <div class="flex items-center gap-2 mb-5">
-                                <span class="w-2.5 h-2.5 rounded-full bg-rose-300"></span><span class="w-2.5 h-2.5 rounded-full bg-amber-300"></span><span class="w-2.5 h-2.5 rounded-full bg-emerald-300"></span>
-                            </div>
-                            <div class="flex items-end gap-2.5 h-24">
-                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:38%"></span>
-                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:62%"></span>
-                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:48%"></span>
-                                <span class="flex-1 rounded-t-lg bg-gradient-to-t from-brand-300 to-white" style="height:92%"></span>
-                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:58%"></span>
-                                <span class="flex-1 rounded-t-lg bg-white/35" style="height:74%"></span>
-                            </div>
-                        </div>
-                        <div class="floaty glass absolute right-0 top-20 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-2xl shadow-black/20" style="--d:-2s">
-                            <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-300 to-brand-500 flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
-                            </span>
-                            <span class="text-sm font-semibold">New order received</span>
-                        </div>
-                        <div class="floaty glass absolute left-10 bottom-0 rounded-2xl px-4 py-3 flex items-center gap-3 shadow-2xl shadow-black/20" style="--d:-4s">
-                            <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-bloom-400 to-bloom-500 flex items-center justify-center">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0v10l-8 4m8-14l-8 4m0 10L4 17V7m8 14V11"/></svg>
-                            </span>
-                            <span class="text-sm font-semibold">Product published</span>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="relative mt-6 lg:mt-0 text-sm text-white/70 lg:hidden">Sign in to manage your store.</p>
-                <p class="relative hidden lg:block text-xs text-white/50">&copy; {{ date('Y') }} {{ $appName }}</p>
+                <a href="{{ url('/') }}" class="stage-logo" tabindex="-1"><img src="{{ asset('logo.png') }}" alt=""></a>
+                <p class="stage-cap">Welcome back.</p>
             </section>
 
-            {{-- ============ FORM ============ --}}
-            <section class="paper flex items-center justify-center px-5 py-10 sm:py-14 lg:min-h-screen">
-                <div class="rise w-full max-w-[420px]" x-data="{ show: false, loading: false }">
+            {{-- ============ RIGHT: login ============ --}}
+            <main class="panel">
+                <a href="{{ url('/') }}" class="back">
+                    <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>Back to shop
+                </a>
 
-                    <div class="bg-white/80 backdrop-blur-xl rounded-[32px] border border-white shadow-[0_30px_70px_-30px_rgba(11,31,42,.35)] p-7 sm:p-9">
-                        <h2 class="text-[28px] font-extrabold tracking-tight">Welcome back</h2>
-                        <p class="text-sm text-gray-500 mt-1.5 mb-7">Sign in to your admin account.</p>
+                <div class="card">
+                    <h1>Log in —  Admin</h1>
+                    <p class="sub">Welcome back. Enter your details to continue.</p>
 
-                        @if(session('status'))
-                            <div class="mb-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3">{{ session('status') }}</div>
-                        @endif
+                    @if(session('status'))
+                        <div class="alert ok" style="margin-bottom:20px" role="status">{{ session('status') }}</div>
+                    @endif
+                    @if($errors->any())
+                        <div class="alert bad" style="margin-bottom:20px" role="alert">{{ $errors->first() }}</div>
+                    @endif
 
-                        <form method="POST" action="{{ route('login') }}" @submit="loading = true" class="space-y-5" novalidate>
-                            @csrf
+                    <form method="POST" action="{{ route('login') }}" @submit="loading = true" novalidate id="loginForm">
+                        @csrf
 
-                            <div>
-                                <label for="email" class="block text-[13px] font-semibold text-gray-700 mb-2">Email</label>
-                                <div class="relative">
-                                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
-                                    <input id="email" name="email" type="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="you@example.com"
-                                           class="w-full rounded-2xl bg-gray-50 border {{ $errors->has('email') ? 'border-rose-300 ring-4 ring-rose-100' : 'border-gray-200' }} pl-11 pr-4 py-3.5 text-sm placeholder:text-gray-400 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 focus:outline-none transition">
-                                </div>
-                                @error('email')<p class="text-xs text-rose-600 mt-2">{{ $message }}</p>@enderror
+                        {{-- Email --}}
+                        <div>
+                            <label for="email" class="lbl">Email</label>
+                            <div class="field {{ $errors->has('email') ? 'has-error' : '' }}">
+                                <svg class="ic" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>
+                                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                                    autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com"
+                                    @if($errors->has('email')) aria-invalid="true" @endif>
                             </div>
+                            @error('email')<p class="err">{{ $message }}</p>@enderror
+                        </div>
 
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <label for="password" class="block text-[13px] font-semibold text-gray-700">Password</label>
-                                    @if(Route::has('password.request'))
-                                        <a href="{{ route('password.request') }}" class="text-xs font-medium text-brand-700 hover:underline">Forgot password?</a>
-                                    @endif
-                                </div>
-                                <div class="relative">
-                                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 118 0v3"/></svg>
-                                    <input id="password" name="password" :type="show ? 'text' : 'password'" type="password" required autocomplete="current-password" placeholder="Enter your password"
-                                           class="w-full rounded-2xl bg-gray-50 border border-gray-200 pl-11 pr-12 py-3.5 text-sm placeholder:text-gray-400 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-100 focus:outline-none transition">
-                                    <button type="button" @click="show = !show" :aria-label="show ? 'Hide password' : 'Show password'"
-                                            class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl text-gray-400 hover:text-brand-600 hover:bg-brand-50 flex items-center justify-center transition">
-                                        <svg x-show="!show" class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
-                                        <svg x-cloak x-show="show" class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.6 9.6 0 0112 6c6.4 0 10 6 10 6a17 17 0 01-3.2 3.9M6.5 7.5C3.8 9.3 2 12 2 12s3.6 6 10 6c1.5 0 2.9-.3 4.1-.8M9.9 9.9a3 3 0 004.2 4.2"/></svg>
-                                    </button>
-                                </div>
-                                @error('password')<p class="text-xs text-rose-600 mt-2">{{ $message }}</p>@enderror
+                        {{-- Password --}}
+                        <div>
+                            <div class="row">
+                                <label for="password" class="lbl">Password</label>
+                                @if(Route::has('password.request'))
+                                    <a href="{{ route('password.request') }}" class="forgot">Forgot password?</a>
+                                @endif
                             </div>
+                            <div class="field pw {{ $errors->has('password') ? 'has-error' : '' }}">
+                                <svg class="ic" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                                <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="Enter your password"
+                                    @if($errors->has('password')) aria-invalid="true" @endif>
+                                <button type="button" class="eye" id="eye" aria-pressed="false" aria-label="Show password">
+                                    <svg class="on" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="off" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17.9 17.9A10.6 10.6 0 0 1 12 19.5C5.5 19.5 1.5 12 1.5 12a18 18 0 0 1 4.6-5.4M9.9 4.7A10 10 0 0 1 12 4.5c6.5 0 10.5 7.5 10.5 7.5a18 18 0 0 1-2.1 3M1 1l22 22"/></svg>
+                                </button>
+                            </div>
+                            @error('password')<p class="err">{{ $message }}</p>@enderror
+                        </div>
 
-                            <label class="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none">
-                                <input type="checkbox" name="remember" value="1" {{ old('remember') ? 'checked' : '' }} class="w-4 h-4 rounded-md border-gray-300 text-brand-600 focus:ring-brand-400">
-                                Keep me signed in
-                            </label>
+                        {{-- Remember me --}}
+                        <label class="remember">
+                            <input type="checkbox" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
+                            <span class="box"><svg fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></span>
+                            <span>Keep me logged in</span>
+                        </label>
 
-                            <button type="submit" :disabled="loading" class="btn-go w-full text-white font-semibold rounded-2xl py-3.5 text-sm flex items-center justify-center gap-2 disabled:opacity-80 disabled:cursor-wait">
-                                <svg x-cloak x-show="loading" class="w-4 h-4" style="animation:spin .8s linear infinite" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity=".3"/><path d="M21 12a9 9 0 00-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-                                <span x-text="loading ? 'Signing in...' : 'Sign in'">Sign in</span>
-                            </button>
-                        </form>
-                    </div>
+                        {{-- Submit --}}
+                        <button type="submit" class="submit" id="submitBtn">
+                            <svg class="spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".3" stroke-width="3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+                            <span id="submitTxt">Log in</span>
+                        </button>
+                    </form>
 
-                    <p class="text-center text-xs text-gray-400 mt-6">
-                        <a href="{{ route('home') }}" class="hover:text-brand-700 transition">Back to {{ $appName }}</a>
-                    </p>
                 </div>
-            </section>
+            </main>
         </div>
+
+        <script>
+            (function () {
+                // show / hide password
+                var pw = document.getElementById('password'), eye = document.getElementById('eye');
+                eye.addEventListener('click', function () {
+                    var show = pw.type === 'password';
+                    pw.type = show ? 'text' : 'password';
+                    eye.setAttribute('aria-pressed', String(show));
+                    eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+                });
+
+                // busy state on submit (the form still submits normally)
+                var form = document.getElementById('loginForm'), btn = document.getElementById('submitBtn'), txt = document.getElementById('submitTxt');
+                form.addEventListener('submit', function () {
+                    btn.classList.add('busy'); btn.disabled = true; txt.textContent = 'Logging in…';
+                });
+                // if the user comes back via the browser's back button, reset the button
+                window.addEventListener('pageshow', function (e) {
+                    if (e.persisted) { btn.classList.remove('busy'); btn.disabled = false; txt.textContent = 'Log in'; }
+                });
+
+                // stretch the faded word behind the video to fill the stage height (like the 404 page)
+                var stage = document.getElementById('stage'), word = document.getElementById('word');
+                function fit() {
+                    if (!word.offsetHeight) return;
+                    var y = (stage.clientHeight / word.offsetHeight) * 1.25;
+                    stage.style.setProperty('--y', String(Math.min(y, 3.4)));
+                }
+                word.parentNode.style.setProperty('--y', '1.6');
+                word.style.transform = 'translate(-50%,-50%) scaleY(var(--y))';
+                fit();
+                window.addEventListener('resize', fit);
+                if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+                setTimeout(fit, 300);
+            })();
+        </script>
     </body>
 </html>
