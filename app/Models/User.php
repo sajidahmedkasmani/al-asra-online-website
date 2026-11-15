@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable
+{
+    use Notifiable;
+
+    protected $fillable = [
+        'name', 'email', 'password', 'is_active', 'role', 'is_admin'
+    ];
+
+    protected $hidden = ['password', 'remember_token'];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password'          => 'hashed',
+        'is_active'         => 'boolean',
+        'is_admin'          => 'boolean',
+    ];
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
+    /**
+     * Check karein ke user ke paas specific permission hai ya nahi.
+     */
+    public function hasPermission(string $permissionName): bool
+    {
+        return $this->permissions()
+            ->where('name', $permissionName)
+            ->where('is_active', true)
+            ->exists();
+    }
+
+    /**
+     * Ek saath kai permissions check karein (koi ek bhi ho).
+     */
+    public function hasAnyPermission(array $permissionNames): bool
+    {
+        return $this->permissions()
+            ->whereIn('name', $permissionNames)
+            ->where('is_active', true)
+            ->exists();
+    }
+}

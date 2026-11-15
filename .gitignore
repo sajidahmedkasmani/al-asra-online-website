@@ -29,3 +29,13 @@ Homestead.json
 .env.production
 .phpactor.json
 auth.json
+
+
+.htaccess
+
+
+public/uploads/
+public/uploads/*
+/public/uploads
+/public/uploads/
+frontend
