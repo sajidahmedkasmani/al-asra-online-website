@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<<<<<<< Updated upstream
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title>Log in | Al-Asra</title>
+=======
+    <title>404 — Page Not Found | Al-Asra</title>
+>>>>>>> Stashed changes
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
 
     <style>
+<<<<<<< Updated upstream
         /* ---- brand colours: edit these to match the storefront ---- */
         :root{
             --plum:#F24C00;      /* primary (button, links, focus) */
@@ -115,12 +120,83 @@
             .oval video{display:none}
             .spin{animation:none}
             .submit,.back,.eye{transition:none}
+=======
+        /* ---- palette: change these 4 lines to match the brand exactly ---- */
+        :root{
+            --nf-bg:#EEE8DD;      /* page */
+            --nf-ink:#12100E;     /* text / dark buttons */
+            --nf-num:#DDD5C7;     /* giant 404 */
+            --nf-glass:rgba(255,255,255,.62);
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%}
+        body{background:var(--nf-bg);color:var(--nf-ink);font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+        a{color:inherit;text-decoration:none}
+        img{display:block}
+        :focus-visible{outline:2px solid var(--nf-ink);outline-offset:3px}
+
+        .nf-stage{position:fixed;inset:0;overflow:hidden;--nfy:1.4}
+        .nf-ic{width:18px;height:18px;flex:none}
+
+        /* giant stretched 404 + oval */
+        .nf-bgl{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden}
+        .nf-404{display:block;font-size:min(52vw,70vh);line-height:.8;font-weight:800;letter-spacing:-.05em;color:var(--nf-num);
+                transform:scaleY(var(--nfy));transform-origin:center;user-select:none;white-space:nowrap}
+        .nf-oval{position:absolute;left:50%;top:42%;width:min(70vw,50vh);aspect-ratio:4/5;transform:translate(-50%,-50%);border-radius:50%;
+                 background:rgba(255,255,255,.55);box-shadow:0 50px 100px -40px rgba(18,16,14,.4),inset 0 0 0 1px rgba(255,255,255,.8)}
+
+        /* video inside the oval */
+        .nf-vid{position:absolute;inset:0;pointer-events:none}
+        .nf-vid>div{position:absolute;left:50%;top:42%;width:min(61vw,43.5vh);aspect-ratio:4/5;transform:translate(-50%,-50%);border-radius:50%;overflow:hidden;background:#e4dccd}
+        .nf-vid video{width:100%;height:100%;object-fit:cover;display:block}
+
+        /* top nav */
+        .nf-nav{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:20px clamp(16px,3vw,40px)}
+        .nf-logo{display:inline-flex;align-items:center}
+        .nf-logo img{height:36px;width:auto;max-width:150px;object-fit:contain}
+        .nf-links{display:none;gap:8px;position:absolute;left:50%;transform:translateX(-50%)}
+        .nf-pill{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;border:0;cursor:pointer;
+                 background:var(--nf-glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+                 font:500 14px/1 'Inter',system-ui,sans-serif;color:var(--nf-ink);transition:background .25s,color .25s}
+        .nf-pill:hover{background:var(--nf-ink);color:#fff}
+        @media (min-width:900px){ .nf-links{display:flex} .nf-menubtn{display:none} }
+
+        /* bottom */
+        .nf-bottom{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;padding:0 24px clamp(28px,6vh,56px)}
+        .nf-bottom h1{font-size:clamp(26px,4.2vw,56px);line-height:1.05;font-weight:600;letter-spacing:-.035em;max-width:16ch;text-wrap:balance}
+        .nf-cta{display:inline-flex;align-items:center;gap:10px;background:var(--nf-ink);color:#fff;font-size:15px;font-weight:500;border-radius:999px;padding:15px 30px;transition:transform .25s,opacity .25s}
+        .nf-cta:hover{opacity:.85;transform:translateY(-2px)}
+
+        /* slide-in menu */
+        .nf-ov{position:fixed;inset:0;z-index:50;visibility:hidden;pointer-events:none;transition:visibility 0s linear .5s}
+        .nf-ov.on{visibility:visible;pointer-events:auto;transition-delay:0s}
+        .nf-back{position:absolute;inset:0;background:rgba(18,16,14,.5);opacity:0;transition:opacity .4s ease}
+        .nf-ov.on .nf-back{opacity:1}
+        .nf-panel{position:absolute;top:0;right:0;bottom:0;width:min(88vw,400px);background:var(--nf-bg);display:flex;flex-direction:column;padding:20px 24px 28px;
+                  transform:translateX(100%);transition:transform .5s cubic-bezier(.2,.8,.2,1);border-radius:28px 0 0 28px;box-shadow:-30px 0 80px -30px rgba(18,16,14,.4)}
+        .nf-ov.on .nf-panel{transform:none}
+        .nf-ph{display:flex;align-items:center;justify-content:space-between}
+        .nf-x{width:42px;height:42px;border-radius:50%;border:0;cursor:pointer;background:var(--nf-glass);color:var(--nf-ink);display:grid;place-items:center;transition:background .25s,color .25s}
+        .nf-x:hover{background:var(--nf-ink);color:#fff}
+        .nf-items{display:flex;flex-direction:column;margin-top:30px}
+        .nf-items a{font-size:34px;font-weight:600;letter-spacing:-.035em;padding:12px 0;border-bottom:1px solid rgba(18,16,14,.1);
+                    opacity:0;transform:translateX(28px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1),padding-left .25s;transition-delay:calc(var(--i) * 55ms + 120ms)}
+        .nf-ov.on .nf-items a{opacity:1;transform:none}
+        .nf-items a:hover{padding-left:8px}
+        .nf-pb{margin-top:auto}
+        .nf-pb a{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--nf-ink);color:#fff;border-radius:999px;padding:16px;font-weight:500}
+
+        @media (prefers-reduced-motion:reduce){
+            .nf-panel,.nf-back,.nf-items a,.nf-cta{transition:none}
+            .nf-vid video{display:none}
+>>>>>>> Stashed changes
         }
     </style>
 </head>
 
 <body>
 <?php
+<<<<<<< Updated upstream
     $video = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260713_234424_b1332b69-2e69-4302-8dbc-40f86846afbd.mp4';
 ?>
 
@@ -223,10 +299,139 @@ unset($__errorArgs, $__bag); ?>
             <?php endif; ?>
         </div>
     </main>
+=======
+    $nav = [
+        ['Home', url('/')],
+        ['Shop', url('/shop')],
+        ['About', url('/about')],
+        ['Track order', url('/track')],
+        ['FAQ', url('/faq')],
+        ['Contact', url('/contact')],
+    ];
+    $video = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260713_234424_b1332b69-2e69-4302-8dbc-40f86846afbd.mp4';
+?>
+
+<?php
+    // Shared input style (padding is set per input so the leading icon has room)
+    $input = 'w-full h-[54px] rounded-2xl border bg-white pl-12 pr-4 text-base placeholder:text-black/30 focus:outline-none focus:border-plum focus:ring-4 focus:ring-rose/15 transition';
+?>
+
+<div class="nf-stage" id="nfStage">
+
+    <div class="nf-bgl" aria-hidden="true">
+        <span class="nf-404" id="nfNum">404</span>
+        <div class="nf-oval"></div>
+    </div>
+
+    <div class="nf-vid" aria-hidden="true">
+        <div><video src="<?php echo e($video); ?>" autoplay loop muted playsinline preload="auto" onerror="this.style.display='none'"></video></div>
+    </div>
+
+    <header class="nf-nav">
+        <a href="<?php echo e(url('/')); ?>" class="nf-logo" aria-label="Al-Asra Store home"><img src="<?php echo e(asset('logo.png')); ?>" alt="Al-Asra Store"></a>
+
+        <nav class="nf-links" aria-label="Main">
+            <?php $__currentLoopData = $nav; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as [$text, $href]): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e($href); ?>" class="nf-pill"><?php echo e($text); ?></a>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </nav>
+
+        <button type="button" class="nf-pill nf-menubtn" id="nfMenuBtn" aria-label="Open menu" aria-expanded="false">
+            <svg class="nf-ic" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 12h16M4 6h16M4 18h16"/></svg>Menu
+        </button>
+    </header>
+
+    <div class="nf-bottom">
+        <h1>Oops, something went wrong!</h1>
+        <a href="<?php echo e(url('/')); ?>" class="nf-cta">
+            <svg class="nf-ic" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>Back to Home
+        </a>
+
+        <form method="POST" action="<?php echo e(route('customer.login')); ?>" x-data="{ show:false, busy:false }" @submit="busy = true" class="space-y-5">
+                    <?php echo csrf_field(); ?>
+
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium mb-1.5">Email</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/35 pointer-events-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>
+                            </span>
+                            <input id="email" type="email" name="email" value="<?php echo e(old('email')); ?>" required autofocus
+                                autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com"
+                                class="<?php echo e($input); ?> <?php echo e($errors->has('email') ? 'border-red-400' : 'border-black/15'); ?>">
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="password" class="block text-sm font-medium">Password</label>
+                            <a href="<?php echo e(route('customer.password.request')); ?>" class="text-sm text-plum underline underline-offset-4 hover:text-rose transition">Forgot password?</a>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-black/35 pointer-events-none">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                            </span>
+                            <input id="password" :type="show ? 'text' : 'password'" name="password" required
+                                autocomplete="current-password" placeholder="Enter your password"
+                                class="<?php echo e($input); ?> !pr-14 <?php echo e($errors->has('password') ? 'border-red-400' : 'border-black/15'); ?>">
+                            <button type="button" @click="show = !show" :aria-pressed="show" :aria-label="show ? 'Hide password' : 'Show password'"
+                                    class="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl flex items-center justify-center text-muted hover:text-plum hover:bg-cream transition focus:outline-none focus-visible:ring-4 focus-visible:ring-plum/30">
+                                <svg x-show="!show" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg x-cloak x-show="show" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17.9 17.9A10.6 10.6 0 0 1 12 19.5C5.5 19.5 1.5 12 1.5 12a18 18 0 0 1 4.6-5.4M9.9 4.7A10 10 0 0 1 12 4.5c6.5 0 10.5 7.5 10.5 7.5a18 18 0 0 1-2.1 3M1 1l22 22"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    
+                    <label class="relative inline-flex items-center gap-3 cursor-pointer select-none min-h-[44px]">
+                        <input type="checkbox" name="remember" class="peer sr-only" <?php if(old('remember')): echo 'checked'; endif; ?>>
+                        <span class="w-[22px] h-[22px] rounded-md border-2 border-black/25 bg-white flex items-center justify-center transition peer-checked:bg-plum peer-checked:border-plum peer-focus-visible:ring-4 peer-focus-visible:ring-plum/30">
+                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>
+                        </span>
+                        <span class="text-sm">Keep me logged in</span>
+                    </label>
+
+                    
+                    <button type="submit" :disabled="busy"
+                            class="w-full h-[56px] flex items-center justify-center gap-3 bg-plum text-cream rounded-full font-medium text-base shadow-[0_12px_24px_-12px_rgba(91,26,74,.6)] hover:bg-ink hover:-translate-y-px active:translate-y-0 active:scale-[.99] disabled:opacity-70 disabled:cursor-wait transition focus:outline-none focus-visible:ring-4 focus-visible:ring-plum/30">
+                        <svg x-cloak x-show="busy" class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".3" stroke-width="3"/><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+                        <span x-text="busy ? 'Logging in…' : 'Log in'">Log in</span>
+                    </button>
+                </form>
+    </div>
+
+    <div class="nf-ov" id="nfOv" aria-hidden="true">
+        <div class="nf-back" id="nfBack"></div>
+        <aside class="nf-panel">
+            <div class="nf-ph">
+                <span class="nf-logo"><img src="<?php echo e(asset('logo.png')); ?>" alt="Al-Asra Store"></span>
+                <button type="button" class="nf-x" id="nfClose" aria-label="Close menu">
+                    <svg class="nf-ic" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <nav class="nf-items">
+                <?php $__currentLoopData = $nav; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => [$text, $href]): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <a href="<?php echo e($href); ?>" style="--i: <?php echo e($i); ?>"><?php echo e($text); ?></a>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </nav>
+
+            
+
+            <div class="nf-pb">
+                <a href="<?php echo e(url('/')); ?>">
+                    <svg class="nf-ic" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>Back to Home
+                </a>
+            </div>
+        </aside>
+    </div>
+>>>>>>> Stashed changes
 </div>
 
 <script>
 (function () {
+<<<<<<< Updated upstream
     // show / hide password
     var pw = document.getElementById('password'), eye = document.getElementById('eye');
     eye.addEventListener('click', function () {
@@ -255,10 +460,38 @@ unset($__errorArgs, $__bag); ?>
     }
     word.parentNode.style.setProperty('--y', '1.6');
     word.style.transform = 'translate(-50%,-50%) scaleY(var(--y))';
+=======
+    var stage = document.getElementById('nfStage'),
+        num   = document.getElementById('nfNum'),
+        ov    = document.getElementById('nfOv'),
+        btn   = document.getElementById('nfMenuBtn');
+
+    // stretch the giant 404 so it is ~1.4x the viewport height (capped so phones don't get paper-thin strokes)
+    function fit() {
+        if (!num.offsetHeight) return;
+        var y = (window.innerHeight / num.offsetHeight) * 1.4;
+        stage.style.setProperty('--nfy', String(Math.min(y, 4.2)));
+    }
+    function setOpen(v) {
+        ov.classList.toggle('on', v);
+        ov.setAttribute('aria-hidden', String(!v));
+        btn.setAttribute('aria-expanded', String(v));
+    }
+
+>>>>>>> Stashed changes
     fit();
     window.addEventListener('resize', fit);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
     setTimeout(fit, 300);
+<<<<<<< Updated upstream
+=======
+
+    btn.addEventListener('click', function () { setOpen(true); });
+    document.getElementById('nfClose').addEventListener('click', function () { setOpen(false); });
+    document.getElementById('nfBack').addEventListener('click', function () { setOpen(false); });
+    ov.querySelectorAll('.nf-items a, .nf-pb a').forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
+    window.addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+>>>>>>> Stashed changes
 })();
 </script>
 </body>
