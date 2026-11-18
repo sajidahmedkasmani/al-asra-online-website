@@ -95,7 +95,7 @@
         $navPermissions = [
             'admin.dashboard' => 'admin.dashboard',
             'admin.products.index' => 'products.view',
-            'admin.campaigns.index' => 'products.view',
+            'admin.campaigns.index' => 'campaigns.view',
             'admin.orders.index' => 'orders.view',
             'admin.sliders.index' => 'sliders.view',
             'admin.cms.index' => 'cms.view',
