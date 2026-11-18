@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\IsAdmin::class,
         ]);
+        $middleware->appendToGroup('web', \App\Http\Middleware\CaptureMarketingAttribution::class);
         $middleware->redirectUsersTo(fn (Request $request) => $request->routeIs('login')
             ? route('admin.dashboard')
             : route('home'));

@@ -71,6 +71,8 @@ class CheckoutController extends Controller
             ];
         }
         $summary = CartSummary::for($freshCart);
+        $attribution = $request->session()->get('marketing_attribution', []);
+        $attribution = is_array($attribution) ? $attribution : [];
 
         DB::beginTransaction();
         try {
@@ -89,6 +91,14 @@ class CheckoutController extends Controller
                 'subtotal_paisa' => (int) round($summary['subtotal'] * 100),
                 'shipping_paisa' => (int) round($summary['shipping'] * 100),
                 'status' => 'pending',
+                'utm_source' => $attribution['utm_source'] ?? null,
+                'utm_medium' => $attribution['utm_medium'] ?? null,
+                'utm_campaign' => $attribution['utm_campaign'] ?? null,
+                'utm_term' => $attribution['utm_term'] ?? null,
+                'utm_content' => $attribution['utm_content'] ?? null,
+                'referral_code' => $attribution['referral_code'] ?? null,
+                'referrer' => $attribution['referrer'] ?? null,
+                'landing_page' => $attribution['landing_page'] ?? null,
             ]);
 
             foreach ($cart as $id => $item) {
