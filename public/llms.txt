@@ -1,0 +1,19 @@
+# G. Collection (Gdot Collection)
+
+> G. Collection is a premier lifestyle brand based in Pakistan. We specialize in elegant stitched and unstitched ladies' apparel featuring intricate embroidery, lace, fringes, and cutwork. We also offer a curated selection of bags and accessories. We provide nationwide delivery across Pakistan with Cash on Delivery (COD) and free shipping on orders above Rs. 10,000.
+
+## Main Pages
+- [Home](https://alasra.online/): Explore our latest arrivals and featured collections.
+- [About Us](https://alasra.online/about-us): Learn more about our brand and hand-finished details.
+- [Contact Us](https://alasra.online/contact): Reach out via WhatsApp (+92 315 9258892) or email (support@alasra.online). Available Mon-Sat.
+- [FAQs](https://alasra.online/faqs): Answers regarding ordering, shipping, sizes, and returns.
+
+## Policies
+- [Privacy Policy](https://alasra.online/privacy)
+- [Terms of Service](https://alasra.online/terms)
+- [Shipping Policy](https://alasra.online/shipping)
+- [Return & Exchange Policy](https://alasra.online/return)
+
+## Products
+- [Shop All Products](https://alasra.online/shop): Browse our complete collection of stitched and unstitched ladies' clothing and bags.
+- Individual product details can be found at: `https://alasra.online/product/{slug}`

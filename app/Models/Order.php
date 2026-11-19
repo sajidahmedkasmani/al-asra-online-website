@@ -10,6 +10,8 @@ class Order extends Model
         'order_number', 'customer_id', 'customer_name', 'email', 'phone',
         'address', 'city', 'payment_method', 'notes', 'customer_note',
         'total', 'subtotal_paisa', 'shipping_paisa', 'status',
+        'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
+        'referral_code', 'referrer', 'landing_page',
     ];
 
     protected $casts = ['total' => 'decimal:2'];

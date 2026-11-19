@@ -18,7 +18,10 @@ use App\Http\Controllers\Admin\QueueMonitorController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\CampaignController;
+use App\Http\Controllers\Admin\CustomerController;
+
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\SitemapController;
 
 use App\Http\Controllers\CustomerAuthController;
 use App\Http\Controllers\CustomerPasswordResetController;
@@ -70,6 +73,9 @@ use App\Http\Controllers\CustomerProfileController;
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/order/success/{orderNumber}', [CheckoutController::class, 'success'])->name('order.success');
+
+
+    Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
 
 // ===== FRONTEND ROUTES =====
@@ -207,6 +213,12 @@ use App\Http\Controllers\CustomerProfileController;
                 Route::post('categories/{category}/toggle', 'toggleCategory')->middleware('can:products.edit')->name('catalog.categories.toggle');
             });
         // Catalog Management
+
+        // Customer Management
+            Route::controller(CustomerController::class)->group(function() {
+                Route::get('customers', 'index')->middleware('can:customers.view')->name('customers.index');
+            });
+        // Customer Management
     });
 // ===== CMS ADMIN PANEL =====
 

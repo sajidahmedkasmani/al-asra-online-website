@@ -14,6 +14,10 @@ class OrderController extends Controller {
    'city'=>['required','string','max:100'], 'payment_method'=>['required',Rule::in(['cod','bank_transfer'])],
    'customer_note'=>['nullable','string','max:1000'], 'items'=>['required','array','min:1','max:30'],
    'items.*.product_id'=>['required','integer','distinct','exists:products,external_id'], 'items.*.quantity'=>['required','integer','min:1','max:20'],
+   'utm_source'=>['nullable','string','max:255'], 'utm_medium'=>['nullable','string','max:255'],
+   'utm_campaign'=>['nullable','string','max:255'], 'utm_term'=>['nullable','string','max:255'],
+   'utm_content'=>['nullable','string','max:255'], 'referral_code'=>['nullable','string','max:255'],
+   'referrer'=>['nullable','string','max:255'], 'landing_page'=>['nullable','string','max:2048'],
   ]);
   $order=DB::transaction(function() use($data){
    $ids=collect($data['items'])->pluck('product_id');
@@ -21,7 +25,7 @@ class OrderController extends Controller {
    if($products->count()!==$ids->count()) abort(422,'One or more products are unavailable.');
    $lines=[]; $subtotal=0;
    foreach($data['items'] as $item){ $p=$products[$item['product_id']]; $unitPrice=(int) round($p->display_price*100); $line=$unitPrice*$item['quantity']; $subtotal+=$line; $lines[]=['product_id'=>$p->id,'product_name'=>$p->name,'unit_price_paisa'=>$unitPrice,'quantity'=>$item['quantity'],'line_total_paisa'=>$line]; }
-   $o=Order::create(['order_number'=>'GC-'.now()->format('ymd').'-'.Str::upper(Str::random(6)),'customer_name'=>$data['customer_name'],'email'=>$data['email']??null,'phone'=>$data['phone'],'address'=>$data['address'],'city'=>$data['city'],'payment_method'=>$data['payment_method'],'subtotal_paisa'=>$subtotal,'status'=>'pending','customer_note'=>$data['customer_note']??null]);
+   $o=Order::create(['order_number'=>'GC-'.now()->format('ymd').'-'.Str::upper(Str::random(6)),'customer_name'=>$data['customer_name'],'email'=>$data['email']??null,'phone'=>$data['phone'],'address'=>$data['address'],'city'=>$data['city'],'payment_method'=>$data['payment_method'],'subtotal_paisa'=>$subtotal,'status'=>'pending','customer_note'=>$data['customer_note']??null,'utm_source'=>$data['utm_source']??null,'utm_medium'=>$data['utm_medium']??null,'utm_campaign'=>$data['utm_campaign']??null,'utm_term'=>$data['utm_term']??null,'utm_content'=>$data['utm_content']??null,'referral_code'=>$data['referral_code']??null,'referrer'=>$data['referrer']??null,'landing_page'=>$data['landing_page']??null]);
    $o->items()->createMany($lines); return $o;
   });
   return response()->json(['message'=>'Order received','order_number'=>$order->order_number,'total'=>round($order->subtotal_paisa/100,2),'status'=>$order->status],201);

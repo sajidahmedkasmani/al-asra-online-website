@@ -182,6 +182,41 @@
                     </div>
                 @endif
             </div>
+
+            <div class="rise bg-white rounded-3xl soft p-5 md:p-6" style="--d:.2s">
+                <h2 class="font-semibold mb-4">Marketing attribution</h2>
+                <dl class="grid sm:grid-cols-2 gap-3 text-sm">
+                    <div class="bg-lav/60 rounded-2xl px-4 py-3">
+                        <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">Source / medium</dt>
+                        <dd class="font-medium">
+                            {{ $order->utm_source ?: ($order->referral_code ? 'partner' : ($order->referrer ? 'referral' : 'direct / untagged')) }}
+                            @if($order->utm_medium)<span class="text-gray-500"> / {{ $order->utm_medium }}</span>@endif
+                        </dd>
+                    </div>
+                    <div class="bg-lav/60 rounded-2xl px-4 py-3">
+                        <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">Campaign</dt>
+                        <dd class="font-medium">{{ $order->utm_campaign ?: '—' }}</dd>
+                    </div>
+                    <div class="bg-lav/60 rounded-2xl px-4 py-3">
+                        <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">Ad content / keyword</dt>
+                        <dd class="font-medium break-words">{{ $order->utm_content ?: '—' }}@if($order->utm_term) / {{ $order->utm_term }}@endif</dd>
+                    </div>
+                    <div class="bg-lav/60 rounded-2xl px-4 py-3">
+                        <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">Agent / forwarder code</dt>
+                        <dd class="font-medium break-words">{{ $order->referral_code ?: '—' }}</dd>
+                    </div>
+                    <div class="bg-lav/60 rounded-2xl px-4 py-3 sm:col-span-2">
+                        <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">Landing page</dt>
+                        <dd class="font-medium break-all">{{ $order->landing_page ?: '—' }}</dd>
+                    </div>
+                    @if($order->referrer)
+                        <div class="bg-lav/60 rounded-2xl px-4 py-3 sm:col-span-2">
+                            <dt class="text-[11px] uppercase tracking-wider text-gray-400 mb-0.5">Referring site</dt>
+                            <dd class="font-medium break-all">{{ $order->referrer }}</dd>
+                        </div>
+                    @endif
+                </dl>
+            </div>
         </div>
 
         {{-- ============ RIGHT ============ --}}

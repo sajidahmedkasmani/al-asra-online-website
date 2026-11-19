@@ -27,6 +27,13 @@
         return 'https://wa.me/' . $d;
     };
     $cols = 'grid-cols-[130px_minmax(0,2fr)_110px_90px_130px_100px_80px]';
+    $attributionLabel = function ($order) {
+        if ($order->utm_source) {
+            return $order->utm_source . ($order->utm_medium ? ' / ' . $order->utm_medium : '');
+        }
+
+        return $order->referral_code ? 'Partner referral' : ($order->referrer ? 'Referral' : 'Direct / untagged');
+    };
 @endphp
 
 <div class="space-y-5">
@@ -66,7 +73,10 @@
             @endphp
             <div class="rise bg-white rounded-3xl soft p-4" style="--d:{{ min($loop->index, 8) * 0.04 }}s">
                 <div class="flex items-center justify-between gap-3 mb-3">
-                    <a href="{{ route('admin.orders.show', $o) }}" class="font-mono text-xs text-brand-600">{{ $o->order_number }}</a>
+                    <div class="min-w-0">
+                        <a href="{{ route('admin.orders.show', $o) }}" class="font-mono text-xs text-brand-600">{{ $o->order_number }}</a>
+                        <p class="mt-1 text-[10px] text-gray-400 truncate">{{ $attributionLabel($o) }}</p>
+                    </div>
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium {{ $sb }}">
                         <span class="w-1.5 h-1.5 rounded-full {{ $sd }}"></span>{{ ucfirst($o->status) }}
                     </span>
@@ -130,7 +140,10 @@
                 $wa = $waLink($o->phone);
             @endphp
             <div class="grid {{ $cols }} gap-x-3 items-center px-5 py-3.5 border-t border-gray-100 hover:bg-brand-50/30 transition text-sm">
-                <a href="{{ route('admin.orders.show', $o) }}" class="font-mono text-xs text-brand-600 hover:underline truncate">{{ $o->order_number }}</a>
+                <div class="min-w-0">
+                    <a href="{{ route('admin.orders.show', $o) }}" class="font-mono text-xs text-brand-600 hover:underline truncate">{{ $o->order_number }}</a>
+                    <p class="mt-1 text-[10px] text-gray-400 truncate">{{ $attributionLabel($o) }}</p>
+                </div>
 
                 <div class="flex items-center gap-3 min-w-0">
                     <span class="w-9 h-9 rounded-full bg-brand-100 text-brand-600 text-xs font-semibold flex items-center justify-center shrink-0">{{ strtoupper(substr($o->customer_name, 0, 1)) }}</span>
